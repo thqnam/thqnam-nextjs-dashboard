@@ -23,8 +23,9 @@ export default function Page() {
             </a>
             , supporting by {' '}
             <a href="https://vercel.com/home" className="text-blue-500" target='_blank'>
-              Vercel firm.
+              Vercel
             </a>
+            {' '} firm.
           </p>
           <Link
             href="/login"
