@@ -17,11 +17,11 @@ export default function Page() {
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Welcome to Acme.</strong> This is the example for the{' '}
-            <a href="https://nextjs.org/learn/" className="text-blue-500">
-              Next.js Learn Course
+            <strong>Welcome to QNED.</strong> This is the first app of Mr. {' '}
+            <a href="https://thqnam-myself.vercel.app/" className="text-blue-500">
+              Thiều Huỳnh Quang Nam
             </a>
-            , brought to you by Vercel.
+            , supporting by Vercel firm.
           </p>
           <Link
             href="/login"
