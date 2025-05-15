@@ -36,6 +36,7 @@ export type State = {
 };
 
 export async function resetDashboard() {
+  revalidatePath('/dashboard');
   redirect('/dashboard');
 }
 
