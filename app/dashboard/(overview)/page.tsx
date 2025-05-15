@@ -9,8 +9,6 @@ import {
   CardsSkeleton,
 } from '@/app/ui/skeletons';
 import { Metadata } from 'next';
-import { resetDashboard } from '@/app/lib/actions';
-import { Button } from '@/app/ui/button';
  
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -23,9 +21,6 @@ export default async function Page() {
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Dashboard
       </h1>
-      <Button className="mt-4 w-full" onClick={resetDashboard}>
-        Reset
-      </Button>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense fallback={<CardsSkeleton />}>
           <CardWrapper />
