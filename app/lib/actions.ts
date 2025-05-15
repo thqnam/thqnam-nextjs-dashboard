@@ -35,6 +35,10 @@ export type State = {
   message?: string | null;
 };
 
+export async function resetDashboard() {
+  redirect('/dashboard');
+}
+
 export async function createInvoice(prevState: State, formData: FormData) {
   // Validate form using Zod
   const validatedFields = CreateInvoice.safeParse({
@@ -71,7 +75,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
  
   // Revalidate the cache for the invoices page and redirect the user.
   revalidatePath('/dashboard/invoices');
-  redirect('/dashboard');
+  redirect('/dashboard/invoices');
 }
 
 export async function updateInvoice(
@@ -106,7 +110,7 @@ export async function updateInvoice(
   }
  
   revalidatePath('/dashboard/invoices');
-  redirect('/dashboard');
+  redirect('/dashboard/invoices');
 }
 
 export async function deleteInvoice(id: string) {
@@ -117,7 +121,6 @@ export async function deleteInvoice(id: string) {
         console.error(error);
     }
     revalidatePath('/dashboard/invoices');
-    redirect('/dashboard');
 }
 
 export async function authenticate(
