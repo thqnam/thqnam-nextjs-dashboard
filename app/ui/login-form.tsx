@@ -65,7 +65,7 @@ export default function LoginForm() {
                 name="password"
                 placeholder="Enter password"
                 required
-                minLength={6}
+                minLength={8}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -73,7 +73,7 @@ export default function LoginForm() {
         </div>
         <input type="hidden" name="redirectTo" value={callbackUrl} />
         <Button className="mt-4 w-full" aria-disabled={isPending}>
-          Log in {' '}<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <div
           className="flex h-8 items-end space-x-1"
@@ -87,15 +87,11 @@ export default function LoginForm() {
             </>
           )}
         </div>
-        <button>
-
-        </button>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
           href="/"
         >
-          <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
-          {' '}Comeback
+          Comeback <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
       </div>
     </form>
