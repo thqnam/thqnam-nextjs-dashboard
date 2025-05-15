@@ -6,11 +6,15 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
+import { 
+  ArrowRightIcon,
+  ArrowLeftIcon 
+} from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState } from 'react';
 import { authenticate } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
  
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -83,6 +87,12 @@ export default function LoginForm() {
             </>
           )}
         </div>
+        <Button className="mt-4 w-full">
+          <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          <Link href="/">
+            Comeback
+          </Link>
+        </Button>
       </div>
     </form>
   );
