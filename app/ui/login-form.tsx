@@ -73,7 +73,7 @@ export default function LoginForm() {
         </div>
         <input type="hidden" name="redirectTo" value={callbackUrl} />
         <Button className="mt-4 w-full" aria-disabled={isPending}>
-          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Log in {' '}<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <div
           className="flex h-8 items-end space-x-1"
@@ -87,9 +87,15 @@ export default function LoginForm() {
             </>
           )}
         </div>
-        <Link className="mt-4 w-full" href="/">
+        <button>
+
+        </button>
+        <Link 
+          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
+          href="/"
+        >
           <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
-          Comeback
+          {' '}Comeback
         </Link>
       </div>
     </form>
