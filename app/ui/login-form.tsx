@@ -87,12 +87,10 @@ export default function LoginForm() {
             </>
           )}
         </div>
-        <Button className="mt-4 w-full">
-          <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-          <Link href="/">
-            Comeback
-          </Link>
-        </Button>
+        <Link className="mt-4 w-full" href="/">
+          <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Comeback
+        </Link>
       </div>
     </form>
   );
