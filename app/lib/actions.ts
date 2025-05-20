@@ -8,8 +8,21 @@ import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+
+const CustomerFormSchema = z.object({
+  id: z.string(),
+  name: z.string({
+    required_error: 'Please input the name of this customer',
+  }),
+  email: z.string({
+    required_error: 'Please input the email of this customer',
+  }),
+  image_url: z.string({
+    required_error: 'Please input the image url of this customer',
+  }),
+});
  
-const FormSchema = z.object({
+const InvoiceFormSchema = z.object({
   id: z.string(),
   customerId: z.string({
     invalid_type_error: 'Please select a customer.',
@@ -23,14 +36,26 @@ const FormSchema = z.object({
   date: z.string(),
 });
  
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const CreateInvoice = InvoiceFormSchema.omit({ id: true, date: true });
+const UpdateInvoice = InvoiceFormSchema.omit({ id: true, date: true });
+const CreateCustomer = CustomerFormSchema.omit({id: true});
+const UpdateCustomer = CustomerFormSchema.omit({id: true});
 
-export type State = {
+
+export type InvoiceState = {
   errors?: {
     customerId?: string[];
     amount?: string[];
     status?: string[];
+  };
+  message?: string | null;
+};
+
+export type CustomerState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    link_url?: string[];
   };
   message?: string | null;
 };
@@ -40,7 +65,7 @@ export async function resetDashboard() {
   redirect('/dashboard');
 }
 
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createInvoice(prevState: InvoiceState, formData: FormData) {
   // Validate form using Zod
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
@@ -79,9 +104,46 @@ export async function createInvoice(prevState: State, formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
+export async function createCustomer(prevState: CustomerState, formData: FormData) {
+  // Validate form using Zod
+  const validatedFields = CreateCustomer.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image_url: formData.get('image_url'),
+  });
+ 
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Customer.',
+    };
+  }
+ 
+  // Prepare data for insertion into the database
+  const { name, email, image_url } = validatedFields.data;
+ 
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO customer (name, email image_url)
+      VALUES (${name}, ${email}, ${image_url})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Create Customer.',
+    };
+  }
+ 
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath('/dashboard/customers');
+  redirect('/dashboard/customers');
+}
+
 export async function updateInvoice(
   id: string,
-  prevState: State,
+  prevState: InvoiceState,
   formData: FormData,
 ) {
   const validatedFields = UpdateInvoice.safeParse({
@@ -114,6 +176,40 @@ export async function updateInvoice(
   redirect('/dashboard/invoices');
 }
 
+export async function updateCustomer(
+  id: string,
+  prevState: CustomerState,
+  formData: FormData,
+) {
+  const validatedFields = UpdateCustomer.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    link_url: formData.get('link_url'),
+  });
+ 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Customer.',
+    };
+  }
+ 
+  const { name, email, image_url } = validatedFields.data;
+ 
+  try {
+    await sql`
+      UPDATE customers
+      SET name = ${name}, email = ${email}, image_url = ${image_url}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Customer.' };
+  }
+ 
+  revalidatePath('/dashboard/customers');
+  redirect('/dashboard/customers');
+}
+
 export async function deleteInvoice(id: string) {
     try {
         await sql`DELETE FROM invoices WHERE id = ${id}`;
@@ -122,6 +218,16 @@ export async function deleteInvoice(id: string) {
         console.error(error);
     }
     revalidatePath('/dashboard/invoices');
+}
+
+export async function deleteCustomer(id: string) {
+    try {
+        await sql`DELETE FROM customers WHERE id = ${id}`;
+    } catch (error) {
+        // We'll log the error to the console for now
+        console.error(error);
+    }
+    revalidatePath('/dashboard/customers');
 }
 
 export async function authenticate(
