@@ -184,7 +184,7 @@ export async function updateCustomer(
   const validatedFields = UpdateCustomer.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
-    link_url: formData.get('link_url'),
+    image_url: formData.get('image_url'),
   });
  
   if (!validatedFields.success) {
