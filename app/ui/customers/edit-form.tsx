@@ -11,14 +11,14 @@ import { Button } from '@/app/ui/button';
 import { updateCustomer, CustomerState } from '@/app/lib/actions';
 import { useActionState } from 'react';
  
-export default function EditInvoiceForm({
+export default function EditCustomerForm({
   customer
 }: {
   customer: CustomerForm;
 }) {
   const initialState: CustomerState = { message: null, errors: {} };
-  const updateInvoiceWithId = updateCustomer.bind(null, customer.id);
-  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+  const updateCustomerWithId = updateCustomer.bind(null, customer.id);
+  const [state, formAction] = useActionState(updateCustomerWithId, initialState);
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -37,9 +37,19 @@ export default function EditInvoiceForm({
               type="text"
               name="name"
               placeholder="Enter customer name"
+              defaultValue={customer.name}
+              aria-describedby="name-error"
               required
             />
-            <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          </div>
+          <div id="name-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.name &&
+              state.errors.name.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
           </div>
         </div>
         {/* Email */}
@@ -57,9 +67,19 @@ export default function EditInvoiceForm({
               type="email"
               name="email"
               placeholder="Enter customer email"
+              defaultValue={customer.email}
+              aria-describedby="email-error"
               required
             />
-            <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          </div>
+          <div id="email-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.email &&
+              state.errors.email.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
           </div>
         </div>
         {/* Image_URL */}
@@ -77,9 +97,19 @@ export default function EditInvoiceForm({
               type="url"
               name="image_url"
               placeholder="Enter customer image URL"
+              defaultValue={customer.image_url}
+              aria-describedby="image_url-error"
               required
             />
             <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          </div>
+          <div id="image_url-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.image_url &&
+              state.errors.image_url.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
           </div>
         </div>
       </div>
