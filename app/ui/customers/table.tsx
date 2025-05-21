@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
 import { FormattedCustomersTable } from '@/app/lib/definitions';
-import { UpdateCustomer, DeleteCustomer } from '@/app/ui/customers/buttons';
+import { UpdateCustomer, DeleteCustomer, CreateCustomer } from '@/app/ui/customers/buttons';
 
 export default async function CustomersTable({
   customers,
@@ -15,6 +15,7 @@ export default async function CustomersTable({
         Customers
       </h1>
       <Search placeholder="Search customers..." />
+      <CreateCustomer />
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
@@ -77,6 +78,9 @@ export default async function CustomersTable({
                     </th>
                     <th scope="col" className="px-4 py-5 font-medium">
                       Total Paid
+                    </th>
+                    <th scope="col" className="px-4 py-5 font-medium">
+                      Action Order
                     </th>
                   </tr>
                 </thead>
