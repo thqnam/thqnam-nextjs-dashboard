@@ -1,21 +1,17 @@
 import Image from 'next/image';
-import { lusitana } from '@/app/ui/fonts';
-import Search from '@/app/ui/search';
-import { FormattedCustomersTable } from '@/app/lib/definitions';
-import { UpdateCustomer, DeleteCustomer, CreateCustomer } from '@/app/ui/customers/buttons';
+import { UpdateCustomer, DeleteCustomer } from '@/app/ui/customers/buttons';
+import { fetchFilteredCustomers } from '@/app/lib/data';
 
 export default async function CustomersTable({
-  customers,
+  query,
+  currentPage,
 }: {
-  customers: FormattedCustomersTable[];
+  query: string;
+  currentPage: number;
 }) {
+  const customers = await fetchFilteredCustomers(query, currentPage);
   return (
     <div className="w-full">
-      <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
-        Customers
-      </h1>
-      <Search placeholder="Search customers..." />
-      <CreateCustomer />
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
@@ -57,6 +53,10 @@ export default async function CustomersTable({
                     </div>
                     <div className="pt-4 text-sm">
                       <p>{customer.total_invoices} invoices</p>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <UpdateCustomer id={customer.id} />
+                      <DeleteCustomer id={customer.id} />
                     </div>
                   </div>
                 ))}
