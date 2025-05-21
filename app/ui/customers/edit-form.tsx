@@ -94,7 +94,7 @@ export default function EditCustomerForm({
             <input
               className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
               id="image_url"
-              type="url"
+              type="text"
               name="image_url"
               placeholder="Enter customer image URL"
               defaultValue={customer.image_url}
