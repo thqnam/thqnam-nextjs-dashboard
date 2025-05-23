@@ -1,9 +1,9 @@
 import type { NextAuthConfig } from 'next-auth';
-import postgres from 'postgres';
-import { resetTarget } from '@/app/lib/actions';
+// import postgres from 'postgres';
+// import { resetTarget } from '@/app/lib/actions';
 
-const listenSocket = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall' });
-let lisSock : postgres.SubscriptionHandle;
+// const listenSocket = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall' });
+// let lisSock : postgres.SubscriptionHandle;
 
 export const authConfig = {
     pages: {
@@ -15,15 +15,15 @@ export const authConfig = {
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       if (isOnDashboard) {
         if (isLoggedIn) {
-          lisSock = await listenSocket.subscribe(
-              '*',
-              (row, { command, relation }) => {
-                resetTarget(nextUrl.pathname + nextUrl.search);
-              }
-            )
+          // lisSock = await listenSocket.subscribe(
+          //     '*',
+          //     (row, { command, relation }) => {
+          //       resetTarget(nextUrl.pathname + nextUrl.search);
+          //     }
+          //   )
           return true;
         } else {
-          lisSock.unsubscribe();
+          // lisSock.unsubscribe();
           return false
         }
       } else if (isLoggedIn) {
