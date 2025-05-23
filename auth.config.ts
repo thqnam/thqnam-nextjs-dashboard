@@ -18,7 +18,7 @@ export const authConfig = {
           lisSock = await listenSocket.subscribe(
               '*',
               (row, { command, relation }) => {
-                resetTarget(nextUrl.pathname);
+                resetTarget(nextUrl.pathname + nextUrl.search);
               }
             )
           return true;
