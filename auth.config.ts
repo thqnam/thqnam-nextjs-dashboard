@@ -1,16 +1,31 @@
 import type { NextAuthConfig } from 'next-auth';
- 
+import postgres from 'postgres';
+import { resetTarget } from '@/app/lib/actions';
+
+const listenSocket = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall' });
+let lisSock : postgres.SubscriptionHandle;
+
 export const authConfig = {
     pages: {
         signIn: '/login',
     },
     callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
+        if (isLoggedIn) {
+          lisSock = await listenSocket.subscribe(
+              '*',
+              (row, { command, relation }) => {
+                resetTarget(nextUrl.pathname);
+              }
+            )
+          return true;
+        } else {
+          lisSock.unsubscribe();
+          return false
+        }
       } else if (isLoggedIn) {
         return Response.redirect(new URL('/dashboard', nextUrl));
       }
