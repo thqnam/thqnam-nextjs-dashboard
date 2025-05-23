@@ -1,3 +1,5 @@
+'use client';
+
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { deleteInvoice } from '@/app/lib/actions';
 import { resetTarget } from '@/app/lib/actions';
