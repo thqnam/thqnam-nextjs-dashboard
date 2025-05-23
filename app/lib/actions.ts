@@ -60,9 +60,9 @@ export type CustomerState = {
   message?: string | null;
 };
 
-export async function resetDashboard() {
-  revalidatePath('/dashboard');
-  redirect('/dashboard');
+export async function resetTarget(target : string) {
+  revalidatePath(target);
+  redirect(target);
 }
 
 export async function createInvoice(prevState: InvoiceState, formData: FormData) {

@@ -6,10 +6,10 @@ import {
   InformationCircleIcon,
   IdentificationIcon
 } from '@heroicons/react/24/outline';
-import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateCustomer, CustomerState } from '@/app/lib/actions';
 import { useActionState } from 'react';
+import { resetTarget } from '@/app/lib/actions';
  
 export default function EditCustomerForm({
   customer
@@ -114,12 +114,12 @@ export default function EditCustomerForm({
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/customers"
+        <button
+          onClick={() => resetTarget('/dashboard/customers')}
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
-        </Link>
+        </button>
         <Button type="submit">Edit Customer</Button>
       </div>
     </form>

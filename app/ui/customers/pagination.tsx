@@ -2,9 +2,9 @@
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import Link from 'next/link';
 import { generatePagination } from '@/app/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { resetTarget } from '@/app/lib/actions';
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
@@ -87,9 +87,12 @@ function PaginationNumber({
   return isActive || position === 'middle' ? (
     <div className={className}>{page}</div>
   ) : (
-    <Link href={href} className={className}>
+    <button
+      onClick={() => resetTarget(href)}
+      className={className}
+    >
       {page}
-    </Link>
+    </button>
   );
 }
 
@@ -122,8 +125,11 @@ function PaginationArrow({
   return isDisabled ? (
     <div className={className}>{icon}</div>
   ) : (
-    <Link className={className} href={href}>
+    <button
+      onClick={() => resetTarget(href)}
+      className={className}
+    >
       {icon}
-    </Link>
+    </button>
   );
 }
