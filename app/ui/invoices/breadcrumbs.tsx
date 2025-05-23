@@ -1,6 +1,8 @@
+'use client';
+
 import { clsx } from 'clsx';
-import Link from 'next/link';
 import { lusitana } from '@/app/ui/fonts';
+import { resetTarget } from '@/app/lib/actions';
 
 interface Breadcrumb {
   label: string;
@@ -24,7 +26,7 @@ export default function Breadcrumbs({
               breadcrumb.active ? 'text-gray-900' : 'text-gray-500',
             )}
           >
-            <Link href={breadcrumb.href}>{breadcrumb.label}</Link>
+            <button onClick={() => resetTarget(breadcrumb.href)}>{breadcrumb.label}</button>
             {index < breadcrumbs.length - 1 ? (
               <span className="mx-3 inline-block">/</span>
             ) : null}
