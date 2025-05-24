@@ -70,16 +70,15 @@ export async function listenTarget(target : string) {
   lisSock = await listenSocket.subscribe(
     '*',
     (row, { command, relation }) => {
-      revalidatePath(target);
-      redirect(target);
+      resetTarget(target);
     }
   )
 }
 
 export async function resetTarget(target : string) {
+  listenTarget(target);
   revalidatePath(target);
   redirect(target);
-  listenTarget(target);
 }
 
 export async function createInvoice(prevState: InvoiceState, formData: FormData) {
