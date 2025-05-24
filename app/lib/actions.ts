@@ -8,8 +8,7 @@ import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { signOut } from '@/auth';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
-const listenSocket = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall' });
+const sql = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall', ssl: 'require'});
 let lisSock : any = null;
 
 const CustomerFormSchema = z.object({
@@ -67,10 +66,11 @@ export async function listenTarget(target : string) {
   if (lisSock !== null) {
     lisSock.unsubscribe();
   }
-  lisSock = await listenSocket.subscribe(
+  lisSock = await sql.subscribe(
     '*',
     (row, { command, relation }) => {
-      resetTarget(target);
+      revalidatePath(target);
+      redirect(target);
     }
   )
 }
@@ -82,6 +82,7 @@ export async function resetTarget(target : string) {
 }
 
 export async function createInvoice(prevState: InvoiceState, formData: FormData) {
+  listenTarget('/dashboard/invoices');
   // Validate form using Zod
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
@@ -121,6 +122,7 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
 }
 
 export async function createCustomer(prevState: CustomerState, formData: FormData) {
+  listenTarget('/dashboard/customers');
   // Validate form using Zod
   const validatedFields = CreateCustomer.safeParse({
     name: formData.get('name'),
@@ -162,6 +164,7 @@ export async function updateInvoice(
   prevState: InvoiceState,
   formData: FormData,
 ) {
+  listenTarget('/dashboard/invoices');
   const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
@@ -197,6 +200,7 @@ export async function updateCustomer(
   prevState: CustomerState,
   formData: FormData,
 ) {
+  listenTarget('/dashboard/customers');
   const validatedFields = UpdateCustomer.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
