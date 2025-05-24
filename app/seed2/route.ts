@@ -9,11 +9,6 @@ import postgres from 'postgres';
 const NeonSQL = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 const SupabaseSQL = postgres(process.env.QNEDSPB_POSTGRES_URL!, { ssl: 'require' });
 
-async function prepareDatabase() {
-  const result = await SupabaseSQL`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-  return result;
-}
-
 async function seedUsers() {
 
   await SupabaseSQL`
@@ -119,7 +114,6 @@ async function seedRevenue() {
 export async function GET() {
   try {
     const result = await SupabaseSQL.begin((SupabaseSQL) => [
-      prepareDatabase(),
       seedUsers(),
       seedCustomers(),
       seedInvoices(),
