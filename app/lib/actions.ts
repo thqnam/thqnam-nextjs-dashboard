@@ -255,6 +255,7 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
+    listenTarget('/dashboard');
     await signIn('credentials', formData);
   } catch (error) {
     if (error instanceof AuthError) {
@@ -270,5 +271,8 @@ export async function authenticate(
 }
 
 export async function logOut() {
+  if (lisSock !== null) {
+    lisSock.unsubscribe();
+  }
   await signOut({ redirectTo: '/' });  
 }
