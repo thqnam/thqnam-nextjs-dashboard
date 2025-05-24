@@ -9,6 +9,8 @@ import { AuthError } from 'next-auth';
 import { signOut } from '@/auth';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+const listenSocket = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall' });
+let lisSock : any = null;
 
 const CustomerFormSchema = z.object({
   id: z.string(),
@@ -61,9 +63,23 @@ export type CustomerState = {
   message?: string | null;
 };
 
+export async function listenTarget(target : string) {
+  if (lisSock !== null) {
+    lisSock.unsubscribe();
+  }
+  lisSock = await listenSocket.subscribe(
+    '*',
+    (row, { command, relation }) => {
+      revalidatePath(target);
+      redirect(target);
+    }
+  )
+}
+
 export async function resetTarget(target : string) {
   revalidatePath(target);
   redirect(target);
+  listenTarget(target);
 }
 
 export async function createInvoice(prevState: InvoiceState, formData: FormData) {

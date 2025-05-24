@@ -5,13 +5,9 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { resetTarget } from '@/app/lib/actions';
-import postgres from 'postgres';
-
-const listenSocket = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall' });
-let lisSock : any;
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
@@ -26,28 +22,7 @@ const links = [
 ];
 
 export default async function NavLinks() {
-  const { replace } = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  let completedURL : string;
-  if (searchParams.size > 0){
-    const params = new URLSearchParams(searchParams);
-    searchParams.forEach((value, key) => {
-      params.set(key, value);
-    });
-    completedURL = `${pathname}?${params.toString()}`;
-  } else {
-    completedURL = `${pathname}`;
-  }
-  if (lisSock !== null) {
-    lisSock.unsubscribe();
-  }
-  lisSock = await listenSocket.subscribe(
-    '*',
-    (row, { command, relation }) => {
-      replace(completedURL);
-    }
-  )
   return (
     <>
       {links.map((link) => {
