@@ -8,8 +8,9 @@ import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { signOut } from '@/auth';
 
-const sql = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall', ssl: 'require'});
-let lisSock : any = null;
+// const sql = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall', ssl: 'require'});
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require'});
+// let lisSock : any = null;
 
 const CustomerFormSchema = z.object({
   id: z.string(),
@@ -62,27 +63,27 @@ export type CustomerState = {
   message?: string | null;
 };
 
-export async function listenTarget(target : string) {
-  if (lisSock !== null) {
-    lisSock.unsubscribe();
-  }
-  lisSock = await sql.subscribe(
-    '*',
-    (row, { command, relation }) => {
-      revalidatePath(target);
-      redirect(target);
-    }
-  )
-}
+// export async function listenTarget(target : string) {
+//   if (lisSock !== null) {
+//     lisSock.unsubscribe();
+//   }
+//   lisSock = await sql.subscribe(
+//     '*',
+//     (row, { command, relation }) => {
+//       revalidatePath(target);
+//       redirect(target);
+//     }
+//   )
+// }
 
 export async function resetTarget(target : string) {
-  listenTarget(target);
+  // listenTarget(target);
   revalidatePath(target);
   redirect(target);
 }
 
 export async function createInvoice(prevState: InvoiceState, formData: FormData) {
-  listenTarget('/dashboard/invoices');
+  // listenTarget('/dashboard/invoices');
   // Validate form using Zod
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
@@ -122,7 +123,7 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
 }
 
 export async function createCustomer(prevState: CustomerState, formData: FormData) {
-  listenTarget('/dashboard/customers');
+  // listenTarget('/dashboard/customers');
   // Validate form using Zod
   const validatedFields = CreateCustomer.safeParse({
     name: formData.get('name'),
@@ -164,7 +165,7 @@ export async function updateInvoice(
   prevState: InvoiceState,
   formData: FormData,
 ) {
-  listenTarget('/dashboard/invoices');
+  // listenTarget('/dashboard/invoices');
   const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
@@ -200,7 +201,7 @@ export async function updateCustomer(
   prevState: CustomerState,
   formData: FormData,
 ) {
-  listenTarget('/dashboard/customers');
+  // listenTarget('/dashboard/customers');
   const validatedFields = UpdateCustomer.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
@@ -231,6 +232,7 @@ export async function updateCustomer(
 }
 
 export async function deleteInvoice(id: string) {
+    // listenTarget('/dashboard/invoices');
     try {
         await sql`DELETE FROM invoices WHERE id = ${id}`;
     } catch (error) {
@@ -241,6 +243,7 @@ export async function deleteInvoice(id: string) {
 }
 
 export async function deleteCustomer(id: string) {
+    // listenTarget('/dashboard/customers');
     try {
         await sql`DELETE FROM customers WHERE id = ${id}`;
     } catch (error) {
@@ -255,7 +258,7 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    listenTarget('/dashboard');
+    // listenTarget('/dashboard');
     await signIn('credentials', formData);
   } catch (error) {
     if (error instanceof AuthError) {
@@ -271,8 +274,8 @@ export async function authenticate(
 }
 
 export async function logOut() {
-  if (lisSock !== null) {
-    lisSock.unsubscribe();
-  }
+  // if (lisSock !== null) {
+  //   lisSock.unsubscribe();
+  // }
   await signOut({ redirectTo: '/' });  
 }

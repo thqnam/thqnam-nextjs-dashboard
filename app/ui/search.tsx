@@ -3,7 +3,7 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
-import { listenTarget } from '../lib/actions';
+// import { listenTarget } from '../lib/actions';
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
@@ -20,7 +20,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
     }
     const completedURL = `${pathname}?${params.toString()}`;
     replace(completedURL);
-    listenTarget(completedURL);
+    // listenTarget(completedURL);
 
   }, 300);
   return (
