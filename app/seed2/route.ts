@@ -10,7 +10,8 @@ const NeonSQL = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 const SupabaseSQL = postgres(process.env.QNEDSPB_POSTGRES_URL!, { ssl: 'require' });
 
 async function prepareDatabase() {
-  await SupabaseSQL`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  const result = await SupabaseSQL`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  return result;
 }
 
 async function seedUsers() {
@@ -117,11 +118,13 @@ async function seedRevenue() {
 
 export async function GET() {
   try {
-    await prepareDatabase();
-    await seedUsers();
-    await seedCustomers();
-    await seedInvoices();
-    await seedRevenue();
+    const result = await SupabaseSQL.begin((SupabaseSQL) => [
+      prepareDatabase(),
+      seedUsers(),
+      seedCustomers(),
+      seedInvoices(),
+      seedRevenue(),
+    ]);
     return Response.json({ message: 'Database seeded successfully' }, { status: 200 });
   } catch (error) {
     return Response.json({ error: String(error) }, { status: 500 });
