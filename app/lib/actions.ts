@@ -9,7 +9,7 @@ import { AuthError } from 'next-auth';
 import { signOut } from '@/auth';
 
 // const sql = postgres(process.env.POSTGRES_URL!, { publications: 'watchingall', ssl: 'require'});
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require'});
+const sql = postgres(process.env.QNEDSPB_POSTGRES_URL!, { ssl: 'require'});
 // let lisSock : any = null;
 
 const CustomerFormSchema = z.object({
