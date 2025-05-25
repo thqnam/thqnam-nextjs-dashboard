@@ -7,10 +7,10 @@ import { lusitana } from '@/app/ui/fonts';
 import { fetchLatestInvoices } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { LatestInvoice } from '@/app/lib/definitions';
+import { LatestInvoiceRaw } from '@/app/lib/definitions';
 
 export default async function LatestInvoices() {
-  const [lastestInvoices, setLastestInvoices] = useState([] as LatestInvoice[]);
+  const [lastestInvoices, setLastestInvoices] = useState([] as LatestInvoiceRaw[]);
   // Hàm fetch lại dữ liệu
   const loadLastesInvoices = async () => {
     const data = await fetchLatestInvoices();

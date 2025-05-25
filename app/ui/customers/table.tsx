@@ -5,7 +5,7 @@ import { UpdateCustomer, DeleteCustomer } from '@/app/ui/customers/buttons';
 import { fetchFilteredCustomers } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { FormattedCustomersTable } from '@/app/lib/definitions';
+import { CustomersTableType } from '@/app/lib/definitions';
 
 export default async function CustomersTable({
   query,
@@ -14,7 +14,7 @@ export default async function CustomersTable({
   query: string;
   currentPage: number;
 }) {
-  const [customers, setCustomers] = useState([] as FormattedCustomersTable[]);
+  const [customers, setCustomers] = useState([] as CustomersTableType[]);
   // Hàm fetch lại dữ liệu
   const loadCustomers = async () => {
     const data = await fetchFilteredCustomers(query, currentPage);
