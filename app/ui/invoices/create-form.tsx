@@ -11,8 +11,35 @@ import { Button } from '@/app/ui/button';
 import { createInvoice, InvoiceState } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import { resetTarget } from '@/app/lib/actions';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
+import { fetchCustomers } from '@/app/lib/data';
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
+export default function Form() {
+  const [customers, setCustomers] = useState([] as CustomerField[]);
+  // Hàm fetch lại dữ liệu
+  const loadCustomers = async () => {
+    const data = await fetchCustomers();
+    setCustomers(data);
+  };
+  // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+  useEffect(() => {
+    loadCustomers();
+
+    // Lắng nghe realtime trên customers và invoices
+    const channel = supabase
+      .channel('customers-and-invoice-create')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'customers' },
+        loadCustomers
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
   const initialState: InvoiceState = { message: null, errors: {} };
   const [state, formAction] = useActionState(createInvoice, initialState);
   return (

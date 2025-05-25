@@ -1,7 +1,5 @@
 import Form from '@/app/ui/customers/edit-form';
 import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
-import { fetchCustomerById } from '@/app/lib/data';
-import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -11,13 +9,6 @@ export const metadata: Metadata = {
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
-  const [customer] = await Promise.all([
-    fetchCustomerById(id),
-  ]);
-
-  if (!customer) {
-    notFound();
-  }
   return (
     <main>
       <Breadcrumbs
@@ -30,7 +21,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           },
         ]}
       />
-      <Form customer={customer} />
+      <Form id={id} />
     </main>
   );
 }

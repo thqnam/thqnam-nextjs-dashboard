@@ -1,11 +1,45 @@
+'use client';
+
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchLatestInvoices } from '@/app/lib/data';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
+import { LatestInvoice } from '@/app/lib/definitions';
 
 export default async function LatestInvoices() {
-  const latestInvoices = await fetchLatestInvoices();
+  const [lastestInvoices, setLastestInvoices] = useState([] as LatestInvoice[]);
+  // Hàm fetch lại dữ liệu
+  const loadLastesInvoices = async () => {
+    const data = await fetchLatestInvoices();
+    setLastestInvoices(data);
+  };
+
+  // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+  useEffect(() => {
+    loadLastesInvoices();
+
+    // Lắng nghe realtime trên customers và invoices
+    const channel = supabase
+      .channel('lastest-invoices')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'customers' },
+        loadLastesInvoices
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'invoices' },
+        loadLastesInvoices
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -15,7 +49,7 @@ export default async function LatestInvoices() {
         {/* NOTE: Uncomment this code in Chapter 7 */}
 
         <div className="bg-white px-6">
-          {latestInvoices.map((invoice, i) => {
+          {lastestInvoices.map((invoice, i) => {
             return (
               <div
                 key={invoice.id}

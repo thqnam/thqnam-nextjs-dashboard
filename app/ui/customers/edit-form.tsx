@@ -10,12 +10,40 @@ import { Button } from '@/app/ui/button';
 import { updateCustomer, CustomerState } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import { resetTarget } from '@/app/lib/actions';
+import { fetchCustomerById } from '@/app/lib/data';
+import { notFound } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
  
-export default function EditCustomerForm({
-  customer
-}: {
-  customer: CustomerForm;
-}) {
+export default function EditCustomerForm({ id }: { id: string }) {
+  const [customer, setCustomer] = useState({} as CustomerForm);
+    // Hàm fetch lại dữ liệu
+    const loadCustomer = async () => {
+      const data = await fetchCustomerById(id);
+      setCustomer(data);
+    };
+    // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+    useEffect(() => {
+      loadCustomer();
+  
+      // Lắng nghe realtime chỉ trên customers mà thôi
+      const channel = supabase
+        .channel('customer-edit')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'customers', filter: `id=eq.${id}`},
+          loadCustomer
+        )
+        .subscribe();
+  
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }, []);
+
+  if (!customer) {
+    notFound();
+  }
   const initialState: CustomerState = { message: null, errors: {} };
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const [state, formAction] = useActionState(updateCustomerWithId, initialState);

@@ -11,14 +11,51 @@ import { Button } from '@/app/ui/button';
 import { updateInvoice, InvoiceState } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import { resetTarget } from '@/app/lib/actions';
+import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
+import { notFound } from 'next/navigation';
  
-export default function EditInvoiceForm({
-  invoice,
-  customers,
-}: {
-  invoice: InvoiceForm;
-  customers: CustomerField[];
-}) {
+export default function EditInvoiceForm({ id }: { id: string }) {
+  const [invoice, setInvoice] = useState({} as InvoiceForm);
+  const [customers, setCustomers] = useState([] as CustomerField[]);
+  // Hàm fetch lại dữ liệu
+  const loadCustomers = async () => {
+    const data = await fetchCustomers();
+    setCustomers(data);
+  };
+  const loadInvoice = async () => {
+    const data = await fetchInvoiceById(id);
+    setInvoice(data);
+  };
+  // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+  useEffect(() => {
+    loadInvoice();
+    loadCustomers();
+
+    // Lắng nghe realtime trên customers và invoices
+    const channel = supabase
+      .channel('customers-and-invoice-edit')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'customers' },
+        loadCustomers
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'invoices', filter: `id=eq.${id}`},
+        loadInvoice
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  if (!invoice) {
+    notFound();
+  }
   const initialState: InvoiceState = { message: null, errors: {} };
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
   const [state, formAction] = useActionState(updateInvoiceWithId, initialState);

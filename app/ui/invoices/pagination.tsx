@@ -5,11 +5,38 @@ import clsx from 'clsx';
 import { generatePagination } from '@/app/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { resetTarget } from '@/app/lib/actions';
+import { fetchInvoicesPages } from '@/app/lib/data';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
 
-export default function Pagination({ totalPages }: { totalPages: number }) {
+export default function InvoicesPagination({ query }: { query: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
+  const [totalPages, setTotalPages] = useState(0);
+  // Hàm fetch lại dữ liệu
+  const loadTotalPages = async () => {
+    const data = await fetchInvoicesPages(query);
+    setTotalPages(data);
+  };
+  // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+  useEffect(() => {
+    loadTotalPages();
+
+    // Lắng nghe realtime chỉ trên invoices mà thôi
+    const channel = supabase
+      .channel('total-invoice-pages')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'invoices' },
+        loadTotalPages
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const createPageURL = (pageNumber: number | string) => {
     const params = new URLSearchParams(searchParams);

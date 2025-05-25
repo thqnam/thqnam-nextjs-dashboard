@@ -1,3 +1,5 @@
+'use client';
+
 import {
   BanknotesIcon,
   ClockIcon,
@@ -5,6 +7,8 @@ import {
   InboxIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
+import { supabase } from '@/app/lib/supabaseClient';
+import { useEffect, useState } from 'react';
 import { fetchCardData } from '@/app/lib/data';
 
 const iconMap = {
@@ -15,12 +19,49 @@ const iconMap = {
 };
 
 export default async function CardWrapper() {
+
+  const [cardData, setCardData] = useState({
+    numberOfInvoices: 0,
+    numberOfCustomers: 0,
+    totalPaidInvoices: '',
+    totalPendingInvoices: '',
+  });
+
   const {
     numberOfInvoices,
     numberOfCustomers,
     totalPaidInvoices,
     totalPendingInvoices,
-  } = await fetchCardData();
+  } = cardData;
+
+  const loadCardData = async () => {
+    const data = await fetchCardData();
+    setCardData(data);
+  };
+
+   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+  useEffect(() => {
+    loadCardData();
+
+    // Lắng nghe realtime trên bảng invoices và customers
+    const channel = supabase
+      .channel('cards-data')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'invoices' },
+        loadCardData
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'customers' },
+        loadCardData
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   return (
     <>

@@ -1,17 +1,50 @@
+'use client';
+
 import Image from 'next/image';
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredInvoices } from '@/app/lib/data';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
+import { InvoicesTable } from '@/app/lib/definitions';
 
-export default async function InvoicesTable({
+export default async function InvoiceTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const [invoices, setInvoices] = useState([] as InvoicesTable[]);
+  // Hàm fetch lại dữ liệu
+  const loadInvoices = async () => {
+    const data = await fetchFilteredInvoices(query, currentPage);;
+    setInvoices(data);
+  };
+  // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+  useEffect(() => {
+    loadInvoices();
+
+    // Lắng nghe realtime trên customers và invoices
+    const channel = supabase
+      .channel('invoices-table')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'customers' },
+        loadInvoices
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'invoices' },
+        loadInvoices
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   return (
     <div className="mt-6 flow-root">

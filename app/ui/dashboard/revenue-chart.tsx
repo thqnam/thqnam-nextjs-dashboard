@@ -1,7 +1,12 @@
+'use client';
+
 import { generateYAxis } from '@/app/lib/utils';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchRevenue } from '@/app/lib/data';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
+import { Revenue } from '@/app/lib/definitions';
 
 // This component is representational only.
 // For data visualization UI, check out:
@@ -10,7 +15,30 @@ import { fetchRevenue } from '@/app/lib/data';
 // https://airbnb.io/visx/
 
 export default async function RevenueChart() { // Make component async, remove the props
-  const revenue = await fetchRevenue(); // Fetch data inside the component
+  const [revenue, setRevenue] = useState([] as Revenue[]);
+  // Hàm fetch lại dữ liệu
+  const loadRevenue = async () => {
+    const data = await fetchRevenue();
+    setRevenue(data);
+  };
+  // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+  useEffect(() => {
+    loadRevenue();
+
+    // Lắng nghe realtime chỉ trên revenue mà thôi
+    const channel = supabase
+      .channel('revenue-chart')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'revenue' },
+        loadRevenue
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
   const chartHeight = 350;
   // NOTE: Uncomment this code in Chapter 7
 

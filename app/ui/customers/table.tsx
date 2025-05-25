@@ -1,6 +1,11 @@
+'use client';
+
 import Image from 'next/image';
 import { UpdateCustomer, DeleteCustomer } from '@/app/ui/customers/buttons';
 import { fetchFilteredCustomers } from '@/app/lib/data';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
+import { FormattedCustomersTable } from '@/app/lib/definitions';
 
 export default async function CustomersTable({
   query,
@@ -9,7 +14,35 @@ export default async function CustomersTable({
   query: string;
   currentPage: number;
 }) {
-  const customers = await fetchFilteredCustomers(query, currentPage);
+  const [customers, setCustomers] = useState([] as FormattedCustomersTable[]);
+  // Hàm fetch lại dữ liệu
+  const loadCustomers = async () => {
+    const data = await fetchFilteredCustomers(query, currentPage);
+    setCustomers(data);
+  };
+  // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
+  useEffect(() => {
+    loadCustomers();
+
+    // Lắng nghe realtime trên customers và invoices
+    const channel = supabase
+      .channel('customers-table')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'customers' },
+        loadCustomers
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'invoices' },
+        loadCustomers
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
   return (
     <div className="w-full">
       <div className="mt-6 flow-root">
