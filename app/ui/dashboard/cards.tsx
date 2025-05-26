@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { supabase } from '@/app/lib/supabaseClient';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { fetchCardData } from '@/app/lib/data';
 
 const iconMap = {
@@ -18,32 +18,25 @@ const iconMap = {
   invoices: InboxIcon,
 };
 
-export default async function CardWrapper() {
+export default function CardWrapper() {
+  // Tách state cho từng biến
+  const [numberOfInvoices, setNumberOfInvoices] = useState(0);
+  const [numberOfCustomers, setNumberOfCustomers] = useState(0);
+  const [totalPaidInvoices, setTotalPaidInvoices] = useState('');
+  const [totalPendingInvoices, setTotalPendingInvoices] = useState('');
 
-  const [cardData, setCardData] = useState({
-    numberOfInvoices: 0,
-    numberOfCustomers: 0,
-    totalPaidInvoices: '',
-    totalPendingInvoices: '',
-  });
-
-  const {
-    numberOfInvoices,
-    numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
-  } = cardData;
-
+  // Hàm cập nhật từng state riêng biệt
   const loadCardData = async () => {
     const data = await fetchCardData();
-    setCardData(data);
+    setNumberOfInvoices(data.numberOfInvoices);
+    setNumberOfCustomers(data.numberOfCustomers);
+    setTotalPaidInvoices(data.totalPaidInvoices);
+    setTotalPendingInvoices(data.totalPendingInvoices);
   };
 
-   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
     loadCardData();
 
-    // Lắng nghe realtime trên bảng invoices và customers
     const channel = supabase
       .channel('cards-data')
       .on(
@@ -65,21 +58,16 @@ export default async function CardWrapper() {
 
   return (
     <>
-      {/* NOTE: Uncomment this code in Chapter 9 */}
-
-      <Card title="Collected" value={totalPaidInvoices} type="collected" />
-      <Card title="Pending" value={totalPendingInvoices} type="pending" />
-      <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
-      <Card
-        title="Total Customers"
-        value={numberOfCustomers}
-        type="customers"
-      />
+      <MemoCard title="Collected" value={totalPaidInvoices} type="collected" />
+      <MemoCard title="Pending" value={totalPendingInvoices} type="pending" />
+      <MemoCard title="Total Invoices" value={numberOfInvoices} type="invoices" />
+      <MemoCard title="Total Customers" value={numberOfCustomers} type="customers" />
     </>
   );
 }
 
-export function Card({
+// Dùng React.memo để Card chỉ render lại khi props thay đổi
+const MemoCard = memo(function Card({
   title,
   value,
   type,
@@ -104,4 +92,4 @@ export function Card({
       </p>
     </div>
   );
-}
+});
