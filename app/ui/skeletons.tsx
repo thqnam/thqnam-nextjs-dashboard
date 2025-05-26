@@ -130,7 +130,7 @@ export function InvoiceTableRowSkeleton() {
       </td>
       {/* Actions */}
       <td className="whitespace-nowrap py-3 pl-6 pr-3">
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-evenly gap-3">
           <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
           <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
         </div>
@@ -167,7 +167,7 @@ export function CustomerTableRowSkeleton() {
       </td>
       {/* Actions */}
       <td className="whitespace-nowrap py-3 pl-6 pr-3">
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-evenly gap-3">
           <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
           <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
         </div>
@@ -191,7 +191,7 @@ export function InvoicesMobileSkeleton() {
           <div className="h-6 w-16 rounded bg-gray-100"></div>
           <div className="mt-2 h-6 w-24 rounded bg-gray-100"></div>
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-evenly gap-2">
           <div className="h-10 w-10 rounded bg-gray-100"></div>
           <div className="h-10 w-10 rounded bg-gray-100"></div>
         </div>
@@ -215,7 +215,7 @@ export function CustomersMobileSkeleton() {
           <div className="h-6 w-16 rounded bg-gray-100"></div>
           <div className="mt-2 h-6 w-24 rounded bg-gray-100"></div>
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-evenly gap-2">
           <div className="h-10 w-10 rounded bg-gray-100"></div>
           <div className="h-10 w-10 rounded bg-gray-100"></div>
         </div>

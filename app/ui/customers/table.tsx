@@ -87,7 +87,7 @@ export default async function CustomersTable({
                     <div className="pt-4 text-sm">
                       <p>{customer.total_invoices} invoices</p>
                     </div>
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-evenly gap-2">
                       <UpdateCustomer id={customer.id} />
                       <DeleteCustomer id={customer.id} />
                     </div>
@@ -146,7 +146,7 @@ export default async function CustomersTable({
                         {customer.total_paid}
                       </td>
                       <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                        <div className="flex justify-end gap-3">
+                        <div className="flex justify-evenly gap-3">
                           <UpdateCustomer id={customer.id} />
                           <DeleteCustomer id={customer.id} />
                         </div>
