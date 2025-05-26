@@ -265,7 +265,7 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
                     type="radio"
                     value="pending"
                     disabled
-                    defaultChecked={invoice.status === 'pending'}
+                    checked={invoice.status === 'pending'}
                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   />
                   <label
@@ -282,7 +282,7 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
                     type="radio"
                     value="paid"
                     disabled
-                    defaultChecked={invoice.status === 'paid'}
+                    checked={invoice.status === 'paid'}
                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   />
                   <label
