@@ -28,14 +28,12 @@ export function UpdateCustomer({ id }: { id: string }) {
 }
 
 export function DeleteCustomer({ id }: { id: string }) {
-  const deleteCustomerWithId = deleteCustomer.bind(null, id);
- 
   return (
-    <form action={deleteCustomerWithId}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-4" />
-      </button>
-    </form>
+    <button
+      onClick={() => resetTarget(`/dashboard/customers/${id}/delete`)}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <TrashIcon className="w-5" />
+    </button>
   );
 }

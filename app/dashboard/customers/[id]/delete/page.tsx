@@ -1,28 +1,27 @@
-import Form from '@/app/ui/invoices/edit-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Form from '@/app/ui/customers/delete-form';
+import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Edit Invoices',
+  title: 'Delete Customer',
 };
  
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
-  
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Customers', href: '/dashboard/customers' },
           {
-            label: 'Delete Invoice',
-            href: `/dashboard/invoices/${id}/delete`,
+            label: 'Edit Customer',
+            href: `/dashboard/customers/${id}/edit`,
             active: true,
           },
           {
-            label: 'Edit Invoice',
-            href: `/dashboard/invoices/${id}/edit`,
+            label: 'Delete Customer',
+            href: `/dashboard/customers/${id}/delete`,
             active: true,
           },
         ]}

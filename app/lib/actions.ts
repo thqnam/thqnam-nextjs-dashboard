@@ -36,11 +36,27 @@ const InvoiceFormSchema = z.object({
   }),
   date: z.string(),
 });
+
+const DeleteCustomerSchema = z.object({
+  id: z.string(),
+  reid: z.string({
+    required_error: 'Please re input Customer ID',
+  })
+});
+
+const DeleteInvoiceSchema = z.object({
+  id: z.string(),
+  reid: z.string({
+    required_error: 'Please re input Invoice ID',
+  })
+});
  
 const CreateInvoice = InvoiceFormSchema.omit({ id: true, date: true });
 const UpdateInvoice = InvoiceFormSchema.omit({ id: true, date: true });
 const CreateCustomer = CustomerFormSchema.omit({id: true});
 const UpdateCustomer = CustomerFormSchema.omit({id: true});
+const DeleteCustomer = DeleteCustomerSchema.omit({id: true});
+const DeleteInvoice = DeleteInvoiceSchema.omit({id: true});
 
 
 export type InvoiceState = {
@@ -57,6 +73,20 @@ export type CustomerState = {
     name?: string[];
     email?: string[];
     image_url?: string[];
+  };
+  message?: string | null;
+};
+
+export type DeleteCustomerState = {
+  errors?: {
+    reid?: string[];
+  };
+  message?: string | null;
+};
+
+export type DeleteInvoiceState = {
+  errors?: {
+    reid?: string[];
   };
   message?: string | null;
 };
@@ -211,25 +241,69 @@ export async function updateCustomer(
   redirect('/dashboard/customers');
 }
 
-export async function deleteInvoice(id: string) {
-    try {
-        await sql`DELETE FROM invoices WHERE id = ${id}`;
-    } catch (error) {
-        // We'll log the error to the console for now
-        console.error(error);
+export async function deleteInvoice(
+  id: string,
+  prevState: DeleteInvoiceState,
+  formData: FormData,
+) {
+    const validatedFields = DeleteInvoice.safeParse({
+      reid: formData.get('reid')
+    });
+    if (validatedFields.success){
+      const { reid } = validatedFields.data;
+      if (id === reid){
+        try {
+            await sql`DELETE FROM invoices WHERE id = ${id}`;
+        } catch (error) {
+            // We'll log the error to the console for now
+            console.error(error);
+        }
+        revalidatePath('/dashboard/invoices');
+        redirect('/dashboard/customers');
+      } else {
+        return {
+          message: 'Please just copy Invoice ID and paste to Re input ID',
+        };
+      }
+    } else {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to Delete Invoice.',
+      };
     }
-    revalidatePath('/dashboard/invoices');
 }
 
-export async function deleteCustomer(id: string) {
-    try {
-        await sql`DELETE FROM invoices WHERE customer_id = ${id}`;
-        await sql`DELETE FROM customers WHERE id = ${id}`;
-    } catch (error) {
-        // We'll log the error to the console for now
-        console.error(error);
+export async function deleteCustomer(
+  id: string,
+  prevState: DeleteCustomerState,
+  formData: FormData,
+) {
+    const validatedFields = DeleteCustomer.safeParse({
+      reid: formData.get('reid')
+    });
+    if (validatedFields.success){
+      const { reid } = validatedFields.data;
+      if (id === reid){
+            try {
+            await sql`DELETE FROM invoices WHERE customer_id = ${id}`;
+            await sql`DELETE FROM customers WHERE id = ${id}`;
+        } catch (error) {
+            // We'll log the error to the console for now
+            console.error(error);
+        }
+        revalidatePath('/dashboard/customers');
+        redirect('/dashboard/customers');
+      } else {
+        return {
+          message: 'Please just copy Customer ID and paste to Re input ID',
+        };
+      }
+    } else {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to Delete Customer.',
+      };
     }
-    revalidatePath('/dashboard/customers');
 }
 
 export async function authenticate(
