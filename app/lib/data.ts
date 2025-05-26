@@ -121,15 +121,7 @@ export async function fetchInvoicesPages(query: string) {
         `,
         { count: 'exact', head: true }
       )
-      .or(
-        `
-        customers.name.ilike.%${query}%,
-        customers.email.ilike.%${query}%,
-        amount::text.ilike.%${query}%,
-        date::text.ilike.%${query}%,
-        status.ilike.%${query}%
-        `
-      );
+      .or(`customers.name.ilike.%${query}%,customers.email.ilike.%${query}%,amount::text.ilike.%${query}%,date::text.ilike.%${query}%,status.ilike.%${query}%`);
 
     if (error) throw error;
 
@@ -146,12 +138,7 @@ export async function fetchCustomersPages(query: string) {
     const { count, error } = await supabase
       .from('customers')
       .select('id', { count: 'exact', head: true })
-      .or(
-        `
-        name.ilike.%${query}%,
-        email.ilike.%${query}%
-        `
-      );
+      .or(`name.ilike.%${query}%,email.ilike.%${query}%`);
 
     if (error) throw error;
 
@@ -238,15 +225,7 @@ export async function fetchFilteredInvoices(
         customers!inner(name, email, image_url)
         `
       )
-      .or(
-        `
-        customers.name.ilike.%${query}%,
-        customers.email.ilike.%${query}%,
-        amount::text.ilike.%${query}%,
-        date::text.ilike.%${query}%,
-        status.ilike.%${query}%
-        `
-      )
+      .or(`customers.name.ilike.%${query}%,customers.email.ilike.%${query}%,amount::text.ilike.%${query}%,date::text.ilike.%${query}%,status.ilike.%${query}%`)
       .order('date', { ascending: false })
       .range(offset, offset + ITEMS_PER_PAGE - 1);
 
@@ -277,12 +256,7 @@ export async function fetchFilteredCustomers(query: string, currentPage: number)
     const { data, error } = await supabase
       .from('customers_with_stats')
       .select('*')
-      .or(
-        `
-        name.ilike.%${query}%,
-        email.ilike.%${query}%
-        `
-      )
+      .or(`name.ilike.%${query}%,email.ilike.%${query}%`)
       .order('name', { ascending: true })
       .range(offset, offset + ITEMS_PER_PAGE - 1);
 
