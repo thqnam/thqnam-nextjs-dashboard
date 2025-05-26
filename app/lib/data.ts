@@ -202,15 +202,20 @@ export async function fetchFilteredInvoices(
   currentPage: number,
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const orFilter = query
+  ? `customers.name.ilike.%${query}%,customers.email.ilike.%${query}%,amount::text.ilike.%${query}%,date::text.ilike.%${query}%,status.ilike.%${query}%`
+  : undefined;
 
   try {
-    const { data, error } = await supabase
+    let supabaseQuery = supabase
       .from('invoices')
       .select(`id, customer_id, amount, date, status, customers!inner(name, email, image_url)`)
-      .or(`customers.name.ilike.%${query}%,customers.email.ilike.%${query}%,amount::text.ilike.%${query}%,date::text.ilike.%${query}%,status.ilike.%${query}%`)
       .order('date', { ascending: false })
       .range(offset, offset + ITEMS_PER_PAGE - 1);
-
+    if (orFilter) {
+      supabaseQuery = supabaseQuery.or(orFilter);
+    }
+    const { data, error } = await supabaseQuery
     if (error) throw error;
 
     // Map lại dữ liệu về đúng định dạng InvoicesTable[]
