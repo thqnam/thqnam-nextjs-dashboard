@@ -21,9 +21,9 @@ export async function fetchRevenue() {
       throw error;
     }
     return data as Revenue[]; // Đảm bảo kiểu dữ liệu giống như cũ
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch revenue data. Reason: ' + error.message);
   }
 }
 
@@ -58,9 +58,9 @@ export async function fetchLatestInvoices() {
     }));
 
     return latestInvoices;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest invoices.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message)
+    throw new Error('Failed to fetch the latest invoices. Reason: ' + error.message);
   }
 }
 
@@ -98,29 +98,35 @@ export async function fetchCardData() {
       totalPaidInvoices: formatCurrency(paid),
       totalPendingInvoices: formatCurrency(pending),
     };
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch card data.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch card data. Reason: ' + error.message);
   }
 }
 
 const ITEMS_PER_PAGE = 6;
 
 export async function fetchInvoicesPages(query: string) {
+  const orFilter = query
+  ? `customers.name.ilike.%${query}%,customers.email.ilike.%${query}%,amount::text.ilike.%${query}%,date::text.ilike.%${query}%,status.ilike.%${query}%`
+  : undefined;
   try {
     // Truy vấn invoices, join customers, lọc theo query
-    const { count, error } = await supabase
+    let supabaseQuery = supabase
       .from('invoices')
       .select(`id, customers!inner(name, email), amount, date, status`, { count: 'exact', head: true })
-      .or(`customers.name.ilike.%${query}%,customers.email.ilike.%${query}%,amount::text.ilike.%${query}%,date::text.ilike.%${query}%,status.ilike.%${query}%`);
+    if (orFilter) {
+      supabaseQuery = supabaseQuery.or(orFilter);
+    }
+    const { count, error } = await supabaseQuery
 
     if (error) throw error;
 
     const totalPages = Math.ceil((count ?? 0) / ITEMS_PER_PAGE);
     return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of invoices.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch total number of invoices. Reason: ' + error.message);
   }
 }
 
@@ -135,9 +141,9 @@ export async function fetchCustomersPages(query: string) {
 
     const totalPages = Math.ceil((count ?? 0) / ITEMS_PER_PAGE);
     return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of customers.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch total number of customers. Reason: ' + error.message);
   }
 }
 
@@ -158,9 +164,9 @@ export async function fetchInvoiceById(id: string) {
     };
 
     return invoice;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch invoice. Reason: ' + error.message);
   }
 }
 
@@ -175,9 +181,9 @@ export async function fetchCustomerById(id: string) {
     if (error) throw error;
 
     return data as CustomerForm;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch customer.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch customer. Reason: ' + error.message);
   }
 }
 
@@ -191,9 +197,9 @@ export async function fetchCustomers() {
     if (error) throw error;
 
     return data as CustomerField[];
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all customers.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch all customers. Reason: ' + error.message);
   }
 }
 
@@ -231,9 +237,9 @@ export async function fetchFilteredInvoices(
     }));
 
     return invoices;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch invoices. Reason: ' + error.message);
   }
 }
 
@@ -256,8 +262,8 @@ export async function fetchFilteredCustomers(query: string, currentPage: number)
     }));
 
     return customers;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch customer table.');
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch customer table. Reason: ' + error.message);
   }
 }
