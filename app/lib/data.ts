@@ -111,16 +111,7 @@ export async function fetchInvoicesPages(query: string) {
     // Truy vấn invoices, join customers, lọc theo query
     const { count, error } = await supabase
       .from('invoices')
-      .select(
-        `
-        id,
-        customers!inner(name, email),
-        amount,
-        date,
-        status
-        `,
-        { count: 'exact', head: true }
-      )
+      .select(`id, customers!inner(name, email), amount, date, status`, { count: 'exact', head: true })
       .or(`customers.name.ilike.%${query}%,customers.email.ilike.%${query}%,amount::text.ilike.%${query}%,date::text.ilike.%${query}%,status.ilike.%${query}%`);
 
     if (error) throw error;
@@ -215,16 +206,7 @@ export async function fetchFilteredInvoices(
   try {
     const { data, error } = await supabase
       .from('invoices')
-      .select(
-        `
-        id,
-        customer_id,
-        amount,
-        date,
-        status,
-        customers!inner(name, email, image_url)
-        `
-      )
+      .select(`id, customer_id, amount, date, status, customers!inner(name, email, image_url)`)
       .or(`customers.name.ilike.%${query}%,customers.email.ilike.%${query}%,amount::text.ilike.%${query}%,date::text.ilike.%${query}%,status.ilike.%${query}%`)
       .order('date', { ascending: false })
       .range(offset, offset + ITEMS_PER_PAGE - 1);
