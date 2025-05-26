@@ -19,8 +19,12 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
   const [customer, setCustomer] = useState({} as CustomerForm);
   // Hàm fetch lại dữ liệu
   const loadCustomer = async () => {
-    const data = await fetchCustomerById(id);
-    setCustomer(data);
+    const data : CustomerForm = await fetchCustomerById(id);
+    if (!data){
+      notFound();
+    } else {
+      setCustomer(data);
+    }
   };
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {

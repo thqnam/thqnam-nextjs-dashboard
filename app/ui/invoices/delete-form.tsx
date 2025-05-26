@@ -67,7 +67,7 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
   const deleteInvoiceWithId = deleteInvoice.bind(null, invoice.id);
   const [state, formAction] = useActionState(deleteInvoiceWithId, initialState);
 
-  if (!customer){
+  if (!customer || !invoice) {
     return (
       <form action={formAction}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">

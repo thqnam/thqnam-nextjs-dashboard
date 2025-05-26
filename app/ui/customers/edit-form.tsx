@@ -19,8 +19,12 @@ export default function EditCustomerForm({ id }: { id: string }) {
   const [customer, setCustomer] = useState({} as CustomerForm);
   // Hàm fetch lại dữ liệu
   const loadCustomer = async () => {
-    const data = await fetchCustomerById(id);
-    setCustomer(data);
+    const data : CustomerForm = await fetchCustomerById(id);
+    if (!data) {
+      notFound();
+    } else {
+      setCustomer(data);
+    }
   };
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
@@ -41,12 +45,10 @@ export default function EditCustomerForm({ id }: { id: string }) {
     };
   }, []);
 
-  if (!customer) {
-    notFound();
-  }
   const initialState: CustomerState = { message: null, errors: {} };
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const [state, formAction] = useActionState(updateCustomerWithId, initialState);
+  
   if (!customer){
     return (
       <form action={formAction}>
