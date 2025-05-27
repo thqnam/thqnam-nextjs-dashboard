@@ -1,5 +1,5 @@
 import { auth } from '@/auth';
-import UserGreetingClient from '../lib/logSignListen';
+// import UserGreetingClient from '../lib/logSignListen';
 
 export default async function UserGreeting() {
   const session = await auth();
@@ -14,7 +14,7 @@ export default async function UserGreeting() {
             Email: <b>{session.user.email}</b>
         </div>
         {/* Lắng nghe realtime đăng xuất */}
-        <UserGreetingClient userId={session.user.id} />
+        {/* <UserGreetingClient userId={session.user.id} /> */}
     </div>
   );
 }
