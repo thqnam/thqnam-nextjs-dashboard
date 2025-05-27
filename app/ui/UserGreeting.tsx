@@ -6,15 +6,14 @@ export default async function UserGreeting() {
   if (!session?.user) return null;
 
   return (
-    <div className='flex justify-between items-center p-4 bg-white rounded-lg shadow-sm'>
-        <div className="mb-2 text-sm text-gray-700">
-            👋 Welcome, <b>{session.user.name || session.user.email}</b>
-        </div>
-        <div className="mb-2 text-sm text-gray-700">
-            Email: <b>{session.user.email}</b>
-        </div>
-        {/* Lắng nghe realtime đăng xuất */}
-        {/* <UserGreetingClient userId={session.user.id} /> */}
+    <div className="flex flex-col items-start gap-1 p-4 bg-white rounded-lg shadow-sm md:flex-row md:items-center md:justify-between">
+      <div className="text-sm text-gray-700 text-left">
+        👋 Welcome, <b>{session.user.name || session.user.email}</b>
+      </div>
+      <div className="text-sm text-gray-700 text-left md:text-right">
+        Email: <b>{session.user.email}</b>
+      </div>
+      {/* <UserGreetingClient userId={session.user.id} /> */}
     </div>
   );
 }
