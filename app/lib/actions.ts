@@ -3,9 +3,9 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
+import { signIn, signOut } from '@/auth';
 import { AuthError } from 'next-auth';
-import { signOut } from '@/auth';
+import { globalSignOut } from '@/app/lib/globalSignOut';
 import { supabase } from '@/app/lib/supabaseClient';
 
 const CustomerFormSchema = z.object({
@@ -373,5 +373,6 @@ export async function authenticate(
 }
 
 export async function logOut() {
-  await signOut({ redirectTo: '/' });  
+  await globalSignOut(); // Xóa toàn bộ session của user
+  await signOut({ redirectTo: '/' });
 }

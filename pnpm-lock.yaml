@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@auth/supabase-adapter':
+        specifier: ^1.9.1
+        version: 1.9.1(@supabase/supabase-js@2.49.8)
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.0.0)
@@ -95,6 +98,11 @@ packages:
         optional: true
       nodemailer:
         optional: true
+
+  '@auth/supabase-adapter@1.9.1':
+    resolution: {integrity: sha512-T/sMidPqyWo68EbzTQXaD1MpI6486NBkVYnt9/WQJ5CEpU4uTLZltq3Hzs4FlBge4tKGSJzig8PN/WSP1pU+nw==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.43.1
 
   '@emnapi/core@1.4.3':
     resolution: {integrity: sha512-4m62DuCE07lw01soJwPiBGC0nAww0Q+RY70VZ+n49yDIO13yyinhbWCeNnaob0lakDtWQzSdtNWzJeOJt2ma+g==}
@@ -2204,6 +2212,15 @@ snapshots:
       oauth4webapi: 3.5.1
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
+
+  '@auth/supabase-adapter@1.9.1(@supabase/supabase-js@2.49.8)':
+    dependencies:
+      '@auth/core': 0.39.1
+      '@supabase/supabase-js': 2.49.8
+    transitivePeerDependencies:
+      - '@simplewebauthn/browser'
+      - '@simplewebauthn/server'
+      - nodemailer
 
   '@emnapi/core@1.4.3':
     dependencies:

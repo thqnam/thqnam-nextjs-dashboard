@@ -1,8 +1,21 @@
 import type { NextAuthConfig } from 'next-auth';
+import { SupabaseAdapter } from '@auth/supabase-adapter';
 
 export const authConfig = {
     pages: {
         signIn: '/login',
+    },
+    adapter: SupabaseAdapter({
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      secret: process.env.SUPABASE_SERVICE_ROLE_KEY!, // Lấy từ Supabase Project Settings > API > Service Role Key
+    }),
+    session: {
+      strategy: 'jwt', // hoặc 'jwt' 'database'
+      maxAge: 60 * 60 * 24 * 30, // 30 ngày (tính bằng giây)
+      updateAge: 60 * 60 * 24, // 1 ngày (tính bằng giây)
+      generateSessionToken() {
+        return crypto.randomUUID(); // Tạo token duy nhất
+      },
     },
     callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
