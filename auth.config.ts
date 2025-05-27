@@ -10,7 +10,7 @@ export const authConfig = {
       secret: process.env.SUPABASE_SERVICE_ROLE_KEY!, // Lấy từ Supabase Project Settings > API > Service Role Key
     }),
     session: {
-      strategy: 'jwt', // hoặc 'jwt' 'database'
+      strategy: 'database', // hoặc 'jwt' 'database'
       maxAge: 60 * 60 * 24 * 30, // 30 ngày (tính bằng giây)
       updateAge: 60 * 60 * 24, // 1 ngày (tính bằng giây)
       generateSessionToken() {
