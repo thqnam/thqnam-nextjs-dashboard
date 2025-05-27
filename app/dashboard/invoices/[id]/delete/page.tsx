@@ -1,5 +1,6 @@
 import Form from '@/app/ui/invoices/delete-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import UserGreeting from '@/app/ui/UserGreeting';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   
   return (
     <main>
+      <UserGreeting />
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Invoices', href: '/dashboard/invoices' },

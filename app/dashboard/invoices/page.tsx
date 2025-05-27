@@ -5,6 +5,7 @@ import { CreateInvoice } from '@/app/ui/invoices/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
+import UserGreeting from '@/app/ui/UserGreeting';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default async function Page(props: {
   
   return (
     <div className="w-full">
+      <UserGreeting />
       <div className="flex w-full items-center justify-between">
         <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
       </div>

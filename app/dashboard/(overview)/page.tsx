@@ -8,6 +8,7 @@ import {
   LatestInvoicesSkeleton,
   CardsSkeleton,
 } from '@/app/ui/skeletons';
+import UserGreeting from '@/app/ui/UserGreeting';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default async function Page() {
  
   return (
     <main>
+      <UserGreeting />
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Dashboard
       </h1>
