@@ -457,8 +457,8 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await changeUserStatusLogin();
     await signIn('credentials', formData);
+    await changeUserStatusLogin();
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
