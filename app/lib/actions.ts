@@ -388,7 +388,6 @@ async function changeUserStatusLogin() {
       const user = await getUser(email);
       if (user !== undefined){
         const userStatus = user.status;
-        console.log(userStatus);
         if (userStatus === 'logout'){
           const { error } = await supabase
             .from('users')
@@ -402,8 +401,6 @@ async function changeUserStatusLogin() {
             .eq('email', email);
           if (error) {
             throw error;
-          } else {
-            console.log('success');
           }
         }
       } else {
@@ -424,11 +421,9 @@ async function changeUserStatusLogout() {
   try {
     const email = await getSessionEmail();
     if (email !== ''){
-      console.log(email);
       const user = await getUser(email);
       if (user !== undefined){
-        const userStatus = user.status;
-        console.log(userStatus);
+        const userStatus = user.status
         if (userStatus === 'login'){
           const { error } = await supabase
             .from('users')
@@ -442,8 +437,6 @@ async function changeUserStatusLogout() {
             .eq('email', email);
           if (error) {
             throw error;
-          } else {
-            console.log('success');
           }
         }
       } else {
@@ -466,7 +459,6 @@ export async function authenticate(
 ) {
   try {
     await signIn('credentials', formData);
-    await changeUserStatusLogin();
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
