@@ -380,7 +380,7 @@ export async function getSessionEmail() {
   }
 }
 
-export async function changeUserStatusLogin() {
+async function changeUserStatusLogin() {
   try {
     const email = await getSessionEmail();
     if (email !== ''){
@@ -466,6 +466,7 @@ export async function authenticate(
 ) {
   try {
     await signIn('credentials', formData);
+    await changeUserStatusLogin();
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

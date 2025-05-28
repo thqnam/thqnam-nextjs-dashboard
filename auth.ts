@@ -5,7 +5,6 @@ import { z } from 'zod';
 import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
-import { changeUserStatusLogin } from '@/app/lib/actions'
  
 export async function getUser(email: string): Promise<User | undefined> {
   try {
@@ -41,10 +40,7 @@ export const { auth, signIn, signOut } = NextAuth({
           if (!user) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password);
  
-          if (passwordsMatch) {
-            await changeUserStatusLogin();
-            return user;
-          }
+          if (passwordsMatch) return user;
         }
  
         return null;
