@@ -391,6 +391,10 @@ async function changeUserStatusLogin() {
           const { error } = await supabase
             .from('users')
             .update({
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              password: user.password,
               status: "login"
             })
             .eq('email', email);
@@ -423,6 +427,10 @@ async function changeUserStatusLogout() {
           const { error } = await supabase
             .from('users')
             .update({
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              password: user.password,
               status: "logout"
             })
             .eq('email', email);
