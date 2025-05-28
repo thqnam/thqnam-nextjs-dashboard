@@ -380,43 +380,6 @@ export async function getSessionEmail() {
   }
 }
 
-async function changeUserStatusLogin() {
-  try {
-    const email = await getSessionEmail();
-    if (email !== ''){
-      console.log(email);
-      const user = await getUser(email);
-      if (user !== undefined){
-        const userStatus = user.status;
-        if (userStatus === 'logout'){
-          const { error } = await supabase
-            .from('users')
-            .update({
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              password: user.password,
-              status: "login"
-            })
-            .eq('email', email);
-          if (error) {
-            throw error;
-          }
-        }
-      } else {
-        console.error('Failed to fetch data user.');
-        throw new Error("Failed to fetch data user.");
-      }
-    } else {
-      console.error('Failed to fetch session email.');
-      throw new Error("Failed to fetch session email.");
-    }
-  } catch (error : any) {
-    console.error('Failed to fix user login. Reason: ', error.message);
-    throw new Error('Failed to fix user login. Reason: ' + error.message);
-  }
-}
-
 async function changeUserStatusLogout() {
   try {
     const email = await getSessionEmail();

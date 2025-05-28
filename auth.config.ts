@@ -1,4 +1,6 @@
 import type { NextAuthConfig } from 'next-auth';
+import { getUser } from '@/auth';
+import { getSessionEmail } from '@/app/lib/actions';
 
 export const authConfig = {
     pages: {
@@ -8,24 +10,29 @@ export const authConfig = {
       strategy: 'jwt', // hoặc 'jwt' 'database'
       maxAge: 60 * 60 * 24 * 30, // 30 ngày (tính bằng giây)
       updateAge: 60 * 60 * 24, // 1 ngày (tính bằng giây)
-      generateSessionToken() {
-        return crypto.randomUUID(); // Tạo token duy nhất
-      },
     },
     callbacks: {
-    async authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      if (isOnDashboard) {
-        if (isLoggedIn) {
-          return true;
+    async authorized({ request: { nextUrl } }) {
+      const email = await getSessionEmail();
+      if (email !== ''){
+        const user = await getUser(email);
+        if (user !== undefined){
+          const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+          if (isOnDashboard) {
+            if (user.status === "login") {
+              return true;
+            } else {
+              return false
+            }
+          } else if (user.status === "login") {
+            return Response.redirect(new URL('/dashboard', nextUrl));
+          }
         } else {
-          return false
+          return false;
         }
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
+      } else {
+        return false;
       }
-      return true;
     },
   },
   providers: [], // Add providers with an empty array for now

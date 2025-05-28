@@ -41,14 +41,21 @@ export const { auth, signIn, signOut } = NextAuth({
           const passwordsMatch = await bcrypt.compare(password, user.password);
  
           if (passwordsMatch) {
-            const { error } = await supabase
-              .from('users')
-              .update({
-                status: "login"
-              })
-              .eq('email', email);
-            if (error) {
-              throw error;
+            const userStatus = user.status;
+            if (userStatus === 'logout'){
+              const { error } = await supabase
+                .from('users')
+                .update({
+                  id: user.id,
+                  email: user.email,
+                  name: user.name,
+                  password: user.password,
+                  status: "login"
+                })
+                .eq('email', email);
+              if (error) {
+                throw error;
+              }
             }
             return user;
           }
