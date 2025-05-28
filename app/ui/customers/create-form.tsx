@@ -12,7 +12,7 @@ import { resetTarget } from '@/app/lib/actions';
 
 export default function Form() {
   const initialState: CustomerState = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createCustomer, initialState);
+  const [state, formAction, isPending] = useActionState(createCustomer, initialState);
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -112,7 +112,7 @@ export default function Form() {
         >
           Cancel Create
         </button>
-        <Button type="submit">Create Customer</Button>
+        <Button type="submit" aria-disabled={isPending}>Create Customer</Button>
       </div>
     </form>
   );

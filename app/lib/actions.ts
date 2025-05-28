@@ -3,9 +3,8 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn, signOut } from '@/auth';
+import { auth, signIn, signOut, getUser } from '@/auth';
 import { AuthError } from 'next-auth';
-import { globalSignOut } from '@/app/lib/globalSignOut';
 import { supabase } from '@/app/lib/supabaseClient';
 
 const CustomerFormSchema = z.object({
@@ -353,12 +352,105 @@ export async function deleteCustomer(
   }
 }
 
+export async function getSessionInfor() {
+  const sessionInfor = await auth();
+  if (sessionInfor !== null){
+    const sessionUser = sessionInfor.user;
+    if (sessionUser !== undefined){
+      return sessionUser;
+    } else {
+      return {};
+    }
+  } else {
+    return {};
+  }
+}
+
+export async function getSessionEmail() {
+  const sessionUser = await getSessionInfor();
+  if (sessionUser){
+    const sessionEmail = sessionUser.email;
+    if (sessionEmail !== '' && sessionEmail !== null && sessionEmail !== undefined){
+      return sessionEmail;
+    } else {
+      return '';
+    }
+  } else {
+    return '';
+  }
+}
+
+async function changeUserStatusLogin() {
+  try {
+    const email = await getSessionEmail();
+    if (email !== ''){
+      const user = await getUser(email);
+      if (user !== undefined){
+        const userStatus = user.status
+        if (userStatus === 'logout'){
+          const { error } = await supabase
+            .from('users')
+            .update({
+              status: "login"
+            })
+            .eq('email', email);
+          if (error) {
+            throw error;
+          }
+        }
+      } else {
+        console.error('Failed to fetch data user.');
+        throw new Error("Failed to fetch data user.");
+      }
+    } else {
+      console.error('Failed to fetch session email.');
+      throw new Error("Failed to fetch session email.");
+    }
+  } catch (error : any) {
+    console.error('Failed to fix user login. Reason: ', error.message);
+    throw new Error('Failed to fix user login. Reason: ' + error.message);
+  }
+}
+
+async function changeUserStatusLogout() {
+  try {
+    const email = await getSessionEmail();
+    if (email !== ''){
+      const user = await getUser(email);
+      if (user !== undefined){
+        const userStatus = user.status
+        if (userStatus === 'login'){
+          const { error } = await supabase
+            .from('users')
+            .update({
+              status: "logout"
+            })
+            .eq('email', email);
+          if (error) {
+            throw error;
+          }
+        }
+      } else {
+        console.error('Failed to fetch data user.');
+        throw new Error("Failed to fetch data user.");
+      }
+    } else {
+      console.error('Failed to fetch session email.');
+      throw new Error("Failed to fetch session email.");
+    }
+  } catch (error : any) {
+    console.error('Failed to fix user logout. Reason: ', error.message);
+    throw new Error('Failed to fix user logout. Reason: ' + error.message);
+  }
+}
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
 ) {
   try {
     await signIn('credentials', formData);
+    await changeUserStatusLogin();
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -373,6 +465,6 @@ export async function authenticate(
 }
 
 export async function logOut() {
-  await globalSignOut(); // Xóa toàn bộ session của user
+  await changeUserStatusLogout();
   await signOut({ redirectTo: '/' });
 }
