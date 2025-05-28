@@ -5,7 +5,17 @@ import { supabase } from '@/app/lib/supabaseClient';
 import { logOut } from '@/app/lib/actions';
 import { getUser } from '@/auth';
 
-export default function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
+export default async function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
+  
+  if (userEmail !== '' && userEmail !== null && userEmail !== undefined){
+    const user = await getUser(userEmail);
+    if (user !== undefined){
+      const userStatus = user.status
+      if (userStatus === 'logout'){
+        await logOut();
+      }
+    }
+  }
 
   useEffect(() => {
     // Không lắng nghe nếu userEmail không hợp lệ
