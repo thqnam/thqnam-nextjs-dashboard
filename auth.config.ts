@@ -1,7 +1,4 @@
 import type { NextAuthConfig } from 'next-auth';
-import { getUser } from '@/auth';
-import { getSessionEmail } from '@/app/lib/actions';
-
 
 export const authConfig = {
     pages: {
@@ -14,25 +11,16 @@ export const authConfig = {
     },
     callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
-      const email = await getSessionEmail();
-      if (email !== ''){
-        const user = await getUser(email);
-        if (user !== undefined){
-          const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-          if (isOnDashboard) {
-            if (user.status === "login") {
-              return true;
-            } else {
-              return false
-            }
-          } else if (user.status === "login") {
-            return Response.redirect(new URL('/dashboard', nextUrl));
-          }
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      if (isOnDashboard) {
+        if (isLoggedIn) {
+          return true;
         } else {
-          return false;
+          return false
         }
-      } else {
-        return true;
+      } else if (isLoggedIn) {
+        return Response.redirect(new URL('/dashboard', nextUrl));
       }
       return true;
     },
