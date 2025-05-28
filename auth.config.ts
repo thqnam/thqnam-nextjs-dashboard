@@ -1,4 +1,6 @@
 import type { NextAuthConfig } from 'next-auth';
+import { getSessionEmail } from './app/lib/actions';
+import { getUser } from './auth';
 
 export const authConfig = {
     pages: {
@@ -14,7 +16,9 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       if (isOnDashboard) {
-        if (isLoggedIn) {
+        const email = await getSessionEmail();
+        const user = await getUser(email);
+        if (isLoggedIn && user?.status === "login") {
           return true;
         } else {
           return false
