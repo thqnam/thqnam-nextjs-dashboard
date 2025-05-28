@@ -32,7 +32,7 @@ export const authConfig = {
           return false;
         }
       } else {
-        return false;
+        return true;
       }
       return true;
     },
