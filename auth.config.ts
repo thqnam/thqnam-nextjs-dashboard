@@ -2,6 +2,7 @@ import type { NextAuthConfig } from 'next-auth';
 import { getUser } from '@/auth';
 import { getSessionEmail } from '@/app/lib/actions';
 
+
 export const authConfig = {
     pages: {
         signIn: '/login',
@@ -12,7 +13,7 @@ export const authConfig = {
       updateAge: 60 * 60 * 24, // 1 ngày (tính bằng giây)
     },
     callbacks: {
-    async authorized({ request: { nextUrl } }) {
+    async authorized({ auth, request: { nextUrl } }) {
       const email = await getSessionEmail();
       if (email !== ''){
         const user = await getUser(email);
@@ -33,6 +34,7 @@ export const authConfig = {
       } else {
         return false;
       }
+      return true;
     },
   },
   providers: [], // Add providers with an empty array for now
