@@ -386,21 +386,19 @@ async function changeUserStatusLogout() {
     if (email !== ''){
       const user = await getUser(email);
       if (user !== undefined){
-        const userStatus = user.status
-        if (userStatus === 'login'){
-          const { error } = await supabase
-            .from('users')
-            .update({
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              password: user.password,
-              status: "logout"
-            })
-            .eq('email', email);
-          if (error) {
-            throw error;
-          }
+        const { error } = await supabase
+          .from('users')
+          .update({
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            status: "logout"
+          })
+          .eq('email', email)
+          .eq('status', 'login');
+        if (error) {
+          throw error;
         }
       } else {
         console.error('Failed to fetch data user.');

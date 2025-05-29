@@ -17,13 +17,9 @@ export default async function UserGreetingClient({ userEmail }: { userEmail: str
         .on(
           'postgres_changes',
           { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${userEmail}` },
-          async () => {
-            const user = await getUser(userEmail);
-            if (user !== undefined){
-              const userStatus = user.status
-              if (userStatus === 'logout'){
-                await logOut();
-              }
+          async (payload) => {
+            if (payload.new.status === 'logout') {
+              await logOut();
             }
           }
         )
