@@ -8,7 +8,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { 
   ArrowRightIcon,
-  ArrowLeftIcon 
+  ArrowLeftIcon,
+  ArrowUpIcon,
+  CircleStackIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState } from 'react';
@@ -16,7 +18,7 @@ import { authenticate } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
  
-export default function LoginForm() {
+export default function SignInForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const [errorMessage, formAction, isPending] = useActionState(
@@ -28,7 +30,7 @@ export default function LoginForm() {
     <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Please log in to continue.
+          Input some infor for Log In
         </h1>
         <div className="w-full">
           <div>
@@ -63,7 +65,7 @@ export default function LoginForm() {
                 id="password"
                 type="password"
                 name="password"
-                placeholder="Enter password"
+                placeholder="Enter your password"
                 required
                 minLength={10}
               />
@@ -73,7 +75,7 @@ export default function LoginForm() {
         </div>
         <input type="hidden" name="redirectTo" value={callbackUrl} />
         <Button className="mt-4 w-full" aria-disabled={isPending}>
-          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Log In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <div
           className="flex h-8 items-end space-x-1"
@@ -89,9 +91,21 @@ export default function LoginForm() {
         </div>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
+          href="/signup"
+        >
+          Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Link>
+        <Link 
+          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
+          href="/changepass"
+        >
+          Change Pass <CircleStackIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Link>
+        <Link 
+          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
           href="/"
         >
-          Comeback <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
       </div>
     </form>

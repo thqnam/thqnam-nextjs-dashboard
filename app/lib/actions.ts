@@ -5,19 +5,63 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { auth, signIn, signOut, getUser } from '@/auth';
 import { AuthError } from 'next-auth';
+import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
+
+const UserFormSchema = z.object({
+  id: z.string(),
+  name: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the name of this user',
+  }),
+  email: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the email of this user',
+  }),
+  password: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the password of this user',
+  }),
+  repassword: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the repassword of this user',
+  }),
+});
+
+const ChangePassFormSchema = z.object({
+  email: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the email of this user',
+  }),
+  oldpassword: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the password of this user',
+  }),
+  newpassword: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the password of this user',
+  }),
+  renewpassword: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the repassword of this user',
+  }),
+});
 
 const CustomerFormSchema = z.object({
   id: z.string(),
   name: z.string({
+    invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the name of this customer',
   }),
   email: z.string({
+    invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the email of this customer',
   }),
   image_url: z.string({
+    invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the image url of this customer',
   }),
+  user_id: z.string(),
 });
  
 const InvoiceFormSchema = z.object({
@@ -32,28 +76,33 @@ const InvoiceFormSchema = z.object({
     invalid_type_error: 'Please select an invoice status.',
   }),
   date: z.string(),
+  user_id: z.string(),
 });
 
 const DeleteCustomerSchema = z.object({
   id: z.string(),
   reid: z.string({
     required_error: 'Please re input Customer ID',
-  })
+  }),
+  user_id: z.string(),
 });
 
 const DeleteInvoiceSchema = z.object({
   id: z.string(),
   reid: z.string({
     required_error: 'Please re input Invoice ID',
-  })
+  }),
+  user_id: z.string(),
 });
  
-const CreateInvoice = InvoiceFormSchema.omit({ id: true, date: true });
-const UpdateInvoice = InvoiceFormSchema.omit({ id: true, date: true });
-const CreateCustomer = CustomerFormSchema.omit({id: true});
-const UpdateCustomer = CustomerFormSchema.omit({id: true});
-const DeleteCustomer = DeleteCustomerSchema.omit({id: true});
-const DeleteInvoice = DeleteInvoiceSchema.omit({id: true});
+const CreateInvoice = InvoiceFormSchema.omit({ id: true, date: true, user_id: true});
+const UpdateInvoice = InvoiceFormSchema.omit({ id: true, date: true, user_id: true });
+const CreateCustomer = CustomerFormSchema.omit({id: true, user_id: true});
+const UpdateCustomer = CustomerFormSchema.omit({id: true, user_id: true});
+const DeleteCustomer = DeleteCustomerSchema.omit({id: true, user_id: true});
+const DeleteInvoice = DeleteInvoiceSchema.omit({id: true, user_id: true});
+const CreateUser = UserFormSchema.omit({id: true});
+const ChangePass = ChangePassFormSchema.omit({});
 
 
 export type InvoiceState = {
@@ -70,6 +119,26 @@ export type CustomerState = {
     name?: string[];
     email?: string[];
     image_url?: string[];
+  };
+  message?: string | null;
+};
+
+export type UserState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    password?: string[];
+    repassword?: string[];
+  };
+  message?: string | null;
+};
+
+export type ChangePassState = {
+  errors?: {
+    email?: string[];
+    oldpassword?: string[];
+    newpassword?: string[];
+    renewpassword?: string[];
   };
   message?: string | null;
 };
@@ -91,6 +160,127 @@ export type DeleteInvoiceState = {
 export async function resetTarget(target : string) {
   revalidatePath(target);
   redirect(target);
+}
+
+export async function changeUserPass(prevState: ChangePassState, formData: FormData){
+  
+  const validatedFields = ChangePass.safeParse({
+    email: formData.get('email'),
+    oldpassword: formData.get('oldpassword'),
+    newpassword: formData.get('newpassword'),
+    renewpassword: formData.get('renewpassword'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { email, oldpassword, newpassword, renewpassword } = validatedFields.data;
+
+    if (newpassword === renewpassword){
+
+      const user = await getUser(email);
+
+      if (user !== undefined){
+
+        const passwordsMatch = await bcrypt.compare(oldpassword, user.password);
+
+        if (passwordsMatch){
+
+          const hashedPassword = bcrypt.hashSync(newpassword, 10);
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              id: user.id,
+              name: user.name,
+              email: email,
+              password: hashedPassword,
+              status: user.status,
+            })
+            .eq('id', user.id);
+          
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Create User. Reason: ' + error.message,
+            };
+          } else {
+            redirect('/');
+          }
+
+        } else {
+          return {
+            message: 'Old Password do not compare User Password in Database. Failed to Change Password.',
+          };
+        }
+        
+      } else {
+        return {
+          message: 'User of this email do not see in Database. Failed to Change Password.',
+        };
+      }
+
+    } else {
+      return {
+        message: 'New Password must be look like Re-New Password. Failed to Change Password.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Change Password.',
+    };
+  }
+}
+
+export async function createUser(prevState: UserState, formData: FormData){
+  // Validate form using Zod
+  const validatedFields = CreateUser.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+    repassword: formData.get('repassword'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (validatedFields.success) {
+    // Prepare data for insertion into the database
+    const { name, email, password, repassword } = validatedFields.data;
+
+    if (password === repassword){
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      // Insert data into the database
+      const { error } = await supabase
+        .from('users')
+        .insert([
+          {
+            name: name,
+            email: email,
+            password: hashedPassword,
+            status: 'logout',
+          },
+        ])
+        .eq('email', email);
+      // If a database error occurs, return a more specific error.
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Create User. Reason: ' + error.message,
+        };
+      } else {
+        redirect('/');
+      }
+
+    } else {
+      return {
+        message: 'Password must be look like Re-Password. Failed to Create User.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create User.',
+    };
+  }
 }
 
 export async function createInvoice(prevState: InvoiceState, formData: FormData) {
@@ -268,6 +458,7 @@ export async function updateCustomer(
           name: name,
           email: email,
           image_url: image_url,
+          user_id: userID,
         })
         .eq('id', id);
 
