@@ -1,6 +1,7 @@
 'use client';
 
 import { CustomerField } from '@/app/lib/definitions';
+import Image from 'next/image';
 import {
   CheckIcon,
   ClockIcon,
@@ -168,7 +169,14 @@ export default function Form() {
                 </option>
                 {customers.map((customer) => (
                   <option key={customer.id} value={customer.id}>
-                    {customer.name}
+                    <Image
+                      src={customer.image_url}
+                      className="rounded-full"
+                      alt={`${customer.name}'s profile picture`}
+                      width={28}
+                      height={28}
+                    />
+                    <p>{customer.name}</p>
                   </option>
                 ))}
               </select>
