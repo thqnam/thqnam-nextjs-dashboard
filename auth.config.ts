@@ -1,15 +1,15 @@
 import type { NextAuthConfig } from 'next-auth';
 
 export const authConfig = {
-    pages: {
-        signIn: '/login',
-    },
-    session: {
-      strategy: 'jwt', // hoặc 'jwt' 'database'
-      maxAge: 60 * 60 * 24 * 30, // 30 ngày (tính bằng giây)
-      updateAge: 60 * 60 * 24, // 1 ngày (tính bằng giây)
-    },
-    callbacks: {
+  pages: {
+      signIn: '/login',
+  },
+  session: {
+    strategy: 'jwt', // hoặc 'jwt' 'database'
+    maxAge: 60 * 60 * 24 * 30, // 30 ngày (tính bằng giây)
+    updateAge: 60 * 60 * 24, // 1 ngày (tính bằng giây)
+  },
+  callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');

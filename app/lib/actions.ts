@@ -107,27 +107,35 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
     const { customerId, amount, status } = validatedFields.data;
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0];
+    const userID = await getSessionID();
+    if (userID !== ''){
+      // Insert data into the database
+      const { error } = await supabase
+        .from('invoices')
+        .insert([
+          {
+            customer_id: customerId,
+            amount: amountInCents,
+            status: status,
+            date: date,
+            user_id: userID,
+          },
+        ]);
+      // If a database error occurs, return a more specific error.
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Create Invoice. Reason: ' + error.message,
+        };
+      } else {
+        // Revalidate the cache for the invoices page and redirect the user.
+        revalidatePath('/dashboard/invoices');
+        redirect('/dashboard/invoices');
+      }
 
-    // Insert data into the database
-    const { error } = await supabase
-      .from('invoices')
-      .insert([
-        {
-          customer_id: customerId,
-          amount: amountInCents,
-          status: status,
-          date: date,
-        },
-      ]);
-    // If a database error occurs, return a more specific error.
-    if (error) {
-      return {
-        message: 'Database Error: Failed to Create Invoice. Reason: ' + error.message,
-      };
     } else {
-      // Revalidate the cache for the invoices page and redirect the user.
-      revalidatePath('/dashboard/invoices');
-      redirect('/dashboard/invoices');
+      return {
+        message: 'Missing User ID. Failed to Create Invoice.',
+      };
     }
 
   } else {
@@ -150,26 +158,34 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
   if (validatedFields.success) {
     // Prepare data for insertion into the database
     const { name, email, image_url } = validatedFields.data;
+    const userID = await getSessionID();
+    if (userID !== ''){
+      // Insert data into the database
+      const { error } = await supabase
+        .from('customers')
+        .insert([
+          {
+            name: name,
+            email: email,
+            image_url: image_url,
+            user_id: userID,
+          },
+        ]);
+      // If a database error occurs, return a more specific error.
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Create Customer. Reason: ' + error.message,
+        };
+      } else {
+        // Revalidate the cache for the customers page and redirect the user.
+        revalidatePath('/dashboard/customers');
+        redirect('/dashboard/customers');
+      }
 
-    // Insert data into the database
-    const { error } = await supabase
-      .from('customers')
-      .insert([
-        {
-          name: name,
-          email: email,
-          image_url: image_url,
-        },
-      ]);
-    // If a database error occurs, return a more specific error.
-    if (error) {
-      return {
-        message: 'Database Error: Failed to Create Customer. Reason: ' + error.message,
-      };
     } else {
-      // Revalidate the cache for the customers page and redirect the user.
-      revalidatePath('/dashboard/customers');
-      redirect('/dashboard/customers');
+      return {
+        message: 'Missing User ID. Failed to Create Customer.',
+      };
     }
 
   } else {
@@ -194,23 +210,33 @@ export async function updateInvoice(
   if (validatedFields.success) {
     const { customerId, amount, status } = validatedFields.data;
     const amountInCents = amount * 100;
+    const date = new Date().toISOString().split('T')[0];
+    const userID = await getSessionID();
+    if (userID !== ''){
+      const { error } = await supabase
+        .from('invoices')
+        .update({
+          customer_id: customerId,
+          amount: amountInCents,
+          status: status,
+          date: date,
+          user_id: userID,
+        })
+        .eq('id', id);
 
-    const { error } = await supabase
-      .from('invoices')
-      .update({
-        customer_id: customerId,
-        amount: amountInCents,
-        status: status,
-      })
-      .eq('id', id);
+      if (error) {
+        return { 
+          message: 'Database Error: Failed to Update Invoice. Reason: ' + error.message 
+        };
+      } else {
+        revalidatePath('/dashboard/invoices');
+        redirect('/dashboard/invoices');
+      }
 
-    if (error) {
-      return { 
-        message: 'Database Error: Failed to Update Invoice. Reason: ' + error.message 
-      };
     } else {
-      revalidatePath('/dashboard/invoices');
-      redirect('/dashboard/invoices');
+      return {
+        message: 'Missing User ID. Failed to Update Invoice.',
+      };
     }
 
   } else {
@@ -234,23 +260,30 @@ export async function updateCustomer(
 
   if (validatedFields.success) {
     const { name, email, image_url } = validatedFields.data;
+    const userID = await getSessionID();
+    if (userID !== ''){
+      const { error } = await supabase
+        .from('customers')
+        .update({
+          name: name,
+          email: email,
+          image_url: image_url,
+        })
+        .eq('id', id);
 
-    const { error } = await supabase
-      .from('customers')
-      .update({
-        name: name,
-        email: email,
-        image_url: image_url,
-      })
-      .eq('id', id);
+      if (error) {
+        return { 
+          message: 'Database Error: Failed to Update Customer. Reason: ' + error.message 
+        };
+      } else {
+        revalidatePath('/dashboard/customers');
+        redirect('/dashboard/customers');
+      }
 
-    if (error) {
-      return { 
-        message: 'Database Error: Failed to Update Customer. Reason: ' + error.message 
-      };
     } else {
-      revalidatePath('/dashboard/customers');
-      redirect('/dashboard/customers');
+      return {
+        message: 'Missing User ID. Failed to Update Customer.',
+      };
     }
 
   } else {
@@ -271,28 +304,37 @@ export async function deleteInvoice(
   });
   if (validatedFields.success) {
     const { reid } = validatedFields.data;
+    const userID = await getSessionID();
+    if (userID !== ''){
 
-    if (id === reid) {
+      if (id === reid) {
 
-      const { error } = await supabase
-        .from('invoices')
-        .delete()
-        .eq('id', id);
+        const { error } = await supabase
+          .from('invoices')
+          .delete()
+          .eq('id', id);
 
-      if (error) {
-        return { 
-          message: 'Database Error: Failed to Delete Invoice. Reason: ' + error.message 
-        };
+        if (error) {
+          return { 
+            message: 'Database Error: Failed to Delete Invoice. Reason: ' + error.message 
+          };
+        } else {
+          revalidatePath('/dashboard/invoices');
+          redirect('/dashboard/customers');
+        }
+        
       } else {
-        revalidatePath('/dashboard/invoices');
-        redirect('/dashboard/customers');
+        return {
+          message: 'Please just copy Invoice ID and paste to Re input ID',
+        };
       }
-      
+
     } else {
       return {
-        message: 'Please just copy Invoice ID and paste to Re input ID',
+        message: 'Missing User ID. Failed to Delete Invoice.',
       };
     }
+
   } else {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -311,39 +353,47 @@ export async function deleteCustomer(
   });
   if (validatedFields.success) {
     const { reid } = validatedFields.data;
-
-    if (id === reid) {
-      // Xóa tất cả invoices của customer trước
-      const { error: invoiceError } = await supabase
-        .from('invoices')
-        .delete()
-        .eq('customer_id', id);
-
-      if (invoiceError) {
-        return { 
-          message: 'Database Error: Failed to Delete Customer Invoices. Reason: ' + invoiceError.message 
-        };
-      } else {
-        // Xóa customer
-        const { error: customerError } = await supabase
-          .from('customers')
+    const userID = await getSessionID();
+    if (userID !== ''){
+      if (id === reid) {
+        // Xóa tất cả invoices của customer trước
+        const { error: invoiceError } = await supabase
+          .from('invoices')
           .delete()
-          .eq('id', id);
-        if (customerError) {
+          .eq('customer_id', id);
+
+        if (invoiceError) {
           return { 
-            message: 'Database Error: Failed to Delete Customer. Reason: ' + customerError.message 
+            message: 'Database Error: Failed to Delete Customer Invoices. Reason: ' + invoiceError.message 
           };
         } else {
-          revalidatePath('/dashboard/customers');
-          redirect('/dashboard/customers');
+          // Xóa customer
+          const { error: customerError } = await supabase
+            .from('customers')
+            .delete()
+            .eq('id', id);
+          if (customerError) {
+            return { 
+              message: 'Database Error: Failed to Delete Customer. Reason: ' + customerError.message 
+            };
+          } else {
+            revalidatePath('/dashboard/customers');
+            redirect('/dashboard/customers');
+          }
         }
+
+      } else {
+        return {
+          message: 'Please just copy Customer ID and paste to Re input ID',
+        };
       }
 
     } else {
       return {
-        message: 'Please just copy Customer ID and paste to Re input ID',
+        message: 'Missing User ID. Failed to Delete Customer.',
       };
     }
+
   } else {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -372,6 +422,20 @@ export async function getSessionEmail() {
     const sessionEmail = sessionUser.email;
     if (sessionEmail !== '' && sessionEmail !== null && sessionEmail !== undefined){
       return sessionEmail;
+    } else {
+      return '';
+    }
+  } else {
+    return '';
+  }
+}
+
+export async function getSessionID() {
+  const sessionUser = await getSessionInfor();
+  if (sessionUser){
+    const sessionID = sessionUser.id;
+    if (sessionID !== '' && sessionID !== null && sessionID !== undefined){
+      return sessionID;
     } else {
       return '';
     }
