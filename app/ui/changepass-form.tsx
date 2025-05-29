@@ -10,7 +10,7 @@ import {
   ArrowRightIcon,
   ArrowLeftIcon,
   ArrowUpIcon,
-  CircleStackIcon,
+  ArrowUpCircleIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState } from 'react';
@@ -145,7 +145,7 @@ export default function ChangePassForm() {
           </div>
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending}>
-          Change Pass <CircleStackIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Change Pass <ArrowUpCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <div
           className="flex h-8 items-end space-x-1"
