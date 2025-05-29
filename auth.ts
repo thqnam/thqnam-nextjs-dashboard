@@ -6,22 +6,33 @@ import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
  
-export async function getUser(email: string): Promise<User | undefined> {
-  try {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single()
-    if (error) {
-      throw error
-    } else {
-      const user = data as User;
-      return user;
-    }
-  } catch (error) {
-    console.error('Failed to fetch user: ', error);
-    throw new Error('Failed to fetch user.'); 
+export async function getUserByEmail(email: string): Promise<User | undefined> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .single()
+  if (error) {
+    console.error('Failed to fetch user: Reason', error.message);
+    throw new Error('Failed to fetch user. Reason' + error.message); 
+  } else {
+    const user = data as User;
+    return user;
+  }
+}
+
+export async function getUserByID(id: string): Promise<User | undefined> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (error) {
+    console.error('Failed to fetch user: Reason', error.message);
+    throw new Error('Failed to fetch user. Reason' + error.message); 
+  } else {
+    const user = data as User;
+    return user;
   }
 }
  
@@ -36,7 +47,7 @@ export const { auth, signIn, signOut } = NextAuth({
  
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
-          const user = await getUser(email);
+          const user = await getUserByEmail(email);
           if (!user) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password);
  
@@ -57,8 +68,7 @@ export const { auth, signIn, signOut } = NextAuth({
             }
             return user;
           }
-        }
- 
+        } 
         return null;
       },
     }),

@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { logOut } from '@/app/lib/actions';
-import { getUser } from '@/auth';
 
 export default async function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
 

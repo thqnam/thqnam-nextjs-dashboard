@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { auth, signIn, signOut, getUser } from '@/auth';
+import { auth, signIn, signOut, getUserByEmail, getUserByID } from '@/auth';
 import { AuthError } from 'next-auth';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
@@ -17,6 +17,8 @@ const UserFormSchema = z.object({
   email: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
   }),
   password: z.string({
     invalid_type_error: 'Please just input a string data',
@@ -24,26 +26,33 @@ const UserFormSchema = z.object({
   }),
   repassword: z.string({
     invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the repassword of this user',
+    required_error: 'Please input the re-password of this user',
   }),
 });
 
 const ChangePassFormSchema = z.object({
-  email: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this user',
-  }),
-  oldpassword: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the password of this user',
-  }),
+  email: z.string(),
   newpassword: z.string({
     invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the password of this user',
+    required_error: 'Please input the new password of this user',
   }),
   renewpassword: z.string({
     invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the repassword of this user',
+    required_error: 'Please input the re-new password of this user',
+  }),
+});
+
+const ChangeInforFormSchema = z.object({
+  id: z.string(),
+  name: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the name of this user',
+  }),
+  email: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
   }),
 });
 
@@ -56,6 +65,8 @@ const CustomerFormSchema = z.object({
   email: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the email of this customer',
+  }).email({
+    message: 'The string data must be look like email format'
   }),
   image_url: z.string({
     invalid_type_error: 'Please just input a string data',
@@ -103,6 +114,7 @@ const DeleteCustomer = DeleteCustomerSchema.omit({id: true, user_id: true});
 const DeleteInvoice = DeleteInvoiceSchema.omit({id: true, user_id: true});
 const CreateUser = UserFormSchema.omit({id: true});
 const ChangePass = ChangePassFormSchema.omit({});
+const ChangeInfor = ChangeInforFormSchema.omit({});
 
 
 export type InvoiceState = {
@@ -135,10 +147,16 @@ export type UserState = {
 
 export type ChangePassState = {
   errors?: {
-    email?: string[];
-    oldpassword?: string[];
     newpassword?: string[];
     renewpassword?: string[];
+  };
+  message?: string | null;
+};
+
+export type ChangeInforState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
   };
   message?: string | null;
 };
@@ -162,54 +180,104 @@ export async function resetTarget(target : string) {
   redirect(target);
 }
 
+export async function changeUserInfor(prevState: ChangeInforState, formData: FormData){
+  
+  const validatedFields = ChangeInfor.safeParse({
+    id: formData.get('id'),
+    name: formData.get('name'),
+    email: formData.get('email'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { id, name, email } = validatedFields.data;
+
+    const userID = await getUserByID(id);
+
+    if (userID !== undefined){
+
+      const userEmail = await getUserByEmail(email);
+
+      if (userEmail === undefined){
+
+        const { error } = await supabase
+          .from('users')
+          .update({
+            id: userID.id,
+            name: name,
+            email: email,
+            password: userID.password,
+            status: userID.status,
+          })
+          .eq('id', userID.id);
+        
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+          };
+        } else {
+          revalidatePath('/dashboard/');
+          redirect('/dashboard/');
+        }
+        
+      } else {
+        return {
+          message: 'This email compare with a email of user in Database. Failed to Change Infor.',
+        };
+      }
+
+    } else {
+      return {
+        message: 'User of this id do not see in Database. Failed to Change Infor.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Change Infor.',
+    };
+  }
+}
+
 export async function changeUserPass(prevState: ChangePassState, formData: FormData){
   
   const validatedFields = ChangePass.safeParse({
     email: formData.get('email'),
-    oldpassword: formData.get('oldpassword'),
     newpassword: formData.get('newpassword'),
     renewpassword: formData.get('renewpassword'),
   });
 
   if (validatedFields.success) {
     
-    const { email, oldpassword, newpassword, renewpassword } = validatedFields.data;
+    const { email, newpassword, renewpassword } = validatedFields.data;
 
     if (newpassword === renewpassword){
 
-      const user = await getUser(email);
+      const user = await getUserByEmail(email);
 
       if (user !== undefined){
 
-        const passwordsMatch = await bcrypt.compare(oldpassword, user.password);
+        const hashedPassword = bcrypt.hashSync(newpassword, 10);
 
-        if (passwordsMatch){
-
-          const hashedPassword = bcrypt.hashSync(newpassword, 10);
-
-          const { error } = await supabase
-            .from('users')
-            .update({
-              id: user.id,
-              name: user.name,
-              email: email,
-              password: hashedPassword,
-              status: user.status,
-            })
-            .eq('id', user.id);
-          
-          if (error) {
-            return {
-              message: 'Database Error: Failed to Create User. Reason: ' + error.message,
-            };
-          } else {
-            redirect('/');
-          }
-
-        } else {
+        const { error } = await supabase
+          .from('users')
+          .update({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            password: hashedPassword,
+            status: user.status,
+          })
+          .eq('id', user.id);
+        
+        if (error) {
           return {
-            message: 'Old Password do not compare User Password in Database. Failed to Change Password.',
+            message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
           };
+        } else {
+          revalidatePath('/dashboard/');
+          redirect('/dashboard/');
         }
         
       } else {
@@ -245,33 +313,43 @@ export async function createUser(prevState: UserState, formData: FormData){
   if (validatedFields.success) {
     // Prepare data for insertion into the database
     const { name, email, password, repassword } = validatedFields.data;
+    const user = await getUserByEmail(email);
 
-    if (password === repassword){
-      const hashedPassword = bcrypt.hashSync(password, 10);
-      // Insert data into the database
-      const { error } = await supabase
-        .from('users')
-        .insert([
-          {
-            name: name,
-            email: email,
-            password: hashedPassword,
-            status: 'logout',
-          },
-        ])
-        .eq('email', email);
-      // If a database error occurs, return a more specific error.
-      if (error) {
-        return {
-          message: 'Database Error: Failed to Create User. Reason: ' + error.message,
-        };
+    if (user === undefined){
+
+      if (password === repassword){
+
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        // Insert data into the database
+        const { error } = await supabase
+          .from('users')
+          .insert([
+            {
+              name: name,
+              email: email,
+              password: hashedPassword,
+              status: 'logout',
+            },
+          ])
+          .eq('email', email);
+        // If a database error occurs, return a more specific error.
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Create User. Reason: ' + error.message,
+          };
+        } else {
+          redirect('/');
+        }
+
       } else {
-        redirect('/');
+        return {
+          message: 'Password must be look like Re-Password. Failed to Create User.',
+        };
       }
 
     } else {
       return {
-        message: 'Password must be look like Re-Password. Failed to Create User.',
+        message: 'This email compare with a email of user in Database. Failed to Create User.',
       };
     }
 
@@ -621,6 +699,20 @@ export async function getSessionEmail() {
   }
 }
 
+export async function getSessionName() {
+  const sessionUser = await getSessionInfor();
+  if (sessionUser){
+    const sessionEmail = sessionUser.email;
+    if (sessionEmail !== '' && sessionEmail !== null && sessionEmail !== undefined){
+      return sessionEmail;
+    } else {
+      return '';
+    }
+  } else {
+    return '';
+  }
+}
+
 export async function getSessionID() {
   const sessionUser = await getSessionInfor();
   if (sessionUser){
@@ -639,7 +731,7 @@ async function changeUserStatusLogout() {
   try {
     const email = await getSessionEmail();
     if (email !== ''){
-      const user = await getUser(email);
+      const user = await getUserByEmail(email);
       if (user !== undefined){
         const { error } = await supabase
           .from('users')

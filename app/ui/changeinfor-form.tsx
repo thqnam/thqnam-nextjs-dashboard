@@ -3,8 +3,8 @@
 import { lusitana } from '@/app/ui/fonts';
 import {
   AtSymbolIcon,
-  KeyIcon,
   ExclamationCircleIcon,
+  IdentificationIcon,
 } from '@heroicons/react/24/outline';
 import { 
   ArrowLeftIcon,
@@ -12,28 +12,34 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { changeUserPass, ChangePassState, getSessionEmail } from '@/app/lib/actions';
+import { changeUserInfor, ChangeInforState, getSessionEmail, getSessionName } from '@/app/lib/actions';
 import Link from 'next/link';
  
-export default async function ChangePassForm() {
+export default async function ChangeInforForm() {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const loadEmail = async () => {
     const data = await getSessionEmail();
     setEmail(data);
   };
+  const loadName = async () => {
+    const data = await getSessionName();
+    setName(data);
+  };
 
   useEffect(() => {
     loadEmail();
+    loadName();
   }, []);
 
-  const initialState: ChangePassState = { message: null, errors: {} };
-  const [state, formAction, isPending] = useActionState(changeUserPass, initialState);
+  const initialState: ChangeInforState = { message: null, errors: {} };
+  const [state, formAction, isPending] = useActionState(changeUserInfor, initialState);
  
   return (
     <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Input some infor for Change Pass
+          Input some infor for Change Infor
         </h1>
         <div className="w-full">
           <div>
@@ -49,66 +55,47 @@ export default async function ChangePassForm() {
                 id="email"
                 type="email"
                 name="email"
+                disabled={email === '' && name === ''}
+                placeholder="Enter your email"
+                aria-describedby='email-error'
                 defaultValue={email}
-                readOnly
+                required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="newpassword"
-            >
-              New Password
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="newpassword"
-                type="password"
-                name="newpassword"
-                placeholder="Enter your new password"
-                aria-describedby='newpassword-error'
-                disabled={email === ''}
-                required
-                minLength={10}
-              />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            <div id="newpassword-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.newpassword &&
-                state.errors.newpassword.map((error: string) => (
+            <div id="email-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.email &&
+                state.errors.email.map((error: string) => (
                     <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                     </p>
                 ))}
             </div>
           </div>
-          <div className="mt-4">
+          <div>
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="renewpassword"
+              htmlFor="name"
             >
-              Re-New Password
+              Name
             </label>
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="renewpassword"
-                type="password"
-                name="renewpassword"
-                placeholder="Re-Enter your new password"
-                aria-describedby='renewpassword-error'
-                disabled={email === ''}
+                id="name"
+                type="text"
+                name="name"
+                disabled={email === '' && name === ''}
+                placeholder="Enter your nick name"
+                aria-describedby='name-error'
+                defaultValue={name}
                 required
-                minLength={10}
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            <div id="renewpassword-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.renewpassword &&
-                state.errors.renewpassword.map((error: string) => (
+            <div id="name-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.name &&
+                state.errors.name.map((error: string) => (
                     <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                     </p>
@@ -116,8 +103,8 @@ export default async function ChangePassForm() {
             </div>
           </div>
         </div>
-        <Button className="mt-4 w-full" aria-disabled={isPending} disabled={email === ''}>
-          Change Pass <ArrowTurnRightDownIcon className="ml-auto h-5 w-5 text-gray-50" />
+        <Button className="mt-4 w-full" aria-disabled={isPending} disabled={email === '' && name === ''}>
+          Change Infor <ArrowTurnRightDownIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <div
           className="flex h-8 items-end space-x-1"
