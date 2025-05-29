@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import { ArrowRightIcon, ArrowUpIcon, ArrowUpCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, ArrowUpIcon, ArrowTurnRightDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
@@ -48,7 +48,7 @@ export default function Page() {
             href="/changepass"
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
           >
-            <span>Change Pass</span> <ArrowUpCircleIcon className="w-5 md:w-6" />
+            <span>Change Pass</span> <ArrowTurnRightDownIcon className="w-5 md:w-6" />
           </Link>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
