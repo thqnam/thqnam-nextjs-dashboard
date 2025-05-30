@@ -3,7 +3,8 @@
 import NavLinks from '@/app/ui/dashboard/nav-links';
 import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon, ArrowTurnRightUpIcon } from '@heroicons/react/24/outline';
-import { resetTarget, logOut, getSessionEmail } from '@/app/lib/actions';
+import { resetTarget, logOut } from '@/app/lib/actions';
+import { getSessionEmail } from '@/app/lib/data';
 import { useEffect, useRef } from 'react';
 import { getUserByEmail } from '@/auth';
 

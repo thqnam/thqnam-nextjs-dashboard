@@ -1,4 +1,4 @@
-import { getSessionInfor } from '@/app/lib/actions'
+import { getSessionInfor } from '@/app/lib/data'
 import UserGreetingClient from '../lib/logSignListen';
 import Image from 'next/image';
 
