@@ -12,6 +12,49 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 import { supabase } from '@/app/lib/supabaseClient';
+import { auth } from '@/auth';
+
+export async function getSessionInfor() {
+  const sessionInfor = await auth();
+  if (sessionInfor !== null){
+    const sessionUser = sessionInfor.user;
+    if (sessionUser !== undefined){
+      return sessionUser;
+    } else {
+      return {};
+    }
+  } else {
+    return {};
+  }
+}
+
+export async function getSessionID() {
+  const sessionUser = await getSessionInfor();
+  if (sessionUser){
+    const sessionID = sessionUser.id;
+    if (sessionID !== '' && sessionID !== null && sessionID !== undefined){
+      return sessionID;
+    } else {
+      return '';
+    }
+  } else {
+    return '';
+  }
+}
+
+export async function getSessionEmail() {
+  const sessionUser = await getSessionInfor();
+  if (sessionUser){
+    const sessionEmail = sessionUser.email;
+    if (sessionEmail !== '' && sessionEmail !== null && sessionEmail !== undefined){
+      return sessionEmail;
+    } else {
+      return '';
+    }
+  } else {
+    return '';
+  }
+}
 
 export async function fetchRevenue() {
   try {

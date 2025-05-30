@@ -3,7 +3,8 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { auth, signIn, signOut, getUserByEmail, getUserByID } from '@/auth';
+import { signIn, signOut, getUserByEmail, getUserByID } from '@/auth';
+import { getSessionEmail, getSessionID } from './data';
 import { AuthError } from 'next-auth';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
@@ -35,7 +36,6 @@ const UserFormSchema = z.object({
 });
 
 const ChangePassFormSchema = z.object({
-  email: z.string(),
   newpassword: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the new password of this user',
@@ -47,7 +47,6 @@ const ChangePassFormSchema = z.object({
 });
 
 const ChangeInforFormSchema = z.object({
-  id: z.string(),
   name: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the name of this user',
@@ -193,7 +192,6 @@ export async function resetTarget(target : string) {
 export async function changeUserInfor(prevState: ChangeInforState, formData: FormData){
   
   const validatedFields = ChangeInfor.safeParse({
-    id: formData.get('id'),
     name: formData.get('name'),
     email: formData.get('email'),
     image: formData.get('image'),
@@ -201,46 +199,56 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
   if (validatedFields.success) {
     
-    const { id, name, email, image } = validatedFields.data;
+    const { name, email, image } = validatedFields.data;
 
-    const userID = await getUserByID(id);
+    const id = await getSessionID();
 
-    if (userID !== undefined){
+    if (id !== ''){
+      const userID = await getUserByID(id);
 
-      const userEmail = await getUserByEmail(email);
+      if (userID !== undefined){
 
-      if (userEmail === undefined){
+        const userEmail = await getUserByEmail(email);
 
-        const { error } = await supabase
-          .from('users')
-          .update({
-            id: userID.id,
-            name: name,
-            email: email,
-            image: image,
-            password: userID.password,
-            status: userID.status,
-          })
-          .eq('id', userID.id);
-        
-        if (error) {
-          return {
-            message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
-          };
+        if (userEmail === undefined){
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              id: userID.id,
+              name: name,
+              email: email,
+              image: image,
+              password: userID.password,
+              status: userID.status,
+            })
+            .eq('id', userID.id)
+            .eq('email', email);
+          
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+            };
+          } else {
+            revalidatePath('/dashboard/');
+            redirect('/dashboard/');
+          }
+          
         } else {
-          revalidatePath('/dashboard/');
-          redirect('/dashboard/');
+          return {
+            message: 'This email compare with a email of user in Database. Failed to Change Infor.',
+          };
         }
-        
+
       } else {
         return {
-          message: 'This email compare with a email of user in Database. Failed to Change Infor.',
+          message: 'User of this id do not see in Database. Failed to Change Infor.',
         };
       }
 
     } else {
       return {
-        message: 'User of this id do not see in Database. Failed to Change Infor.',
+        message: 'Do not see id in this request. Failed to Change Infor.',
       };
     }
 
@@ -262,39 +270,49 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
 
   if (validatedFields.success) {
     
-    const { email, newpassword, renewpassword } = validatedFields.data;
+    const { newpassword, renewpassword } = validatedFields.data;
 
     if (newpassword === renewpassword){
 
-      const user = await getUserByEmail(email);
+      const email = await getSessionEmail();
 
-      if (user !== undefined){
+      if (email !== ''){
 
-        const hashedPassword = bcrypt.hashSync(newpassword, 10);
+        const user = await getUserByEmail(email);
 
-        const { error } = await supabase
-          .from('users')
-          .update({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            password: hashedPassword,
-            status: user.status,
-          })
-          .eq('id', user.id);
-        
-        if (error) {
-          return {
-            message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
-          };
+        if (user !== undefined){
+
+          const hashedPassword = bcrypt.hashSync(newpassword, 10);
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              password: hashedPassword,
+              status: user.status,
+            })
+            .eq('id', user.id);
+          
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
+            };
+          } else {
+            revalidatePath('/dashboard/');
+            redirect('/dashboard/');
+          }
+          
         } else {
-          revalidatePath('/dashboard/');
-          redirect('/dashboard/');
+          return {
+            message: 'User of this email do not see in Database. Failed to Change Password.',
+          };
         }
-        
+
       } else {
         return {
-          message: 'User of this email do not see in Database. Failed to Change Password.',
+          message: 'Do not see email in this request. Failed to Change Password.',
         };
       }
 
@@ -682,48 +700,6 @@ export async function deleteCustomer(
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Delete Customer.',
     };
-  }
-}
-
-export async function getSessionInfor() {
-  const sessionInfor = await auth();
-  if (sessionInfor !== null){
-    const sessionUser = sessionInfor.user;
-    if (sessionUser !== undefined){
-      return sessionUser;
-    } else {
-      return {};
-    }
-  } else {
-    return {};
-  }
-}
-
-export async function getSessionID() {
-  const sessionUser = await getSessionInfor();
-  if (sessionUser){
-    const sessionID = sessionUser.id;
-    if (sessionID !== '' && sessionID !== null && sessionID !== undefined){
-      return sessionID;
-    } else {
-      return '';
-    }
-  } else {
-    return '';
-  }
-}
-
-export async function getSessionEmail() {
-  const sessionUser = await getSessionInfor();
-  if (sessionUser){
-    const sessionEmail = sessionUser.email;
-    if (sessionEmail !== '' && sessionEmail !== null && sessionEmail !== undefined){
-      return sessionEmail;
-    } else {
-      return '';
-    }
-  } else {
-    return '';
   }
 }
 

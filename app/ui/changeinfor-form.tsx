@@ -18,10 +18,9 @@ import { useActionState, useEffect, useState } from 'react';
 import { 
     changeUserInfor, 
     ChangeInforState,
-    getSessionInfor, 
     resetTarget 
 } from '@/app/lib/actions';
-import { fetchImages } from '@/app/lib/data';
+import { fetchImages, getSessionInfor } from '@/app/lib/data';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function ChangeInforForm() {
