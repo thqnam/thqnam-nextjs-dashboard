@@ -11,8 +11,8 @@ import {
 import { Button } from '@/app/ui/button';
 import { resetTarget, updateCustomer, CustomerState } from '@/app/lib/actions';
 import { useActionState } from 'react';
-import { fetchCustomerById, fetchImages } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
+import { fetchCustomerById, fetchImages } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
  

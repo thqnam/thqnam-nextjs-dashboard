@@ -20,6 +20,10 @@ const UserFormSchema = z.object({
   }).email({
     message: 'The string data must be look like email format'
   }),
+  image: z.string({
+    invalid_type_error: 'Please select a image.',
+    required_error: 'Must be select a image',
+  }),
   password: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the password of this user',
@@ -54,6 +58,10 @@ const ChangeInforFormSchema = z.object({
   }).email({
     message: 'The string data must be look like email format'
   }),
+  image: z.string({
+    invalid_type_error: 'Please select a image.',
+    required_error: 'Must be select a image',
+  }),
 });
 
 const CustomerFormSchema = z.object({
@@ -69,8 +77,8 @@ const CustomerFormSchema = z.object({
     message: 'The string data must be look like email format'
   }),
   image_url: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the image url of this customer',
+    invalid_type_error: 'Please select a image.',
+    required_error: 'Must be select a image',
   }),
   user_id: z.string(),
 });
@@ -139,6 +147,7 @@ export type UserState = {
   errors?: {
     name?: string[];
     email?: string[];
+    image?: string[];
     password?: string[];
     repassword?: string[];
   };
@@ -157,6 +166,7 @@ export type ChangeInforState = {
   errors?: {
     name?: string[];
     email?: string[];
+    image?: string[];
   };
   message?: string | null;
 };
@@ -186,11 +196,12 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
     id: formData.get('id'),
     name: formData.get('name'),
     email: formData.get('email'),
+    image: formData.get('image'),
   });
 
   if (validatedFields.success) {
     
-    const { id, name, email } = validatedFields.data;
+    const { id, name, email, image } = validatedFields.data;
 
     const userID = await getUserByID(id);
 
@@ -206,6 +217,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
             id: userID.id,
             name: name,
             email: email,
+            image: image,
             password: userID.password,
             status: userID.status,
           })
@@ -305,6 +317,7 @@ export async function createUser(prevState: UserState, formData: FormData){
   const validatedFields = CreateUser.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
+    image: formData.get('image'),
     password: formData.get('password'),
     repassword: formData.get('repassword'),
   });
@@ -312,7 +325,7 @@ export async function createUser(prevState: UserState, formData: FormData){
   // If form validation fails, return errors early. Otherwise, continue.
   if (validatedFields.success) {
     // Prepare data for insertion into the database
-    const { name, email, password, repassword } = validatedFields.data;
+    const { name, email, image, password, repassword } = validatedFields.data;
     const user = await getUserByEmail(email);
 
     if (user === undefined){
@@ -327,6 +340,7 @@ export async function createUser(prevState: UserState, formData: FormData){
             {
               name: name,
               email: email,
+              image: image,
               password: hashedPassword,
               status: 'logout',
             },
@@ -685,40 +699,26 @@ export async function getSessionInfor() {
   }
 }
 
-export async function getSessionEmail() {
-  const sessionUser = await getSessionInfor();
-  if (sessionUser){
-    const sessionEmail = sessionUser.email;
-    if (sessionEmail !== '' && sessionEmail !== null && sessionEmail !== undefined){
-      return sessionEmail;
-    } else {
-      return '';
-    }
-  } else {
-    return '';
-  }
-}
-
-export async function getSessionName() {
-  const sessionUser = await getSessionInfor();
-  if (sessionUser){
-    const sessionEmail = sessionUser.email;
-    if (sessionEmail !== '' && sessionEmail !== null && sessionEmail !== undefined){
-      return sessionEmail;
-    } else {
-      return '';
-    }
-  } else {
-    return '';
-  }
-}
-
 export async function getSessionID() {
   const sessionUser = await getSessionInfor();
   if (sessionUser){
     const sessionID = sessionUser.id;
     if (sessionID !== '' && sessionID !== null && sessionID !== undefined){
       return sessionID;
+    } else {
+      return '';
+    }
+  } else {
+    return '';
+  }
+}
+
+export async function getSessionEmail() {
+  const sessionUser = await getSessionInfor();
+  if (sessionUser){
+    const sessionEmail = sessionUser.email;
+    if (sessionEmail !== '' && sessionEmail !== null && sessionEmail !== undefined){
+      return sessionEmail;
     } else {
       return '';
     }

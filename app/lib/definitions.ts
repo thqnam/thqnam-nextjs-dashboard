@@ -8,6 +8,14 @@ export type User = {
   email: string;
   password: string;
   status: string;
+  image: string;
+};
+
+export type UserRequest = {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
 };
 
 export type Customer = {

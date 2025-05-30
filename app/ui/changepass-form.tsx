@@ -8,12 +8,11 @@ import {
 } from '@heroicons/react/24/outline';
 import { 
   ArrowLeftIcon,
-  ArrowTurnRightDownIcon,
+  ArrowTurnRightUpIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { changeUserPass, ChangePassState, getSessionEmail } from '@/app/lib/actions';
-import Link from 'next/link';
+import { changeUserPass, ChangePassState, getSessionEmail, resetTarget } from '@/app/lib/actions';
  
 export default async function ChangePassForm() {
   const [email, setEmail] = useState('');
@@ -33,7 +32,7 @@ export default async function ChangePassForm() {
     <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Input some infor for Change Pass
+          Input for Change Pass
         </h1>
         <div className="w-full">
           <div>
@@ -117,7 +116,7 @@ export default async function ChangePassForm() {
           </div>
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} disabled={email === ''}>
-          Change Pass <ArrowTurnRightDownIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Change Pass <ArrowTurnRightUpIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <div
           className="flex h-8 items-end space-x-1"
@@ -131,12 +130,12 @@ export default async function ChangePassForm() {
             </>
           )}
         </div>
-        <Link 
+        <button 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-          href="/"
+          onClick={() => resetTarget('/dashboard')}
         >
-          Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Link>
+          Cancel Change <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </button>
       </div>
     </form>
   );
