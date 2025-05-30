@@ -8,6 +8,7 @@ import {
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
+  ImageField,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { supabase } from '@/app/lib/supabaseClient';
@@ -187,11 +188,28 @@ export async function fetchCustomerById(id: string) {
   }
 }
 
+export async function fetchImageByURL(url: string) {
+  try {
+    const { data, error } = await supabase
+      .from('images')
+      .select('id, name, path')
+      .eq('path', url)
+      .single();
+
+    if (error) throw error;
+
+    return data as ImageField;
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch image. Reason: ' + error.message);
+  }
+}
+
 export async function fetchCustomers() {
   try {
     const { data, error } = await supabase
       .from('customers')
-      .select('id, name')
+      .select('id, name, image_url')
       .order('name', { ascending: true });
 
     if (error) throw error;
@@ -200,6 +218,22 @@ export async function fetchCustomers() {
   } catch (error : any) {
     console.error('Database Error: ', error.message);
     throw new Error('Failed to fetch all customers. Reason: ' + error.message);
+  }
+}
+
+export async function fetchImages() {
+  try {
+    const { data, error } = await supabase
+      .from('images')
+      .select('id, name, path')
+      .order('name', { ascending: true });
+
+    if (error) throw error;
+
+    return data as ImageField[];
+  } catch (error : any) {
+    console.error('Database Error: ', error.message);
+    throw new Error('Failed to fetch all images. Reason: ' + error.message);
   }
 }
 

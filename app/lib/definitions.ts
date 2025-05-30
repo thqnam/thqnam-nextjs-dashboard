@@ -80,6 +80,12 @@ export type CustomerField = {
   image_url: string;
 };
 
+export type ImageField = {
+  id: string;
+  name: string;
+  path: string;
+};
+
 export type InvoiceForm = {
   id: string;
   customer_id: string;

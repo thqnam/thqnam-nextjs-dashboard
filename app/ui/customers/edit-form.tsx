@@ -1,6 +1,7 @@
 'use client';
 
-import { CustomerForm } from '@/app/lib/definitions';
+import { CustomerForm, ImageField } from '@/app/lib/definitions';
+import Image from 'next/image';
 import {
   AtSymbolIcon,
   InformationCircleIcon,
@@ -8,16 +9,16 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { updateCustomer, CustomerState } from '@/app/lib/actions';
+import { resetTarget, updateCustomer, CustomerState } from '@/app/lib/actions';
 import { useActionState } from 'react';
-import { resetTarget } from '@/app/lib/actions';
-import { fetchCustomerById } from '@/app/lib/data';
+import { fetchCustomerById, fetchImages } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default function EditCustomerForm({ id }: { id: string }) {
   const [customer, setCustomer] = useState({} as CustomerForm);
+  const [images, setImages] = useState([] as ImageField[]);
   // Hàm fetch lại dữ liệu
   const loadCustomer = async () => {
     const data : CustomerForm = await fetchCustomerById(id);
@@ -27,9 +28,14 @@ export default function EditCustomerForm({ id }: { id: string }) {
       setCustomer(data);
     }
   };
+  const loadImages = async () => {
+    const data = await fetchImages();
+    setImages(data);
+  };
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
     loadCustomer();
+    loadImages(); 
 
     // Lắng nghe realtime chỉ trên customers mà thôi
     const channel = supabase
@@ -38,6 +44,11 @@ export default function EditCustomerForm({ id }: { id: string }) {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'customers', filter: `id=eq.${id}`},
         loadCustomer
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'images' },
+        loadImages
       )
       .subscribe();
 
@@ -50,10 +61,33 @@ export default function EditCustomerForm({ id }: { id: string }) {
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const [state, formAction, isPending] = useActionState(updateCustomerWithId, initialState);
   
-  if (!customer){
+  if (!customer || !images){
     return (
       <form action={formAction}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
+          {/* Image_URL */}
+          <div>
+            <label
+              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              htmlFor="image_url"
+            >
+              Choose Image
+            </label>
+            <div className="relative">
+              <select
+                id="image_url"
+                name="image_url"
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue=""
+                disabled
+              >
+                <option value="" disabled>
+                  Select a Image
+                </option>
+              </select>
+              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
           {/* Name */}
           <div>
             <label
@@ -92,25 +126,6 @@ export default function EditCustomerForm({ id }: { id: string }) {
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
-          {/* Image_URL */}
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="image_url"
-            >
-              Image URL
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="image_url"
-                type="text"
-                name="image_url"
-                disabled
-              />
-              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
         </div>
         <div className="mt-6 flex justify-evenly gap-4">
           <button
@@ -135,6 +150,51 @@ export default function EditCustomerForm({ id }: { id: string }) {
     return (
       <form action={formAction}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
+          {/* Image_URL */}
+          <div>
+            <label
+              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              htmlFor="image_url"
+            >
+              Choose Image
+            </label>
+            <div className="relative">
+              <select
+                id="image_url"
+                name="image_url"
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={customer.image_url}
+                aria-describedby="image_url-error"
+                required
+                autoFocus
+              >
+                <option value="" disabled>
+                  Select a Image
+                </option>
+                {images.map((image) => (
+                  <option key={image.path} value={image.path}>
+                    <Image
+                      src={image.path}
+                      className="rounded-full"
+                      alt={`${image.name} image name`}
+                      width={28}
+                      height={28}
+                    />
+                    <p>{image.name}</p>
+                  </option>
+                ))}
+              </select>
+              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+            <div id="image_url-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.image_url &&
+                state.errors.image_url.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
+          </div>
           {/* Name */}
           <div>
             <label
@@ -190,36 +250,6 @@ export default function EditCustomerForm({ id }: { id: string }) {
             <div id="email-error" aria-live="polite" aria-atomic="true">
               {state.errors?.email &&
                 state.errors.email.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
-          </div>
-          {/* Image_URL */}
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="image_url"
-            >
-              Image URL
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="image_url"
-                type="text"
-                name="image_url"
-                placeholder="Enter customer image URL"
-                defaultValue={customer.image_url}
-                aria-describedby="image_url-error"
-                required
-              />
-              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            <div id="image_url-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.image_url &&
-                state.errors.image_url.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>

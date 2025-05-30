@@ -1,6 +1,7 @@
 'use client';
 
-import { CustomerForm } from '@/app/lib/definitions';
+import { CustomerForm, ImageField } from '@/app/lib/definitions';
+import Image from 'next/image';
 import {
   AtSymbolIcon,
   InformationCircleIcon,
@@ -11,13 +12,14 @@ import { Button } from '@/app/ui/button';
 import { deleteCustomer, DeleteCustomerState } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import { resetTarget } from '@/app/lib/actions';
-import { fetchCustomerById } from '@/app/lib/data';
+import { fetchCustomerById, fetchImageByURL } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default function DeleteCustomerForm({ id }: { id: string }) {
   const [customer, setCustomer] = useState({} as CustomerForm);
+  const [image, setImage] = useState({} as ImageField);
   // Hàm fetch lại dữ liệu
   const loadCustomer = async () => {
     const data : CustomerForm = await fetchCustomerById(id);
@@ -27,9 +29,23 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
       setCustomer(data);
     }
   };
+  const loadImage = async () => {
+    const data = await fetchImageByURL(customer.image_url);
+    setImage(data);
+  };
+  const loadCustomerAndImage = async () => {
+    const customerTerm : CustomerForm = await fetchCustomerById(id);
+    if (!customerTerm){
+      notFound();
+    } else {
+      setCustomer(customerTerm);
+      const imageTerm = await fetchImageByURL(customerTerm.image_url);
+      setImage(imageTerm);
+    }
+  }
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
-    loadCustomer();
+    loadCustomerAndImage();
 
     // Lắng nghe realtime chỉ trên customers mà thôi
     const channel = supabase
@@ -38,6 +54,11 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'customers', filter: `id=eq.${id}`},
         loadCustomer
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'images' },
+        loadImage
       )
       .subscribe();
 
@@ -53,10 +74,33 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
   const deleteCustomerWithId = deleteCustomer.bind(null, customer.id);
   const [state, formAction, isPending] = useActionState(deleteCustomerWithId, initialState);
 
-  if (!customer){
+  if (!customer || !image){
     return (
       <form action={formAction}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
+          {/* Image_URL */}
+          <div>
+            <label
+              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              htmlFor="image_url"
+            >
+              Choose Image
+            </label>
+            <div className="relative">
+              <select
+                id="image_url"
+                name="image_url"
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue=""
+                disabled
+              >
+                <option value="" disabled>
+                  Select a Image
+                </option>
+              </select>
+              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
           {/* Name */}
           <div>
             <label
@@ -93,25 +137,6 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
                 disabled
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-          {/* Image_URL */}
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="image_url"
-            >
-              Image URL
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="image_url"
-                type="text"
-                name="image_url"
-                disabled
-              />
-              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           {/* ID */}
@@ -176,6 +201,37 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
     return (
       <form action={formAction}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
+          {/* Image_URL */}
+          <div>
+            <label
+              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              htmlFor="image_url"
+            >
+              Choose Image
+            </label>
+            <div className="relative">
+              <select
+                id="image_url"
+                name="image_url"
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={customer.image_url}
+                aria-describedby="image_url-error"
+                disabled
+              >
+                <option key={image.path} value={image.path}>
+                  <Image
+                    src={image.path}
+                    className="rounded-full"
+                    alt={`${image.name} image name`}
+                    width={28}
+                    height={28}
+                  />
+                  <p>{image.name}</p>
+                </option>
+              </select>
+              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
           {/* Name */}
           <div>
             <label
@@ -214,26 +270,6 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
                 disabled
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-          {/* Image_URL */}
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="image_url"
-            >
-              Image URL
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="image_url"
-                type="text"
-                name="image_url"
-                defaultValue={customer.image_url}
-                disabled
-              />
-              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           {/* ID */}

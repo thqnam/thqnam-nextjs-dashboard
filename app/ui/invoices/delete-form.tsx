@@ -11,10 +11,9 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { deleteInvoice, DeleteInvoiceState } from '@/app/lib/actions';
+import { resetTarget, deleteInvoice, DeleteInvoiceState } from '@/app/lib/actions';
 import { useActionState } from 'react';
-import { resetTarget } from '@/app/lib/actions';
-import { fetchInvoiceById, fetchCustomers, fetchCustomerById } from '@/app/lib/data';
+import { fetchInvoiceById, fetchCustomerById } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { notFound } from 'next/navigation';
@@ -37,9 +36,13 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
   };
   const loadInvoiceAndCustomer = async () => {
     const invoiceTerm = await fetchInvoiceById(id);
-    setInvoice(invoiceTerm);
-    const customerTerm = await fetchCustomerById(invoiceTerm.customer_id);
-    setCustomer(customerTerm);
+    if (!invoiceTerm) {
+      notFound();
+    } else {
+      setInvoice(invoiceTerm);
+      const customerTerm = await fetchCustomerById(invoiceTerm.customer_id);
+      setCustomer(customerTerm);
+    }
   }
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
@@ -226,8 +229,7 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
                 className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 defaultValue={invoice.customer_id}
                 aria-describedby="customer-error"
-                required
-                autoFocus
+                disabled
               >
                 <option key={customer.id} value={customer.id}>
                   <Image
