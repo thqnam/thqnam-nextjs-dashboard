@@ -22,7 +22,7 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
   const [image, setImage] = useState({} as ImageField);
   // Hàm fetch lại dữ liệu
   const loadCustomer = async () => {
-    const data : CustomerForm = await fetchCustomerById(id);
+    const data = await fetchCustomerById(id);
     if (!data){
       notFound();
     } else {

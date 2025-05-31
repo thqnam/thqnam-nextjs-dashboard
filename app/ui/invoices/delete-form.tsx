@@ -27,7 +27,7 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
     setCustomer(data);
   };
   const loadInvoice = async () => {
-    const data : InvoiceForm = await fetchInvoiceById(id);
+    const data = await fetchInvoiceById(id);
     if (!data) {
       notFound();
     } else {

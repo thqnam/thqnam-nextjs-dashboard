@@ -26,17 +26,26 @@ export default function EditInvoiceForm({ id }: { id: string }) {
     setCustomers(data);
   };
   const loadInvoice = async () => {
-    const data : InvoiceForm = await fetchInvoiceById(id);
+    const data = await fetchInvoiceById(id);
     if (!data) {
       notFound();
     } else {
       setInvoice(data);
     }
   };
+  const loadInvoiceAndCustomers = async () => {
+    const InvoiceTerm = await fetchInvoiceById(id);
+    if (!InvoiceTerm) {
+      notFound();
+    } else {
+      setInvoice(InvoiceTerm);
+      const CustomersTerm = await fetchCustomers();
+      setCustomers(CustomersTerm);
+    }
+  }
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
-    loadInvoice();
-    loadCustomers();
+    loadInvoiceAndCustomers();
 
     // Lắng nghe realtime trên customers và invoices
     const channel = supabase

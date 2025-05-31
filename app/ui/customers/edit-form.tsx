@@ -21,7 +21,7 @@ export default function EditCustomerForm({ id }: { id: string }) {
   const [images, setImages] = useState([] as ImageField[]);
   // Hàm fetch lại dữ liệu
   const loadCustomer = async () => {
-    const data : CustomerForm = await fetchCustomerById(id);
+    const data = await fetchCustomerById(id);
     if (!data) {
       notFound();
     } else {
@@ -32,11 +32,20 @@ export default function EditCustomerForm({ id }: { id: string }) {
     const data = await fetchImages();
     setImages(data);
   };
+  const loadCustomerAndImages = async () => {
+    const CustomerTerm = await fetchCustomerById(id);
+    if (!CustomerTerm) {
+      notFound();
+    } else {
+      setCustomer(CustomerTerm);
+      const ImagesTerm = await fetchImages();
+      setImages(ImagesTerm);
+    }
+  }
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
-    loadCustomer();
-    loadImages(); 
-
+    loadCustomerAndImages();
+    
     // Lắng nghe realtime chỉ trên customers mà thôi
     const channel = supabase
       .channel('customer-edit')
