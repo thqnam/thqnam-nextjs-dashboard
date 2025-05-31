@@ -2,13 +2,13 @@
  
 import { lusitana } from '@/app/ui/fonts';
 import {
-  AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { 
   ArrowLeftIcon,
   ArrowTurnRightUpIcon,
+  ArrowTurnLeftUpIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
@@ -95,9 +95,6 @@ export default async function ChangePassForm() {
             </div>
           </div>
         </div>
-        <Button className="mt-4 w-full" aria-disabled={isPending} >
-          Change Pass <ArrowTurnRightUpIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
         <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"
@@ -110,6 +107,15 @@ export default async function ChangePassForm() {
             </>
           )}
         </div>
+        <Button className="mt-4 w-full" aria-disabled={isPending} >
+          Change Pass <ArrowTurnLeftUpIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
+        <button 
+          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
+          onClick={() => resetTarget('/dashboard/changeinfor')}
+        >
+          Change Infor <ArrowTurnRightUpIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </button>
         <button 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
           onClick={() => resetTarget('/dashboard')}
