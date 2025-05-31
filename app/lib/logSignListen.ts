@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { logOut } from '@/app/lib/actions';
+import { signOut } from '@/auth';
 
 export default async function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
 
@@ -18,7 +18,7 @@ export default async function UserGreetingClient({ userEmail }: { userEmail: str
           { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${userEmail}` },
           async (payload) => {
             if (payload.new.status === 'logout') {
-              await logOut();
+              await signOut({ redirectTo: '/' });
             }
           }
         )
