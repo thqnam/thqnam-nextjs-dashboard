@@ -30,10 +30,12 @@ export default async function SignDownForm() {
   const [image, setImage] = useState({} as ImageField);
   const loadUser = async () => {
     const idTerm = await getSessionID();
-    setID(id);
-    const data = await getUserByID(idTerm);
-    if (data !== undefined){
-      setUser(data);
+    if (idTerm !== ''){
+      setID(idTerm);
+      const data = await getUserByID(idTerm);
+      if (data !== undefined){
+        setUser(data);
+      }
     }
   };
   const loadImage = async () => {
