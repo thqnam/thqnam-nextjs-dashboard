@@ -25,6 +25,18 @@ export const authConfig = {
       }
       return true;
     },
+    async jwt({ token, user }) {
+      if (user && user.id) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user && typeof token.id === 'string') {
+        (session.user as { id: string }).id = token.id;
+      }
+      return session;
+    }
   },
   providers: [], // Add providers with an empty array for now
 } satisfies NextAuthConfig;
