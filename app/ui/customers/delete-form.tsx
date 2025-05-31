@@ -34,7 +34,7 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
     setImage(data);
   };
   const loadCustomerAndImage = async () => {
-    const customerTerm : CustomerForm = await fetchCustomerById(id);
+    const customerTerm = await fetchCustomerById(id);
     if (!customerTerm){
       notFound();
     } else {
