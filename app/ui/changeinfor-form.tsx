@@ -27,19 +27,22 @@ export default async function ChangeInforForm() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState(image);
   const [images, setImages] = useState([] as ImageField[]);
   const loadInfor = async () => {
     const infor = await getSessionInfor();
     setEmail(`${infor.email}`);
     setName(`${infor.name}`);
     setImage(`${infor.image}`);
-    setSelectedImage(`${infor.image}`)
   };
   const loadImages = async () => {
     const data = await fetchImages();
     setImages(data);
   };
+
+  useEffect(() => {
+    setSelectedImage(image);
+  }, [image]);
 
   useEffect(() => {
     loadInfor();
@@ -154,7 +157,7 @@ export default async function ChangeInforForm() {
             {/* Image_URL */}
             <div>
               <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="image"
               >
                 Choose Image{' '}<Image

@@ -40,11 +40,13 @@ export default function EditInvoiceForm({ id }: { id: string }) {
       notFound();
     } else {
       setInvoice(InvoiceTerm);
-      setSelectedCustomer(InvoiceTerm.customer_id);
       const CustomersTerm = await fetchCustomers();
       setCustomers(CustomersTerm);
     }
   }
+  useEffect(() => {
+    setSelectedCustomer(invoice.customer_id);
+  }, [invoice.customer_id]);
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
     loadInvoiceAndCustomers();
@@ -183,7 +185,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Customer Name */}
           <div className="mb-4">
-            <label htmlFor="customer" className="mb-2 block text-sm font-medium">
+            <label htmlFor="customer" className="flex items gap-2 mb-2 block text-sm font-medium">
               Choose customer{' '}<Image
                                     src={selectedCustomer}
                                     className="rounded-full"

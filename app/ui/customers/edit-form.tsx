@@ -39,11 +39,13 @@ export default function EditCustomerForm({ id }: { id: string }) {
       notFound();
     } else {
       setCustomer(CustomerTerm);
-      setSelectedImage(CustomerTerm.image_url);
       const ImagesTerm = await fetchImages();
       setImages(ImagesTerm);
     }
   }
+  useEffect(() => {
+    setSelectedImage(customer.image_url);
+  }, [customer.image_url]);
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
     loadCustomerAndImages();
@@ -164,7 +166,7 @@ export default function EditCustomerForm({ id }: { id: string }) {
           {/* Image_URL */}
           <div>
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="image_url"
             >
               Choose Image{' '}<Image
