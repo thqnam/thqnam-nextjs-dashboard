@@ -20,8 +20,8 @@ import {
     DeleteUserState,
     resetTarget 
 } from '@/app/lib/actions';
-import { fetchImageByURL, getSessionID } from '@/app/lib/data';
-import { getUserByID } from '@/auth';
+import { fetchImageByURL, getSessionEmail } from '@/app/lib/data';
+import { getUserByEmail } from '@/auth';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function SignDownForm() {
@@ -29,10 +29,10 @@ export default async function SignDownForm() {
   const [user, setUser] = useState({} as User);
   const [image, setImage] = useState({} as ImageField);
   const loadUser = async () => {
-    const idTerm = await getSessionID();
+    const idTerm = await getSessionEmail();
     if (idTerm !== ''){
       setID(idTerm);
-      const data = await getUserByID(idTerm);
+      const data = await getUserByEmail(idTerm);
       if (data !== undefined){
         setUser(data);
       }
@@ -44,12 +44,15 @@ export default async function SignDownForm() {
   };
 
   const loadUserAndImages = async () => {
-    const id = await getSessionID();
-    const userTerm = await getUserByID(id);
-    if (userTerm !== undefined){
-      setUser(userTerm);
-      const imageTerm = await fetchImageByURL(userTerm.image);
-      setImage(imageTerm);
+    const idTerm = await getSessionEmail();
+    if (idTerm !== ''){
+      setID(idTerm);
+      const userTerm = await getUserByEmail(idTerm);
+      if (userTerm !== undefined){
+        setUser(userTerm);
+        const imageTerm = await fetchImageByURL(userTerm.image);
+        setImage(imageTerm);
+      }
     }
   };
 

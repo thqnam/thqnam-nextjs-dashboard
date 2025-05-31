@@ -20,8 +20,8 @@ import {
     ChangeInforState,
     resetTarget 
 } from '@/app/lib/actions';
-import { fetchImages, getSessionID } from '@/app/lib/data';
-import { getUserByID } from '@/auth';
+import { fetchImages, getSessionEmail } from '@/app/lib/data';
+import { getUserByEmail } from '@/auth';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function ChangeInforForm() {
@@ -30,10 +30,10 @@ export default async function ChangeInforForm() {
   const [images, setImages] = useState([] as ImageField[]);
   const [selectedImage, setSelectedImage] = useState(user.image);
   const loadUser = async () => {
-    const idTerm = await getSessionID();
+    const idTerm = await getSessionEmail();
     if (idTerm !== ''){
       setID(idTerm);
-      const data = await getUserByID(idTerm);
+      const data = await getUserByEmail(idTerm);
       if (data !== undefined){
         setUser(data);
       }
