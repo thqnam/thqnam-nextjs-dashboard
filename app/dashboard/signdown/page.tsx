@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import SignDownForm from '@/app/ui/changeinfor-form';
+import SignDownForm from '@/app/ui/signdown-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
 import { Suspense } from 'react';
@@ -27,7 +27,7 @@ export default function ChangeInforPage() {
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },
           {
-            label: 'Change Infor',
+            label: 'Sign Down',
             href: '/dashboard/signdown',
             active: true,
           },
