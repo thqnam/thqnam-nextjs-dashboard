@@ -27,12 +27,14 @@ export default async function ChangeInforForm() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState('');
   const [images, setImages] = useState([] as ImageField[]);
   const loadInfor = async () => {
     const infor = await getSessionInfor();
     setEmail(`${infor.email}`);
     setName(`${infor.name}`);
     setImage(`${infor.image}`);
+    setSelectedImage(`${infor.image}`)
   };
   const loadImages = async () => {
     const data = await fetchImages();
@@ -155,14 +157,21 @@ export default async function ChangeInforForm() {
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="image"
               >
-                Choose Image
+                Choose Image{' '}<Image
+                                  src={selectedImage}
+                                  className="rounded-full"
+                                  alt={`${name}'s profile image`}
+                                  width={28}
+                                  height={28}
+                                />
               </label>
               <div className="relative">
                 <select
                   id="image"
                   name="image"
                   className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  defaultValue={image}
+                  value={selectedImage}
+                  onChange={e => setSelectedImage(e.target.value)}
                   aria-describedby="image-error"
                   required
                   autoFocus
@@ -172,13 +181,6 @@ export default async function ChangeInforForm() {
                   </option>
                   {images.map((image) => (
                     <option key={image.path} value={image.path}>
-                      <Image
-                        src={image.path}
-                        className="rounded-full"
-                        alt={`${image.name} image name`}
-                        width={28}
-                        height={28}
-                      />
                       <p>{image.name}</p>
                     </option>
                   ))}

@@ -20,6 +20,7 @@ import { notFound } from 'next/navigation';
 export default function EditInvoiceForm({ id }: { id: string }) {
   const [invoice, setInvoice] = useState({} as InvoiceForm);
   const [customers, setCustomers] = useState([] as CustomerField[]);
+  const [selectedCustomer, setSelectedCustomer] = useState(invoice.customer_id);
   // Hàm fetch lại dữ liệu
   const loadCustomers = async () => {
     const data = await fetchCustomers();
@@ -39,6 +40,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
       notFound();
     } else {
       setInvoice(InvoiceTerm);
+      setSelectedCustomer(InvoiceTerm.customer_id);
       const CustomersTerm = await fetchCustomers();
       setCustomers(CustomersTerm);
     }
@@ -182,14 +184,21 @@ export default function EditInvoiceForm({ id }: { id: string }) {
           {/* Customer Name */}
           <div className="mb-4">
             <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-              Choose customer
+              Choose customer{' '}<Image
+                                    src={selectedCustomer}
+                                    className="rounded-full"
+                                    alt={`customer's profile picture`}
+                                    width={28}
+                                    height={28}
+                                  />
             </label>
             <div className="relative">
               <select
                 id="customer"
                 name="customerId"
                 className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                defaultValue={invoice.customer_id}
+                value={selectedCustomer}
+                onChange={e => setSelectedCustomer(e.target.value)}
                 aria-describedby="customer-error"
                 required
                 autoFocus
@@ -199,14 +208,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
                 </option>
                 {customers.map((customer) => (
                   <option key={customer.id} value={customer.id}>
-                    <Image
-                      src={customer.image_url}
-                      className="rounded-full"
-                      alt={`${customer.name}'s profile picture`}
-                      width={28}
-                      height={28}
-                    />
-                    <p>{customer.name}</p>
+                    {customer.name}
                   </option>
                 ))}
               </select>
