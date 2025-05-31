@@ -76,7 +76,7 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
 
   if (!customer || !image){
     return (
-      <form action={formAction}>
+      <form >
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Image_URL */}
           <div>

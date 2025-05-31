@@ -45,7 +45,7 @@ export default function Form() {
 
   if (!images){
     return (
-      <form action={formAction}>
+      <form >
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Image_URL */}
           <div>
@@ -116,7 +116,7 @@ export default function Form() {
           >
             Cancel Create
           </button>
-          <Button type="submit" aria-disabled={isPending} disabled>Create Customer</Button>
+          <Button type="submit" disabled>Create Customer</Button>
         </div>
       </form>
     );

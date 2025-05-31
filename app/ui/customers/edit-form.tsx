@@ -63,7 +63,7 @@ export default function EditCustomerForm({ id }: { id: string }) {
   
   if (!customer || !images){
     return (
-      <form action={formAction}>
+      <form >
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Image_URL */}
           <div>
