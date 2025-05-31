@@ -29,8 +29,7 @@ export default async function ChangeInforForm() {
   const [selectedImage, setSelectedImage] = useState(user.image);
   const [images, setImages] = useState([] as ImageField[]);
   const loadUser = async () => {
-    const id = await getSessionID();
-    const data = await getUserByID(id);
+    const data = await getUserByID(await getSessionID());
     if (data !== undefined){
       setUser(data);
     }
