@@ -10,7 +10,6 @@ import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 
 const UserFormSchema = z.object({
-  id: z.string(),
   name: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the name of this user',
@@ -102,7 +101,6 @@ const DeleteCustomerSchema = z.object({
   reid: z.string({
     required_error: 'Please re input Customer ID',
   }),
-  user_id: z.string(),
 });
 
 const DeleteInvoiceSchema = z.object({
@@ -110,16 +108,23 @@ const DeleteInvoiceSchema = z.object({
   reid: z.string({
     required_error: 'Please re input Invoice ID',
   }),
-  user_id: z.string(),
+});
+
+const DeleteUserSchema = z.object({
+  id: z.string(),
+  reid: z.string({
+    required_error: 'Please re input User ID',
+  }),
 });
  
 const CreateInvoice = InvoiceFormSchema.omit({ id: true, date: true, user_id: true});
 const UpdateInvoice = InvoiceFormSchema.omit({ id: true, date: true, user_id: true });
-const CreateCustomer = CustomerFormSchema.omit({id: true, user_id: true});
-const UpdateCustomer = CustomerFormSchema.omit({id: true, user_id: true});
-const DeleteCustomer = DeleteCustomerSchema.omit({id: true, user_id: true});
-const DeleteInvoice = DeleteInvoiceSchema.omit({id: true, user_id: true});
-const CreateUser = UserFormSchema.omit({id: true});
+const CreateCustomer = CustomerFormSchema.omit({ id: true, user_id: true });
+const UpdateCustomer = CustomerFormSchema.omit({ id: true, user_id: true });
+const DeleteCustomer = DeleteCustomerSchema.omit({ id: true});
+const DeleteInvoice = DeleteInvoiceSchema.omit({ id: true });
+const DeleteUser = DeleteUserSchema.omit({});
+const CreateUser = UserFormSchema.omit({});
 const ChangePass = ChangePassFormSchema.omit({});
 const ChangeInfor = ChangeInforFormSchema.omit({});
 
@@ -184,150 +189,16 @@ export type DeleteInvoiceState = {
   message?: string | null;
 };
 
+export type DeleteUserState = {
+  errors?: {
+    reid?: string[];
+  };
+  message?: string | null;
+};
+
 export async function resetTarget(target : string) {
   revalidatePath(target);
   redirect(target);
-}
-
-export async function changeUserInfor(prevState: ChangeInforState, formData: FormData){
-  
-  const validatedFields = ChangeInfor.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    image: formData.get('image'),
-  });
-
-  if (validatedFields.success) {
-    
-    const { name, email, image } = validatedFields.data;
-
-    const id = await getSessionID();
-
-    if (id !== ''){
-      const userID = await getUserByID(id);
-
-      if (userID !== undefined){
-
-        const userEmail = await getUserByEmail(email);
-
-        if (userEmail === undefined){
-
-          const { error } = await supabase
-            .from('users')
-            .update({
-              id: userID.id,
-              name: name,
-              email: email,
-              image: image,
-              password: userID.password,
-              status: userID.status,
-            })
-            .eq('id', userID.id)
-            .eq('email', email);
-          
-          if (error) {
-            return {
-              message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
-            };
-          } else {
-            revalidatePath('/dashboard/');
-            redirect('/dashboard/');
-          }
-          
-        } else {
-          return {
-            message: 'This email compare with a email of user in Database. Failed to Change Infor.',
-          };
-        }
-
-      } else {
-        return {
-          message: 'User of this id do not see in Database. Failed to Change Infor.',
-        };
-      }
-
-    } else {
-      return {
-        message: 'Do not see id in this request. Failed to Change Infor.',
-      };
-    }
-
-  } else {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Change Infor.',
-    };
-  }
-}
-
-export async function changeUserPass(prevState: ChangePassState, formData: FormData){
-  
-  const validatedFields = ChangePass.safeParse({
-    email: formData.get('email'),
-    newpassword: formData.get('newpassword'),
-    renewpassword: formData.get('renewpassword'),
-  });
-
-  if (validatedFields.success) {
-    
-    const { newpassword, renewpassword } = validatedFields.data;
-
-    if (newpassword === renewpassword){
-
-      const email = await getSessionEmail();
-
-      if (email !== ''){
-
-        const user = await getUserByEmail(email);
-
-        if (user !== undefined){
-
-          const hashedPassword = bcrypt.hashSync(newpassword, 10);
-
-          const { error } = await supabase
-            .from('users')
-            .update({
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              password: hashedPassword,
-              status: user.status,
-            })
-            .eq('id', user.id);
-          
-          if (error) {
-            return {
-              message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
-            };
-          } else {
-            revalidatePath('/dashboard/');
-            redirect('/dashboard/');
-          }
-          
-        } else {
-          return {
-            message: 'User of this email do not see in Database. Failed to Change Password.',
-          };
-        }
-
-      } else {
-        return {
-          message: 'Do not see email in this request. Failed to Change Password.',
-        };
-      }
-
-    } else {
-      return {
-        message: 'New Password must be look like Re-New Password. Failed to Change Password.',
-      };
-    }
-
-  } else {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Change Password.',
-    };
-  }
 }
 
 export async function createUser(prevState: UserState, formData: FormData){
@@ -595,110 +466,143 @@ export async function updateCustomer(
   }
 }
 
-export async function deleteInvoice(
-  id: string,
-  prevState: DeleteInvoiceState,
-  formData: FormData,
-) {
-  const validatedFields = DeleteInvoice.safeParse({
-    reid: formData.get('reid')
+export async function changeUserInfor(prevState: ChangeInforState, formData: FormData){
+  
+  const validatedFields = ChangeInfor.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image: formData.get('image'),
   });
+
   if (validatedFields.success) {
-    const { reid } = validatedFields.data;
-    const userID = await getSessionID();
-    if (userID !== ''){
+    
+    const { name, email, image } = validatedFields.data;
 
-      if (id === reid) {
+    const id = await getSessionID();
 
-        const { error } = await supabase
-          .from('invoices')
-          .delete()
-          .eq('id', id);
+    if (id !== ''){
+      const userID = await getUserByID(id);
 
-        if (error) {
-          return { 
-            message: 'Database Error: Failed to Delete Invoice. Reason: ' + error.message 
-          };
+      if (userID !== undefined){
+
+        const userEmail = await getUserByEmail(email);
+
+        if (userEmail === undefined){
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              id: userID.id,
+              name: name,
+              email: email,
+              image: image,
+              password: userID.password,
+              status: userID.status,
+            })
+            .eq('id', userID.id)
+            .eq('email', email);
+          
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+            };
+          } else {
+            revalidatePath('/dashboard/');
+            redirect('/dashboard/');
+          }
+          
         } else {
-          revalidatePath('/dashboard/invoices');
-          redirect('/dashboard/customers');
+          return {
+            message: 'This email compare with a email of user in Database. Failed to Change Infor.',
+          };
         }
-        
+
       } else {
         return {
-          message: 'Please just copy Invoice ID and paste to Re input ID',
+          message: 'User of this id do not see in Database. Failed to Change Infor.',
         };
       }
 
     } else {
       return {
-        message: 'Missing User ID. Failed to Delete Invoice.',
+        message: 'Do not see id in this request. Failed to Change Infor.',
       };
     }
 
   } else {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Delete Invoice.',
+      message: 'Missing Fields. Failed to Change Infor.',
     };
   }
 }
 
-export async function deleteCustomer(
-  id: string,
-  prevState: DeleteCustomerState,
-  formData: FormData,
-) {
-  const validatedFields = DeleteCustomer.safeParse({
-    reid: formData.get('reid')
+export async function changeUserPass(prevState: ChangePassState, formData: FormData){
+  
+  const validatedFields = ChangePass.safeParse({
+    email: formData.get('email'),
+    newpassword: formData.get('newpassword'),
+    renewpassword: formData.get('renewpassword'),
   });
-  if (validatedFields.success) {
-    const { reid } = validatedFields.data;
-    const userID = await getSessionID();
-    if (userID !== ''){
-      if (id === reid) {
-        // Xóa tất cả invoices của customer trước
-        const { error: invoiceError } = await supabase
-          .from('invoices')
-          .delete()
-          .eq('customer_id', id);
 
-        if (invoiceError) {
-          return { 
-            message: 'Database Error: Failed to Delete Customer Invoices. Reason: ' + invoiceError.message 
-          };
-        } else {
-          // Xóa customer
-          const { error: customerError } = await supabase
-            .from('customers')
-            .delete()
-            .eq('id', id);
-          if (customerError) {
-            return { 
-              message: 'Database Error: Failed to Delete Customer. Reason: ' + customerError.message 
+  if (validatedFields.success) {
+    
+    const { newpassword, renewpassword } = validatedFields.data;
+
+    if (newpassword === renewpassword){
+
+      const email = await getSessionEmail();
+
+      if (email !== ''){
+
+        const user = await getUserByEmail(email);
+
+        if (user !== undefined){
+
+          const hashedPassword = bcrypt.hashSync(newpassword, 10);
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              password: hashedPassword,
+              status: user.status,
+            })
+            .eq('id', user.id);
+          
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
             };
           } else {
-            revalidatePath('/dashboard/customers');
-            redirect('/dashboard/customers');
+            revalidatePath('/dashboard/');
+            redirect('/dashboard/');
           }
+          
+        } else {
+          return {
+            message: 'User of this email do not see in Database. Failed to Change Password.',
+          };
         }
 
       } else {
         return {
-          message: 'Please just copy Customer ID and paste to Re input ID',
+          message: 'Do not see email in this request. Failed to Change Password.',
         };
       }
 
     } else {
       return {
-        message: 'Missing User ID. Failed to Delete Customer.',
+        message: 'New Password must be look like Re-New Password. Failed to Change Password.',
       };
     }
 
   } else {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Delete Customer.',
+      message: 'Missing Fields. Failed to Change Password.',
     };
   }
 }
@@ -734,6 +638,146 @@ async function changeUserStatusLogout() {
   } catch (error : any) {
     console.error('Failed to fix user logout. Reason: ', error.message);
     throw new Error('Failed to fix user logout. Reason: ' + error.message);
+  }
+}
+
+export async function deleteInvoice(
+  id: string,
+  prevState: DeleteInvoiceState,
+  formData: FormData,
+) {
+  const validatedFields = DeleteInvoice.safeParse({
+    reid: formData.get('reid')
+  });
+  if (validatedFields.success) {
+    const { reid } = validatedFields.data;
+    const userID = await getSessionID();
+    if (userID !== ''){
+
+      if (id === reid) {
+
+        const { error } = await supabase
+          .from('invoices')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          return { 
+            message: 'Database Error: Failed to Delete Invoice. Reason: ' + error.message 
+          };
+        } else {
+          revalidatePath('/dashboard/invoices');
+          redirect('/dashboard/invoices');
+        }
+        
+      } else {
+        return {
+          message: 'Please just copy Invoice ID and paste to Re input ID',
+        };
+      }
+
+    } else {
+      return {
+        message: 'Missing User ID. Failed to Delete Invoice.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Delete Invoice.',
+    };
+  }
+}
+
+export async function deleteCustomer(
+  id: string,
+  prevState: DeleteCustomerState,
+  formData: FormData,
+) {
+  const validatedFields = DeleteCustomer.safeParse({
+    reid: formData.get('reid')
+  });
+  if (validatedFields.success) {
+    const { reid } = validatedFields.data;
+    const userID = await getSessionID();
+    if (userID !== ''){
+      if (id === reid) {
+        const { error } = await supabase
+            .from('customers')
+            .delete()
+            .eq('id', id);
+        if (error) {
+          return { 
+            message: 'Database Error: Failed to Delete Customer. Reason: ' + error.message 
+          };
+        } else {
+          revalidatePath('/dashboard/customers');
+          redirect('/dashboard/customers');
+        }
+
+      } else {
+        return {
+          message: 'Please just copy Customer ID and paste to Re input ID',
+        };
+      }
+
+    } else {
+      return {
+        message: 'Missing User ID. Failed to Delete Customer.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Delete Customer.',
+    };
+  }
+}
+
+export async function deleteUser(
+  prevState: DeleteUserState,
+  formData: FormData,
+) {
+  const validatedFields = DeleteCustomer.safeParse({
+    reid: formData.get('reid')
+  });
+  if (validatedFields.success) {
+    const { reid } = validatedFields.data;
+    const userID = await getSessionID();
+    if (userID !== ''){
+      if (userID === reid) {
+        const { error } = await supabase
+            .from('users')
+            .delete()
+            .eq('id', userID);
+        if (error) {
+          return { 
+            message: 'Database Error: Failed to Delete User. Reason: ' + error.message 
+          };
+        } else {
+          revalidatePath('/dashboard');
+          redirect('/dashboard');
+        }
+
+      } else {
+        return {
+          message: 'Please just copy User ID and paste to Re input ID',
+        };
+      }
+
+    } else {
+      return {
+        message: 'Missing User ID. Failed to Delete User.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Delete User.',
+    };
   }
 }
 

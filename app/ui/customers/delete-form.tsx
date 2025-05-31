@@ -204,10 +204,16 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
           {/* Image_URL */}
           <div>
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="image_url"
             >
-              Choose Image
+              Choose Image{' '}<Image
+                                  src={image.path}
+                                  className="rounded-full"
+                                  alt={`${image.name} image name`}
+                                  width={28}
+                                  height={28}
+                                />
             </label>
             <div className="relative">
               <select
@@ -219,14 +225,7 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
                 disabled
               >
                 <option key={image.path} value={image.path}>
-                  <Image
-                    src={image.path}
-                    className="rounded-full"
-                    alt={`${image.name} image name`}
-                    width={28}
-                    height={28}
-                  />
-                  <p>{image.name}</p>
+                  {image.name}
                 </option>
               </select>
               <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />

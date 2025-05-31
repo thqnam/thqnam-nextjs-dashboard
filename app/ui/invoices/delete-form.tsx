@@ -219,8 +219,14 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Customer Name */}
           <div className="mb-4">
-            <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-              Choose customer
+            <label htmlFor="customer" className="flex items gap-2 mb-2 block text-sm font-medium">
+              Choose customer{' '}<Image
+                                    src={customer.image_url}
+                                    className="rounded-full"
+                                    alt={`${customer.name}'s profile picture`}
+                                    width={28}
+                                    height={28}
+                                  />
             </label>
             <div className="relative">
               <select
@@ -232,14 +238,7 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
                 disabled
               >
                 <option key={customer.id} value={customer.id}>
-                  <Image
-                    src={customer.image_url}
-                    className="rounded-full"
-                    alt={`${customer.name}'s profile picture`}
-                    width={28}
-                    height={28}
-                  />
-                  <p>{customer.name}</p>
+                  {customer.name}
                 </option>
               </select>
               <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />

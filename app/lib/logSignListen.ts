@@ -22,6 +22,13 @@ export default async function UserGreetingClient({ userEmail }: { userEmail: str
             }
           }
         )
+        .on(
+          'postgres_changes',
+          { event: 'DELETE', schema: 'public', table: 'users', filter: `email=eq.${userEmail}` },
+          async () => {
+            await signOut({ redirectTo: '/' });
+          }
+        )
         .subscribe();
 
       return () => {

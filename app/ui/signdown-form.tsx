@@ -11,23 +11,22 @@ import {
 } from '@heroicons/react/24/outline';
 import { 
   ArrowLeftIcon,
-  ArrowTurnRightUpIcon,
+  ArrowDownIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
 import { 
-    changeUserInfor, 
-    ChangeInforState,
+    deleteUser, 
+    DeleteUserState,
     resetTarget 
 } from '@/app/lib/actions';
-import { fetchImages, getSessionID } from '@/app/lib/data';
+import { fetchImageByURL, getSessionID } from '@/app/lib/data';
 import { getUserByID } from '@/auth';
 import { supabase } from '@/app/lib/supabaseClient';
  
-export default async function ChangeInforForm() {
+export default async function SignDownForm() {
   const [user, setUser] = useState({} as User);
-  const [selectedImage, setSelectedImage] = useState(user.image);
-  const [images, setImages] = useState([] as ImageField[]);
+  const [image, setImage] = useState({} as ImageField);
   const loadUser = async () => {
     const id = await getSessionID();
     const data = await getUserByID(id);
@@ -35,18 +34,23 @@ export default async function ChangeInforForm() {
       setUser(data);
     }
   };
-  const loadImages = async () => {
-    const data = await fetchImages();
-    setImages(data);
+  const loadImage = async () => {
+    const data = await fetchImageByURL(user.image);
+    setImage(data);
+  };
+
+  const loadUserAndImages = async () => {
+    const id = await getSessionID();
+    const userTerm = await getUserByID(id);
+    if (userTerm !== undefined){
+      setUser(userTerm);
+      const imageTerm = await fetchImageByURL(userTerm.image);
+      setImage(imageTerm);
+    }
   };
 
   useEffect(() => {
-    setSelectedImage(user.image);
-  }, [user.image]);
-
-  useEffect(() => {
-    loadUser();
-    loadImages(); 
+    loadUserAndImages(); 
 
     // Lắng nghe realtime chỉ trên customers mà thôi
     const channel = supabase
@@ -54,7 +58,7 @@ export default async function ChangeInforForm() {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'images' },
-        loadImages
+        loadImage
       )
       .on(
         'postgres_changes',
@@ -68,15 +72,15 @@ export default async function ChangeInforForm() {
     };
   }, []);
 
-  const initialState: ChangeInforState = { message: null, errors: {} };
-  const [state, formAction, isPending] = useActionState(changeUserInfor, initialState);
+  const initialState: DeleteUserState = { message: null, errors: {} };
+  const [state, formAction, isPending] = useActionState(deleteUser, initialState);
 
-  if (!user || !images){
+  if (!user || !image){
     return (
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
           <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-            Input for Change Infor
+            Input for Sign Down
           </h1>
           <div className="w-full">
             {/* Image_URL */}
@@ -139,13 +143,13 @@ export default async function ChangeInforForm() {
             </div>
           </div>
           <Button className="mt-4 w-full" disabled>
-            Change Infor <ArrowTurnRightUpIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Sign Down <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
           <button 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             onClick={() => resetTarget('/dashboard')}
           >
-            Cancel Change <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
           </button>
         </div>
       </form>
@@ -156,7 +160,7 @@ export default async function ChangeInforForm() {
       <form action={formAction} className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
           <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-            Input for Change Infor
+            Input for Sign Down
           </h1>
           <div className="w-full">
             {/* Image_URL */}
@@ -166,7 +170,7 @@ export default async function ChangeInforForm() {
                 htmlFor="image"
               >
                 Choose Image{' '}<Image
-                                  src={selectedImage}
+                                  src={image.path}
                                   className="rounded-full"
                                   alt={`${user.name}'s profile image`}
                                   width={28}
@@ -178,30 +182,14 @@ export default async function ChangeInforForm() {
                   id="image"
                   name="image"
                   className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  value={selectedImage}
-                  onChange={e => setSelectedImage(e.target.value)}
-                  aria-describedby="image-error"
-                  required
-                  autoFocus
+                  defaultValue={image.path}
+                  disabled
                 >
-                  <option value="" disabled>
-                    Select a Image
+                  <option key={image.path} value={image.path}>
+                    {image.name}
                   </option>
-                  {images.map((image) => (
-                    <option key={image.path} value={image.path}>
-                      {image.name}
-                    </option>
-                  ))}
                 </select>
                 <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-              <div id="image-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.image &&
-                  state.errors.image.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                        {error}
-                    </p>
-                ))}
               </div>
             </div>
             <div>
@@ -217,20 +205,10 @@ export default async function ChangeInforForm() {
                   id="email"
                   type="email"
                   name="email"
-                  placeholder="Enter your email"
-                  aria-describedby='email-error'
                   defaultValue={user.email}
-                  required
+                  disabled
                 />
                 <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-              <div id="email-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.email &&
-                  state.errors.email.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                      {error}
-                    </p>
-                ))}
               </div>
             </div>
             <div>
@@ -246,20 +224,60 @@ export default async function ChangeInforForm() {
                   id="name"
                   type="text"
                   name="name"
-                  placeholder="Enter your nick name"
-                  aria-describedby='name-error'
                   defaultValue={user.name}
-                  required
+                  disabled
                 />
                 <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
-              <div id="name-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.name &&
-                  state.errors.name.map((error: string) => (
-                      <p className="mt-2 text-sm text-red-500" key={error}>
-                        {error}
-                      </p>
-                  ))}
+            </div>
+            {/* ID */}
+            <div>
+              <label
+                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="id"
+              >
+                Customer ID
+              </label>
+              <div className="relative">
+                <input
+                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  id="id"
+                  type="text"
+                  name="id"
+                  defaultValue={user.id}
+                  readOnly
+                />
+                <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+            {/* Re input ID for delete*/}
+            <div>
+              <label
+                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="reid"
+              >
+                Re Input ID
+              </label>
+              <div className="relative">
+                <input
+                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  id="reid"
+                  type="text"
+                  name="reid"
+                  placeholder='Re input customer ID to confirm deletion'
+                  aria-describedby="reid-error"
+                  required
+                  autoFocus
+                />
+                <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+              <div id="reid-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.reid &&
+                  state.errors.reid.map((error: string) => (
+                    <p className="mt-2 text-sm text-red-500" key={error}>
+                      {error}
+                    </p>
+                ))}
               </div>
             </div>
           </div>
@@ -276,13 +294,13 @@ export default async function ChangeInforForm() {
             )}
           </div>
           <Button className="mt-4 w-full" aria-disabled={isPending}>
-            Change Infor <ArrowTurnRightUpIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Sign Down <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
           <button 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             onClick={() => resetTarget('/dashboard')}
           >
-            Cancel Change <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
           </button>
         </div>
       </form>
