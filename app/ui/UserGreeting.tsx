@@ -18,9 +18,6 @@ export default async function UserGreeting() {
             height={28}
           />{' '}<b>{sessionUser.name}</b>
         </div>
-        <div className="text-sm text-gray-700 text-left md:text-center">
-          Id: <b>{sessionUser.id}</b>
-        </div>
         <div className="text-sm text-gray-700 text-left md:text-right">
           Email: <b>{sessionUser.email}</b>
         </div>
