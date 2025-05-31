@@ -25,11 +25,14 @@ import { getUserByID } from '@/auth';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function ChangeInforForm() {
+  const [id, setID] = useState('');
   const [user, setUser] = useState({} as User);
-  const [selectedImage, setSelectedImage] = useState(user.image);
   const [images, setImages] = useState([] as ImageField[]);
+  const [selectedImage, setSelectedImage] = useState(user.image);
   const loadUser = async () => {
-    const data = await getUserByID(await getSessionID());
+    const idTerm = await getSessionID();
+    setID(id);
+    const data = await getUserByID(idTerm);
     if (data !== undefined){
       setUser(data);
     }
@@ -70,7 +73,7 @@ export default async function ChangeInforForm() {
   const initialState: ChangeInforState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(changeUserInfor, initialState);
 
-  if (!user || !images){
+  if (!user || !images || id === ''){
     return (
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">

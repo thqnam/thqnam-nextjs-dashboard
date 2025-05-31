@@ -25,10 +25,13 @@ import { getUserByID } from '@/auth';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function SignDownForm() {
+  const [id, setID] = useState('');
   const [user, setUser] = useState({} as User);
   const [image, setImage] = useState({} as ImageField);
   const loadUser = async () => {
-    const data = await getUserByID(await getSessionID());
+    const idTerm = await getSessionID();
+    setID(id);
+    const data = await getUserByID(idTerm);
     if (data !== undefined){
       setUser(data);
     }
@@ -74,7 +77,7 @@ export default async function SignDownForm() {
   const initialState: DeleteUserState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(deleteUser, initialState);
 
-  if (!user || !image){
+  if (!user || !image || id === ''){
     return (
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
