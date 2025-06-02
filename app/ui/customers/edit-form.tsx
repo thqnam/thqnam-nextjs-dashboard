@@ -142,18 +142,22 @@ export default function EditCustomerForm({ id }: { id: string }) {
         </div>
         <div className="mt-6 flex justify-evenly gap-4">
           <button
-            disabled
             onClick={() => resetTarget('/dashboard/customers')}
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >
             Cancel Edit
           </button>
           <button
-            disabled
             onClick={() => resetTarget(`/dashboard/customers/${id}/delete`)}
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >
             Delete Customer
+          </button>
+          <button
+            disabled
+            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          >
+            Reset Customer
           </button>
           <Button type="submit" disabled>Edit Customer</Button>
         </div>
@@ -161,7 +165,7 @@ export default function EditCustomerForm({ id }: { id: string }) {
     );
   } else {
     return (
-      <form action={formAction}>
+      <form action={formAction} onReset={() => {setSelectedImage('')}}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Image_URL */}
           <div>
@@ -292,6 +296,13 @@ export default function EditCustomerForm({ id }: { id: string }) {
           </button>
           <button
             onClick={() => resetTarget(`/dashboard/customers/${id}/delete`)}
+            aria-disabled={isPending}
+            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          >
+            Delete Customer
+          </button>
+          <button
+            type='reset'
             aria-disabled={isPending}
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >

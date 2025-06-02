@@ -117,14 +117,20 @@ export default function Form() {
           >
             Cancel Create
           </button>
-          <Button type="submit" disabled>Create Customer</Button>
+          <button
+            disabled
+            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          >
+            Reset Customer
+          </button>
+          <Button disabled>Create Customer</Button>
         </div>
       </form>
     );
 
   } else {
     return (
-      <form action={formAction}>
+      <form action={formAction} onReset={() => {setSelectedImage('')}}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Image_URL */}
           <div>
@@ -247,10 +253,18 @@ export default function Form() {
         </div>
         <div className="mt-6 flex justify-evenly gap-4">
           <button
+            aria-disabled={isPending}
             onClick={() => resetTarget('/dashboard/customers')}
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >
             Cancel Create
+          </button>
+          <button
+            type='reset'
+            aria-disabled={isPending}
+            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          >
+            Reset Customer
           </button>
           <Button type="submit" aria-disabled={isPending}>Create Customer</Button>
         </div>

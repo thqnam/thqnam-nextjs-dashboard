@@ -178,6 +178,9 @@ export default function SignUpForm() {
           <Button className="mt-4 w-full" disabled>
             Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
+          <Button className="mt-4 w-full" disabled>
+            Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             href="/signin"
@@ -196,7 +199,7 @@ export default function SignUpForm() {
 
   } else {
     return (
-      <form action={formAction} className="space-y-3">
+      <form action={formAction} className="space-y-3" onReset={() => {setSelectedImage('')}}>
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
           <h1 className={`${lusitana.className} mb-3 text-2xl`}>
             Input some infor for Sign Up
@@ -383,15 +386,20 @@ export default function SignUpForm() {
           <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
             Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
+          <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
+            Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             href="/signin"
+            aria-disabled={isPending}
           >
-            Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Sign in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Link>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             href="/"
+            aria-disabled={isPending}
           >
             Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Link>

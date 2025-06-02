@@ -101,17 +101,22 @@ export default function SignInForm() {
           )}
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
-          Log In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Sign In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
+          Reset Sign<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
           href="/signup"
+          aria-disabled={isPending}
         >
           Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
           href="/"
+          aria-disabled={isPending}
         >
           Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
