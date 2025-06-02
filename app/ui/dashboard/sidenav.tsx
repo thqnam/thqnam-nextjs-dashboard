@@ -20,6 +20,10 @@ export default function SideNav() {
         if (userStatus === 'logout' && buttonRef.current){
           buttonRef.current.click();
         }
+      } else {
+        if (buttonRef.current){
+          buttonRef.current.click();
+        }
       }
     };
     checkUserStatus();
