@@ -12,17 +12,27 @@ import {
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
 import { changeUserPass, ChangePassState, resetTarget } from '@/app/lib/actions';
-import { getSessionEmail } from '@/app/lib/data';
  
 export default async function ChangePassForm() {
-  const [email, setEmail] = useState('');
-  const loadEmail = async () => {
-    const data = await getSessionEmail();
-    setEmail(data);
-  };
-
+  const [passwordInputType, setPasswordInputType] = useState('');
+  const [repasswordInputType, setRePasswordInputType] = useState('');
+  const changePasswordInputStatus = () => {
+    if (passwordInputType === 'password'){
+      setPasswordInputType('text');
+    } else {
+      setPasswordInputType('password');
+    }
+  }
+  const changeRePasswordInputStatus = () => {
+    if (repasswordInputType === 'password'){
+      setRePasswordInputType('text');
+    } else {
+      setRePasswordInputType('password');
+    }
+  }
   useEffect(() => {
-    loadEmail();
+    setPasswordInputType('password');
+    setRePasswordInputType('password');
   }, []);
 
   const initialState: ChangePassState = { message: null, errors: {} };
@@ -40,13 +50,13 @@ export default async function ChangePassForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="newpassword"
             >
-              New Password
+              New Password{' '}<button onClick={changePasswordInputStatus}>{passwordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
             </label>
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="newpassword"
-                type="password"
+                type={passwordInputType}
                 name="newpassword"
                 placeholder="Enter your new password"
                 aria-describedby='newpassword-error'
@@ -69,13 +79,13 @@ export default async function ChangePassForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="renewpassword"
             >
-              Re-New Password
+              Re-New Password{' '}<button onClick={changeRePasswordInputStatus}>{repasswordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
             </label>
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="renewpassword"
-                type="password"
+                type={repasswordInputType}
                 name="renewpassword"
                 placeholder="Re-Enter your new password"
                 aria-describedby='renewpassword-error'

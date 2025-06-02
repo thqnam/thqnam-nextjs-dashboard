@@ -26,9 +26,29 @@ import Link from 'next/link';
 export default function SignUpForm() {
     const [images, setImages] = useState([] as ImageField[]);
     const [selectedImage, setSelectedImage] = useState('');
+    const [passwordInputType, setPasswordInputType] = useState('');
+    const [repasswordInputType, setRePasswordInputType] = useState('');
+    const changePasswordInputStatus = () => {
+      if (passwordInputType === 'password'){
+        setPasswordInputType('text');
+      } else {
+        setPasswordInputType('password');
+      }
+    }
+    const changeRePasswordInputStatus = () => {
+      if (repasswordInputType === 'password'){
+        setRePasswordInputType('text');
+      } else {
+        setRePasswordInputType('password');
+      }
+    }
+    useEffect(() => {
+      setPasswordInputType('password');
+      setRePasswordInputType('password');
+    }, []);
     // Hàm fetch lại dữ liệu
     const loadImages = async () => {
-    const data = await fetchImages();
+      const data = await fetchImages();
       setImages(data);
     };
     // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
@@ -62,10 +82,10 @@ export default function SignUpForm() {
           <div className="w-full">
             <div>
               <label
-                  className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                  htmlFor="image"
+                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="image"
               >
-                  Choose Image
+                Choose Image
               </label>
               <div className="relative">
                 <select
@@ -158,18 +178,6 @@ export default function SignUpForm() {
           <Button className="mt-4 w-full" disabled>
             Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
-          <div
-            className="flex h-8 items-end space-x-1"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {state.message && (
-              <>
-                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-500">{state.message}</p>
-              </>
-            )}
-          </div>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             href="/signin"
@@ -196,8 +204,8 @@ export default function SignUpForm() {
           <div className="w-full">
             <div>
               <label
-                  className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
-                  htmlFor="image"
+                className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="image"
               >
                 Choose Image{' '}<Image
                                   src={selectedImage}
@@ -297,19 +305,18 @@ export default function SignUpForm() {
             </div>
             <div className="mt-4">
               <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="password"
               >
-                Password
+                Password{' '}<button onClick={changePasswordInputStatus}>{passwordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
               </label>
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                   id="password"
-                  type="password"
+                  type={passwordInputType}
                   name="password"
                   placeholder="Enter your password"
-                  aria-describedby='password-error'
                   required
                   minLength={10}
                 />
@@ -326,16 +333,16 @@ export default function SignUpForm() {
             </div>
             <div className="mt-4">
               <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="repassword"
               >
-                Re-Password
+                Re-Password{' '}<button onClick={changeRePasswordInputStatus}>{repasswordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
               </label>
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                   id="repassword"
-                  type="password"
+                  type={repasswordInputType}
                   name="repassword"
                   placeholder="Re-Enter your password"
                   aria-describedby='repassword-error'

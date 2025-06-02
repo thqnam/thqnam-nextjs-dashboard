@@ -12,6 +12,7 @@ import {
   ArrowUpIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
+import { useEffect, useState } from 'react';
 import { useActionState } from 'react';
 import { authenticate } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
@@ -24,6 +25,17 @@ export default function SignInForm() {
     authenticate,
     undefined,
   );
+  const [passwordInputType, setPasswordInputType] = useState('');
+  const changePasswordInputStatus = () => {
+    if (passwordInputType === 'password'){
+      setPasswordInputType('text');
+    } else {
+      setPasswordInputType('password');
+    }
+  }
+  useEffect(() => {
+    setPasswordInputType('password');
+  }, []);
  
   return (
     <form action={formAction} className="space-y-3">
@@ -53,16 +65,16 @@ export default function SignInForm() {
           </div>
           <div className="mt-4">
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="password"
             >
-              Password
+              Password{' '}<button onClick={changePasswordInputStatus}>{passwordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
             </label>
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="password"
-                type="password"
+                type={passwordInputType}
                 name="password"
                 placeholder="Enter your password"
                 required

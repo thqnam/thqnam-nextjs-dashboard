@@ -11,10 +11,10 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
     .from('users')
     .select('*')
     .eq('email', email)
-    .single()
+    .maybeSingle();
   if (error) {
-    console.error('Failed to fetch user: Reason', error.message);
-    throw new Error('Failed to fetch user. Reason' + error.message); 
+    console.error('Failed to fetch user by email: Reason', error.message);
+    throw new Error('Failed to fetch user by email. Reason' + error.message); 
   } else {
     const user = data as User;
     return user;
@@ -26,10 +26,10 @@ export async function getUserByID(id: string): Promise<User | undefined> {
     .from('users')
     .select('*')
     .eq('id', id)
-    .single()
+    .maybeSingle();
   if (error) {
-    console.error('Failed to fetch user: Reason', error.message);
-    throw new Error('Failed to fetch user. Reason' + error.message); 
+    console.error('Failed to fetch user by id: Reason', error.message);
+    throw new Error('Failed to fetch user by id. Reason' + error.message); 
   } else {
     const user = data as User;
     return user;
