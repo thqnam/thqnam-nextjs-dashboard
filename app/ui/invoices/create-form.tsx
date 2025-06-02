@@ -18,6 +18,7 @@ import { fetchCustomers } from '@/app/lib/data';
 
 export default function Form() {
   const [customers, setCustomers] = useState([] as CustomerField[]);
+  const [selectedCustomer, setSelectedCustomer] = useState('');
   const [selectedCustomerImage, setSelectedCustomerImage] = useState('');
   // Hàm fetch lại dữ liệu
   const loadCustomers = async () => {
@@ -152,7 +153,7 @@ export default function Form() {
     );
   } else {
     return (
-      <form action={formAction} onReset={() => {setSelectedCustomerImage('')}}>
+      <form action={formAction} onReset={() => {setSelectedCustomer('')}}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Customer Name */}
           <div className="mb-4">
@@ -172,7 +173,12 @@ export default function Form() {
                 id="customer"
                 name="customerId"
                 className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                defaultValue=""
+                value={selectedCustomer}
+                onChange={e => {
+                  setSelectedCustomer(e.target.value);
+                  const customer = customers.find(c => c.id === e.target.value);
+                  setSelectedCustomerImage(customer?.image_url || '');
+                }}
                 autoFocus
                 required
                 aria-describedby="customer-error"
@@ -181,7 +187,7 @@ export default function Form() {
                   Select a customer
                 </option>
                 {customers.map((customer) => (
-                  <option key={customer.id} value={customer.id} onSelect={e => setSelectedCustomerImage(customer.image_url)}>
+                  <option key={customer.id} value={customer.id}>
                     {customer.name}
                   </option>
                 ))}

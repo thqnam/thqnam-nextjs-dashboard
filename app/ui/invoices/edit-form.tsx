@@ -206,7 +206,11 @@ export default function EditInvoiceForm({ id }: { id: string }) {
                 name="customerId"
                 className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 value={selectedCustomer}
-                onChange={e => setSelectedCustomer(e.target.value)}
+                onChange={e => {
+                  setSelectedCustomer(e.target.value);
+                  const customer = customers.find(c => c.id === e.target.value);
+                  setSelectedCustomerImage(customer?.image_url || '');
+                }}
                 aria-describedby="customer-error"
                 required
                 autoFocus
@@ -215,7 +219,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
                   Select a customer
                 </option>
                 {customers.map((customer) => (
-                  <option key={customer.id} value={customer.id} onSelect={e => setSelectedCustomerImage(customer.image_url)}>
+                  <option key={customer.id} value={customer.id}>
                     {customer.name}
                   </option>
                 ))}
