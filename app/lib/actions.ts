@@ -241,7 +241,7 @@ export async function createUser(prevState: UserState, formData: FormData){
             message: 'Database Error: Failed to Create User. Reason: ' + error.message,
           };
         } else {
-          redirect('/login');
+          redirect('/signin');
         }
 
       } else {
