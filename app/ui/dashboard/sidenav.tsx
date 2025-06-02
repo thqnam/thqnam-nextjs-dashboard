@@ -15,7 +15,7 @@ export default function SideNav() {
     const checkUserStatus = async () => {
       const email = await getSessionEmail();
       const user = await getUserByEmail(email);
-      if (user !== undefined){
+      if (user !== undefined && user !== null){
         const userStatus = user.status;
         if (userStatus === 'logout' && buttonRef.current){
           buttonRef.current.click();

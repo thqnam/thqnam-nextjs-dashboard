@@ -260,11 +260,11 @@ export default async function SignDownForm() {
             {/* Re input ID for delete*/}
             <div>
               <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                className="flex flex-col mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="reid"
               >
-                Re Input User ID:
-                {user.id}
+                <p>Re Input User ID:</p>
+                <p>{user.id}</p>
               </label>
               <div className="relative">
                 <input
@@ -304,9 +304,13 @@ export default async function SignDownForm() {
           <Button className="mt-4 w-full" aria-disabled={isPending}>
             Sign Down <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
+          <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
+            Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
           <button 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             onClick={() => resetTarget('/dashboard')}
+            aria-disabled={isPending}
           >
             Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
           </button>
