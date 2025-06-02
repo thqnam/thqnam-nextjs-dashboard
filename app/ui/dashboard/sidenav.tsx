@@ -6,7 +6,7 @@ import { PowerIcon, ArrowTurnRightUpIcon, ArrowTurnLeftUpIcon, ArrowDownIcon } f
 import { resetTarget, logOut } from '@/app/lib/actions';
 import { getSessionEmail } from '@/app/lib/data';
 import { useEffect, useRef } from 'react';
-import { getUserByEmail } from '@/auth';
+import { getUserByEmail, signOut } from '@/auth';
 
 export default function SideNav() {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -15,15 +15,13 @@ export default function SideNav() {
     const checkUserStatus = async () => {
       const email = await getSessionEmail();
       const user = await getUserByEmail(email);
-      if (user !== undefined && user !== null){
+      if (user !== undefined){
         const userStatus = user.status;
         if (userStatus === 'logout' && buttonRef.current){
           buttonRef.current.click();
         }
-      } else {
-        if (buttonRef.current){
-          buttonRef.current.click();
-        }
+      } else if(user === null){
+        await signOut({ redirectTo: '/' });
       }
     };
     checkUserStatus();
