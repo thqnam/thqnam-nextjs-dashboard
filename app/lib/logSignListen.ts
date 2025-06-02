@@ -2,15 +2,28 @@
 
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { signOut } from '@/auth';
+import { signOut, getUserByEmail } from '@/auth';
 
 export default async function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
+
+  const checkUserStatus = async (email : string) => {
+    const user = await getUserByEmail(email);
+    if (user !== undefined){
+      const userStatus = user.status;
+      if (userStatus === 'logout'){
+        await signOut({ redirectTo: '/' });
+      }
+    } else {
+      await signOut({ redirectTo: '/' });
+    }
+  };
 
   useEffect(() => {
     // Không lắng nghe nếu userEmail không hợp lệ
     if (userEmail === '' || userEmail === null || userEmail === undefined){
       return;
     } else {
+      checkUserStatus(userEmail);
       const channel = supabase
         .channel('users-status')
         .on(
