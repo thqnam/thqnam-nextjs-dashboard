@@ -241,7 +241,7 @@ export async function createUser(prevState: UserState, formData: FormData){
             message: 'Database Error: Failed to Create User. Reason: ' + error.message,
           };
         } else {
-          redirect('/');
+          redirect('/login');
         }
 
       } else {
@@ -613,7 +613,7 @@ async function changeUserStatusLogout() {
     if (email !== ''){
       const user = await getUserByEmail(email);
       if (user !== undefined){
-        const { error } = await supabase
+        const { error, count } = await supabase
           .from('users')
           .update({
             id: user.id,
@@ -624,8 +624,12 @@ async function changeUserStatusLogout() {
           })
           .eq('email', email)
           .eq('status', 'login');
-        if (error) {
-          throw error;
+        if (count === 0){
+          return;
+        } else {
+          if (error) {
+            throw error;
+          }
         }
       } 
     } else {
