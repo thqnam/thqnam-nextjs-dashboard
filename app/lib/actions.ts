@@ -612,7 +612,7 @@ async function changeUserStatusLogout() {
     const email = await getSessionEmail();
     if (email !== ''){
       const user = await getUserByEmail(email);
-      if (user !== undefined && user !== null){
+      if (user !== undefined){
         const { error } = await supabase
           .from('users')
           .update({
@@ -627,6 +627,8 @@ async function changeUserStatusLogout() {
         if (error) {
           throw error;
         }
+      } else if (user === null){
+
       } else {
         console.error('Failed to fetch data user.');
         throw new Error("Failed to fetch data user.");

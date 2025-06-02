@@ -20,8 +20,8 @@ export default function SideNav() {
         if (userStatus === 'logout' && buttonRef.current){
           buttonRef.current.click();
         }
-      } else if(user === null){
-        await signOut({ redirectTo: '/' });
+      } else if(user === null && buttonRef.current){
+        buttonRef.current.click();
       }
     };
     checkUserStatus();
