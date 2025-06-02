@@ -47,10 +47,13 @@ export default async function ChangePassForm() {
         <div className="w-full">
           <div className="mt-4">
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="newpassword"
             >
-              New Password{' '}<button onClick={changePasswordInputStatus}>{passwordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
+              New Password{' '}
+              <button type="button" onClick={changePasswordInputStatus}>
+                {passwordInputType === 'password' ? '(Unhide)' : '(Hide)'}
+              </button>
             </label>
             <div className="relative">
               <input
@@ -76,10 +79,13 @@ export default async function ChangePassForm() {
           </div>
           <div className="mt-4">
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="renewpassword"
             >
-              Re-New Password{' '}<button onClick={changeRePasswordInputStatus}>{repasswordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
+              Re-New Password{' '}
+              <button type="button" onClick={changeRePasswordInputStatus}>
+                {repasswordInputType === 'password' ? '(Unhide)' : '(Hide)'}
+              </button>
             </label>
             <div className="relative">
               <input

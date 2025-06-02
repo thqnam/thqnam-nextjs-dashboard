@@ -308,7 +308,10 @@ export default function SignUpForm() {
                 className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="password"
               >
-                Password{' '}<button onClick={changePasswordInputStatus}>{passwordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
+                Password{' '}
+                <button type="button" onClick={changePasswordInputStatus}>
+                  {passwordInputType === 'password' ? '(Unhide)' : '(Hide)'}
+                </button>
               </label>
               <div className="relative">
                 <input
@@ -336,7 +339,10 @@ export default function SignUpForm() {
                 className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="repassword"
               >
-                Re-Password{' '}<button onClick={changeRePasswordInputStatus}>{repasswordInputType === 'password' ? '(Unhide)' : '(Hide)'}</button>
+                Re-Password{' '}
+                <button type="button" onClick={changeRePasswordInputStatus}>
+                  {repasswordInputType === 'password' ? '(Unhide)' : '(Hide)'}
+                </button>
               </label>
               <div className="relative">
                 <input
