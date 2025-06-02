@@ -217,7 +217,7 @@ export async function createUser(prevState: UserState, formData: FormData){
     const { name, email, image, password, repassword } = validatedFields.data;
     const user = await getUserByEmail(email);
 
-    if (user === undefined){
+    if (user !== undefined){
 
       if (password === repassword){
 
