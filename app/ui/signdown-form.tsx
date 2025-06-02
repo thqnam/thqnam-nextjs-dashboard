@@ -61,7 +61,7 @@ export default async function SignDownForm() {
 
     // Lắng nghe realtime chỉ trên customers mà thôi
     const channel = supabase
-      .channel('user-edit')
+      .channel('user-delete')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'images' },

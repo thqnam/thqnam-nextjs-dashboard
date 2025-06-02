@@ -25,6 +25,7 @@ import Link from 'next/link';
  
 export default function SignUpForm() {
     const [images, setImages] = useState([] as ImageField[]);
+    const [selectedImage, setSelectedImage] = useState('');
     // Hàm fetch lại dữ liệu
     const loadImages = async () => {
     const data = await fetchImages();
@@ -195,10 +196,17 @@ export default function SignUpForm() {
           <div className="w-full">
             <div>
               <label
-                  className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                  className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                   htmlFor="image"
               >
-                  Choose Image
+                Choose Image{' '}<Image
+                                  src={selectedImage}
+                                  className="rounded-full"
+                                  alt={`Choosed profile picture`}
+                                  width={28}
+                                  height={28}
+                                  hidden={selectedImage === ''}
+                                />
               </label>
               <div className="relative">
                 <select
@@ -209,20 +217,14 @@ export default function SignUpForm() {
                   autoFocus
                   required
                   aria-describedby="image-error"
+                  onChange={e => setSelectedImage(e.target.value)}
                 >
                   <option value="" disabled>
                     Select a Image
                   </option>
                   {images.map((image) => (
                     <option key={image.path} value={image.path}>
-                      <Image
-                        src={image.path}
-                        className="rounded-full"
-                        alt={`${image.name} image name`}
-                        width={28}
-                        height={28}
-                      />
-                      <p>{image.name}</p>
+                      {image.name}
                     </option>
                   ))}
                 </select>

@@ -21,6 +21,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
   const [invoice, setInvoice] = useState({} as InvoiceForm);
   const [customers, setCustomers] = useState([] as CustomerField[]);
   const [selectedCustomer, setSelectedCustomer] = useState(invoice.customer_id);
+  const [selectedCustomerImage, setSelectedCustomerImage] = useState('');
   // Hàm fetch lại dữ liệu
   const loadCustomers = async () => {
     const data = await fetchCustomers();
@@ -187,7 +188,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
           <div className="mb-4">
             <label htmlFor="customer" className="flex items gap-2 mb-2 block text-sm font-medium">
               Choose customer{' '}<Image
-                                    src={selectedCustomer}
+                                    src={selectedCustomerImage}
                                     className="rounded-full"
                                     alt={`customer's profile picture`}
                                     width={28}
@@ -209,7 +210,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
                   Select a customer
                 </option>
                 {customers.map((customer) => (
-                  <option key={customer.id} value={customer.id}>
+                  <option key={customer.id} value={customer.id} onSelect={e => setSelectedCustomerImage(customer.image_url)}>
                     {customer.name}
                   </option>
                 ))}
