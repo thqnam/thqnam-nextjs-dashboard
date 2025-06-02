@@ -306,7 +306,7 @@ export default function EditCustomerForm({ id }: { id: string }) {
             aria-disabled={isPending}
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >
-            Delete Customer
+            Reset Customer
           </button>
           <Button type="submit" aria-disabled={isPending}>Edit Customer</Button>
         </div>
