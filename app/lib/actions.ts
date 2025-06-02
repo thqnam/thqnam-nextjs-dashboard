@@ -217,7 +217,7 @@ export async function createUser(prevState: UserState, formData: FormData){
     const { name, email, image, password, repassword } = validatedFields.data;
     const user = await getUserByEmail(email);
 
-    if (user === undefined){
+    if (user === undefined || user === null){
 
       if (password === repassword){
 
@@ -483,11 +483,11 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
     if (id !== ''){
       const userID = await getUserByID(id);
 
-      if (userID !== undefined){
+      if (userID !== undefined && userID !== null){
 
         const userEmail = await getUserByEmail(email);
 
-        if (userEmail === undefined){
+        if (userEmail === undefined || userEmail === null){
 
           const { error } = await supabase
             .from('users')
@@ -612,7 +612,7 @@ async function changeUserStatusLogout() {
     const email = await getSessionEmail();
     if (email !== ''){
       const user = await getUserByEmail(email);
-      if (user !== undefined){
+      if (user !== undefined && user !== null){
         const { error } = await supabase
           .from('users')
           .update({
