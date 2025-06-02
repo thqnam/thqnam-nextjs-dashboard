@@ -148,44 +148,25 @@ export default async function SignDownForm() {
                 <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
             </div>
-            {/* ID */}
-                      <div>
-                        <label
-                          className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                          htmlFor="id"
-                        >
-                          Customer ID
-                        </label>
-                        <div className="relative">
-                          <input
-                            className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                            id="id"
-                            type="text"
-                            name="id"
-                            disabled
-                          />
-                          <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                        </div>
-                      </div>
-                      {/* Re input ID for delete*/}
-                      <div>
-                        <label
-                          className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                          htmlFor="reid"
-                        >
-                          Re Input ID
-                        </label>
-                        <div className="relative">
-                          <input
-                            className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                            id="reid"
-                            type="text"
-                            name="reid"
-                            disabled
-                          />
-                          <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                        </div>
-                      </div>
+            {/* Re input ID for delete*/}
+            <div>
+            <label
+                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="reid"
+            >
+                Re Input User ID
+            </label>
+            <div className="relative">
+                <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="reid"
+                type="text"
+                name="reid"
+                disabled
+                />
+                <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+            </div>
           </div>
           <Button className="mt-4 w-full" disabled>
             Sign Down <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
@@ -214,13 +195,14 @@ export default async function SignDownForm() {
                 className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="image"
               >
-                Choose Image{' '}<Image
-                                  src={image.path}
-                                  className="rounded-full"
-                                  alt={`${user.name}'s profile image`}
-                                  width={28}
-                                  height={28}
-                                />
+                Choose Image{' '}
+                <Image
+                    src={image.path}
+                    className="rounded-full"
+                    alt={`${user.name}'s profile image`}
+                    width={28}
+                    height={28}
+                />
               </label>
               <div className="relative">
                 <select
@@ -275,33 +257,14 @@ export default async function SignDownForm() {
                 <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
             </div>
-            {/* ID */}
-            <div>
-              <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="id"
-              >
-                Customer ID
-              </label>
-              <div className="relative">
-                <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  id="id"
-                  type="text"
-                  name="id"
-                  defaultValue={user.id}
-                  readOnly
-                />
-                <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-            </div>
             {/* Re input ID for delete*/}
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="reid"
               >
-                Re Input ID
+                Re Input User ID:
+                {user.id}
               </label>
               <div className="relative">
                 <input

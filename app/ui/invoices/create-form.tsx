@@ -18,6 +18,7 @@ import { fetchCustomers } from '@/app/lib/data';
 
 export default function Form() {
   const [customers, setCustomers] = useState([] as CustomerField[]);
+  const [selectedCustomerImage, setSelectedCustomerImage] = useState('');
   // Hàm fetch lại dữ liệu
   const loadCustomers = async () => {
     const data = await fetchCustomers();
@@ -150,8 +151,15 @@ export default function Form() {
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Customer Name */}
           <div className="mb-4">
-            <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-              Choose customer
+            <label htmlFor="customer" className="flex items gap-2 mb-2 block text-sm font-medium">
+              Choose customer{' '}
+              <Image
+                src={selectedCustomerImage}
+                className="rounded-full"
+                alt={`customer's profile picture`}
+                width={28}
+                height={28}
+              />
             </label>
             <div className="relative">
               <select
@@ -167,15 +175,8 @@ export default function Form() {
                   Select a customer
                 </option>
                 {customers.map((customer) => (
-                  <option key={customer.id} value={customer.id}>
-                    <Image
-                      src={customer.image_url}
-                      className="rounded-full"
-                      alt={`${customer.name}'s profile picture`}
-                      width={28}
-                      height={28}
-                    />
-                    <p>{customer.name}</p>
+                  <option key={customer.id} value={customer.id} onSelect={e => setSelectedCustomerImage(customer.image_url)}>
+                    {customer.name}
                   </option>
                 ))}
               </select>
@@ -204,8 +205,6 @@ export default function Form() {
                   type="number"
                   step="0.01"
                   placeholder="Enter USD amount"
-                  autoFocus
-                  required
                   aria-describedby="amount-error"
                   className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 />

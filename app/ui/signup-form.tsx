@@ -207,14 +207,15 @@ export default function SignUpForm() {
                 className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="image"
               >
-                Choose Image{' '}<Image
-                                  src={selectedImage}
-                                  className="rounded-full"
-                                  alt={`Choosed profile picture`}
-                                  width={28}
-                                  height={28}
-                                  hidden={selectedImage === ''}
-                                />
+                Choose Image{' '}
+                <Image
+                  src={selectedImage}
+                  className="rounded-full"
+                  alt={`Choosed profile picture`}
+                  width={28}
+                  height={28}
+                  hidden={selectedImage === ''}
+                />
               </label>
               <div className="relative">
                 <select

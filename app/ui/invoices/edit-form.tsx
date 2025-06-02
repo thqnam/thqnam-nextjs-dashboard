@@ -187,13 +187,14 @@ export default function EditInvoiceForm({ id }: { id: string }) {
           {/* Customer Name */}
           <div className="mb-4">
             <label htmlFor="customer" className="flex items gap-2 mb-2 block text-sm font-medium">
-              Choose customer{' '}<Image
-                                    src={selectedCustomerImage}
-                                    className="rounded-full"
-                                    alt={`customer's profile picture`}
-                                    width={28}
-                                    height={28}
-                                  />
+              Choose customer{' '}
+              <Image
+                src={selectedCustomerImage}
+                className="rounded-full"
+                alt={`customer's profile picture`}
+                width={28}
+                height={28}
+              />
             </label>
             <div className="relative">
               <select

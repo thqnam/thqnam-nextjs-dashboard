@@ -169,13 +169,14 @@ export default function EditCustomerForm({ id }: { id: string }) {
               className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="image_url"
             >
-              Choose Image{' '}<Image
-                                src={selectedImage}
-                                className="rounded-full"
-                                alt={`${customer.name}'s profile picture`}
-                                width={28}
-                                height={28}
-                              />
+              Choose Image{' '}
+              <Image
+                src={selectedImage}
+                className="rounded-full"
+                alt={`${customer.name}'s profile picture`}
+                width={28}
+                height={28}
+              />
             </label>
             <div className="relative">
               <select
