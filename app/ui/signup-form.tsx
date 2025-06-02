@@ -361,9 +361,6 @@ export default function SignUpForm() {
               </div>
             </div>
           </div>
-          <Button className="mt-4 w-full" aria-disabled={isPending}>
-            Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
-          </Button>
           <div
             className="flex h-8 items-end space-x-1"
             aria-live="polite"
@@ -376,6 +373,9 @@ export default function SignUpForm() {
               </>
             )}
           </div>
+          <Button className="mt-4 w-full" aria-disabled={isPending}>
+            Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             href="/signin"
