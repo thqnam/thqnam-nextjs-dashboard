@@ -747,6 +747,7 @@ export async function deleteUser(
     const userID = await getSessionID();
     if (userID !== ''){
       if (userID === reid) {
+        await changeUserStatusLogout();
         const { error } = await supabase
             .from('users')
             .delete()
