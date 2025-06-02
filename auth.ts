@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export async function getUserByEmail(email: string): Promise<User | undefined> {
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from('users')
     .select('*')
     .eq('email', email)
@@ -16,13 +16,17 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
     console.error('Failed to fetch user by email: Reason', error.message);
     throw new Error('Failed to fetch user by email. Reason' + error.message); 
   } else {
-    const user = data as User;
-    return user;
+    if (count === 0){
+      return undefined;
+    } else {
+      const user = data as User;
+      return user;
+    }
   }
 }
 
 export async function getUserByID(id: string): Promise<User | undefined> {
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from('users')
     .select('*')
     .eq('id', id)
@@ -31,8 +35,12 @@ export async function getUserByID(id: string): Promise<User | undefined> {
     console.error('Failed to fetch user by id: Reason', error.message);
     throw new Error('Failed to fetch user by id. Reason' + error.message); 
   } else {
-    const user = data as User;
-    return user;
+    if (count === 0){
+      return undefined;
+    } else {
+      const user = data as User;
+      return user;
+    }
   }
 }
  

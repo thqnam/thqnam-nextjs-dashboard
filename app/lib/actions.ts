@@ -217,7 +217,7 @@ export async function createUser(prevState: UserState, formData: FormData){
     const { name, email, image, password, repassword } = validatedFields.data;
     const user = await getUserByEmail(email);
 
-    if (user === undefined || user === null){
+    if (user === undefined){
 
       if (password === repassword){
 
@@ -487,7 +487,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
         const userEmail = await getUserByEmail(email);
 
-        if (userEmail === undefined || userEmail === null){
+        if (userEmail === undefined){
 
           const { error } = await supabase
             .from('users')
@@ -627,12 +627,7 @@ async function changeUserStatusLogout() {
         if (error) {
           throw error;
         }
-      } else if (user === null){
-
-      } else {
-        console.error('Failed to fetch data user.');
-        throw new Error("Failed to fetch data user.");
-      }
+      } 
     } else {
       console.error('Failed to fetch session email.');
       throw new Error("Failed to fetch session email.");
@@ -803,6 +798,6 @@ export async function authenticate(
 }
 
 export async function logOut() {
-  //await changeUserStatusLogout();
+  await changeUserStatusLogout();
   await signOut({ redirectTo: '/' });
 }
