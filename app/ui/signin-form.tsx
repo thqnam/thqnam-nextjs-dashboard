@@ -97,7 +97,7 @@ export default function SignInForm() {
             </>
           )}
         </div>
-        <Button className="mt-4 w-full" aria-disabled={isPending}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
           Log In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 
