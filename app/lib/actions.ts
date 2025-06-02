@@ -613,7 +613,7 @@ async function changeUserStatusLogout() {
     if (email !== ''){
       const user = await getUserByEmail(email);
       if (user !== undefined){
-        const { error, count } = await supabase
+        const { error } = await supabase
           .from('users')
           .update({
             id: user.id,
@@ -624,14 +624,12 @@ async function changeUserStatusLogout() {
           })
           .eq('email', email)
           .eq('status', 'login');
-        if (count === 0){
-          return;
-        } else {
-          if (error) {
-            throw error;
-          }
+        if (error) {
+          throw error;
         }
-      } 
+      } else {
+        return;
+      }
     } else {
       console.error('Failed to fetch session email.');
       throw new Error("Failed to fetch session email.");
