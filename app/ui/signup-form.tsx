@@ -77,7 +77,7 @@ export default function SignUpForm() {
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
           <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-            Input some infor for Sign Up
+            Input for Sign Up
           </h1>
           <div className="w-full">
             <div>
@@ -202,7 +202,7 @@ export default function SignUpForm() {
       <form action={formAction} className="space-y-3" onReset={() => {setSelectedImage('')}}>
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
           <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-            Input some infor for Sign Up
+            Input for Sign Up
           </h1>
           <div className="w-full">
             <div>

@@ -2,7 +2,8 @@
 
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { signOut, getUserByEmail } from '@/auth';
+import { getUserByEmail } from '@/auth';
+import { logOut } from '@/app/lib/actions';
 
 export default function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
 
@@ -11,10 +12,10 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string | 
     if (user !== undefined){
       const userStatus = user.status;
       if (userStatus === 'logout'){
-        await signOut({ redirectTo: '/' });
+        await logOut();
       }
     } else {
-      await signOut({ redirectTo: '/' });
+      await logOut();
     }
   };
 
@@ -31,7 +32,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string | 
           { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${userEmail}` },
           async (payload) => {
             if (payload.new.status === 'logout') {
-              await signOut({ redirectTo: '/' });
+              await logOut();
             }
           }
         )
@@ -40,7 +41,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string | 
           { event: 'DELETE', schema: 'public', table: 'users' },
           async (payload) => {
             if (payload.old?.email === userEmail) {
-              await signOut({ redirectTo: '/' });
+              await logOut();
             }
           }
         )
