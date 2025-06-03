@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { signOut, getUserByEmail } from '@/auth';
 
-export default async function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
+export default function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
 
   const checkUserStatus = async (email : string) => {
     const user = await getUserByEmail(email);
@@ -37,9 +37,11 @@ export default async function UserGreetingClient({ userEmail }: { userEmail: str
         )
         .on(
           'postgres_changes',
-          { event: 'DELETE', schema: 'public', table: 'users', filter: `email=eq.${userEmail}` },
-          async () => {
-            await signOut({ redirectTo: '/' });
+          { event: 'DELETE', schema: 'public', table: 'users' },
+          async (payload) => {
+            if (payload.old?.email === userEmail) {
+              await signOut({ redirectTo: '/' });
+            }
           }
         )
         .subscribe();
