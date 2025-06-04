@@ -492,12 +492,9 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
           const { error } = await supabase
             .from('users')
             .update({
-              id: userID.id,
               name: name,
               email: email,
               image: image,
-              password: userID.password,
-              status: userID.status,
             })
             .eq('id', userID.id)
             .eq('email', email);
@@ -564,11 +561,7 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
           const { error } = await supabase
             .from('users')
             .update({
-              id: user.id,
-              name: user.name,
-              email: user.email,
               password: hashedPassword,
-              status: user.status,
             })
             .eq('id', user.id);
           
@@ -616,10 +609,6 @@ async function changeUserStatusLogout() {
         const { error } = await supabase
           .from('users')
           .update({
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            password: user.password,
             status: "logout"
           })
           .eq('email', email)

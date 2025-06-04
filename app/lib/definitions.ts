@@ -9,6 +9,8 @@ export type User = {
   password: string;
   status: string;
   image: string;
+  last_failed_at: string;
+  failed_attempts: number;
 };
 
 export type UserRequest = {

@@ -52,32 +52,66 @@ export const { auth, signIn, signOut } = NextAuth({
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(10) })
           .safeParse(credentials);
- 
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
-          const user = await getUserByEmail(email);
-          if (!user) return null;
-          const passwordsMatch = await bcrypt.compare(password, user.password);
- 
-          if (passwordsMatch) {
-            const { error } = await supabase
-              .from('users')
-              .update({
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                password: user.password,
-                status: "login"
-              })
-              .eq('email', email)
-              .eq('status', 'logout');
-            if (error) {
-              throw error;
-            }
-            return user;
+
+        if (!parsedCredentials.success) return null;
+
+        const { email, password } = parsedCredentials.data;
+        const user = await getUserByEmail(email);
+        if (!user) return null;
+
+        // --- Rate limit logic ---
+        const now = new Date();
+        const MAX_ATTEMPTS = 5;
+        const BLOCK_TIME_MINUTES = 5;
+
+        // Kiểm tra số lần sai và thời gian block
+        if (
+          user.failed_attempts !== undefined &&
+          user.last_failed_at !== undefined &&
+          user.failed_attempts >= MAX_ATTEMPTS
+        ) {
+          const lastFailed = new Date(user.last_failed_at);
+          const diffMinutes = (now.getTime() - lastFailed.getTime()) / 60000;
+          if (diffMinutes < BLOCK_TIME_MINUTES) {
+            throw new Error('You have entered too many incorrect attempts. Please try again in 5 minutes.');
           }
-        } 
-        return null;
+        }
+
+        const passwordsMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordsMatch) {
+          // Cập nhật số lần sai và thời điểm
+          await supabase
+            .from('users')
+            .update({
+              failed_attempts: (user.failed_attempts || 0) + 1,
+              last_failed_at: now.toISOString(),
+            })
+            .eq('id', user.id);
+          return null;
+        }
+
+        // Nếu đúng mật khẩu, reset lại số lần sai
+        await supabase
+          .from('users')
+          .update({
+            failed_attempts: 0,
+            last_failed_at: null,
+          })
+          .eq('id', user.id);
+
+        // Đăng nhập thành công, cập nhật status như cũ
+        const { error } = await supabase
+          .from('users')
+          .update({
+            status: "login"
+          })
+          .eq('email', email)
+          .eq('status', 'logout');
+        if (error) {
+          throw error;
+        }
+        return user;
       },
     }),
   ],

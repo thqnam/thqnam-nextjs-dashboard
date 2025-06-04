@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
+import { signOut } from 'next-auth/react'
 import { getUserByEmail } from '@/auth';
-import { logOut } from '@/app/lib/actions';
 
 export default function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
 
@@ -12,10 +12,10 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string | 
     if (user !== undefined){
       const userStatus = user.status;
       if (userStatus === 'logout'){
-        await logOut();
+        await signOut({ redirectTo: '/' });
       }
     } else {
-      await logOut();
+      await signOut({ redirectTo: '/' });
     }
   };
 
@@ -32,7 +32,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string | 
           { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${userEmail}` },
           async (payload) => {
             if (payload.new.status === 'logout') {
-              await logOut();
+              await signOut({ redirectTo: '/' });
             }
           }
         )
@@ -41,7 +41,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string | 
           { event: 'DELETE', schema: 'public', table: 'users' },
           async (payload) => {
             if (payload.old?.email === userEmail) {
-              await logOut();
+              await signOut({ redirectTo: '/' });
             }
           }
         )
