@@ -198,6 +198,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
                 alt={`customer's profile picture`}
                 width={28}
                 height={28}
+                hidden={selectedCustomerImage === ''}
               />
             </label>
             <div className="relative">
