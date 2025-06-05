@@ -10,7 +10,10 @@ export type User = {
   status: string;
   image: string;
   last_failed_at: string;
+  token: string;
+  expires: string;
   failed_attempts: number;
+  email_verified: boolean;
 };
 
 export type UserRequest = {

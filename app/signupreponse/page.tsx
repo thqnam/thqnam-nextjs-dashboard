@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Home',
+  title: 'Sign Up Reponse',
   applicationName: 'QNED',
   description: 'The official Dashboard of QNED App, built by Mr. Thiều Huỳnh Quang Nam.',
   metadataBase: new URL('https://qned.vercel.app/'),
@@ -32,15 +32,9 @@ export default function Page() {
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Welcome to QNED.</strong> This is the first app of Mr. {' '}
-            <a href="https://thqnam-myself.vercel.app/" className="text-blue-500" target='_blank'>
-              Thiều Huỳnh Quang Nam
-            </a>
-            , supporting by {' '}
-            <a href="https://vercel.com/home" className="text-blue-500" target='_blank'>
-              Vercel
-            </a>
-            {' '} firm.
+            <strong>Registration successful !</strong>{' '}
+            Please check your email to verify your account.{' '}
+            If you do not see the email, check your spam or promotions folder.{' '}
           </p>
           <Link
             href="/signin"

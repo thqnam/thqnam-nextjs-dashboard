@@ -5,9 +5,12 @@ import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image';
 import { Metadata } from 'next';
+import { supabase } from '@/app/lib/supabaseClient';
+import { User } from "@/app/lib/definitions";
+import { notFound } from 'next/navigation';
  
 export const metadata: Metadata = {
-  title: 'Home',
+  title: 'Verify Email',
   applicationName: 'QNED',
   description: 'The official Dashboard of QNED App, built by Mr. Thiều Huỳnh Quang Nam.',
   metadataBase: new URL('https://qned.vercel.app/'),
@@ -20,7 +23,40 @@ export const metadata: Metadata = {
   publisher: 'Vercel firm'
 };
 
-export default function Page() {
+export default async function Page(props: { params: Promise<{ token: string }> }) {
+  let reponseMessage : string;
+  const params = await props.params;
+  const token = params.token;
+  if (!token) notFound();
+
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('token', token)
+    .maybeSingle();
+
+  if (error || data === null) notFound();
+
+  const user: User = data;
+
+  if (user.expires && new Date(user.expires) < new Date()) {
+    await supabase
+        .from('users')
+        .delete()
+        .eq('id', user.id);
+    reponseMessage = 'Your verify email request token has expired.';
+  }
+
+  await supabase
+    .from('users')
+    .update({ 
+        email_verified: true, 
+        token: null, 
+        expires: null
+    })
+    .eq('id', user.id);
+  reponseMessage = 'Email of your account verified successfully !';
+
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
@@ -32,15 +68,7 @@ export default function Page() {
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Welcome to QNED.</strong> This is the first app of Mr. {' '}
-            <a href="https://thqnam-myself.vercel.app/" className="text-blue-500" target='_blank'>
-              Thiều Huỳnh Quang Nam
-            </a>
-            , supporting by {' '}
-            <a href="https://vercel.com/home" className="text-blue-500" target='_blank'>
-              Vercel
-            </a>
-            {' '} firm.
+            <strong>{reponseMessage}</strong> 
           </p>
           <Link
             href="/signin"

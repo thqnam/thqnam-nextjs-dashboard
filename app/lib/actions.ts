@@ -8,6 +8,8 @@ import { getSessionEmail, getSessionID } from './data';
 import { AuthError } from 'next-auth';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
+import { randomUUID } from 'crypto';
+import { sendResetPasswordEmail, sendVerificationEmail } from '@/app/lib/mailer';
 
 const UserFormSchema = z.object({
   name: z.string({
@@ -42,6 +44,27 @@ const ChangePassFormSchema = z.object({
   renewpassword: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the re-new password of this user',
+  }),
+});
+
+const ResetPassFormSchema = z.object({
+  email: z.string(),
+  newpassword: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the new password of this user',
+  }),
+  renewpassword: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the re-new password of this user',
+  }),
+});
+
+const ForgotPassFormSchema = z.object({
+  email: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
   }),
 });
 
@@ -126,6 +149,8 @@ const DeleteInvoice = DeleteInvoiceSchema.omit({ id: true });
 const DeleteUser = DeleteUserSchema.omit({});
 const CreateUser = UserFormSchema.omit({});
 const ChangePass = ChangePassFormSchema.omit({});
+const ForgotPass = ForgotPassFormSchema.omit({});
+const ResetPass = ResetPassFormSchema.omit({ email: true});
 const ChangeInfor = ChangeInforFormSchema.omit({});
 
 
@@ -162,6 +187,13 @@ export type ChangePassState = {
   errors?: {
     newpassword?: string[];
     renewpassword?: string[];
+  };
+  message?: string | null;
+};
+
+export type ForgotPassState = {
+  errors?: {
+    email?: string[];
   };
   message?: string | null;
 };
@@ -221,6 +253,8 @@ export async function createUser(prevState: UserState, formData: FormData){
 
       if (password === repassword){
 
+        const emailVerifyToken = randomUUID();
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
         const hashedPassword = bcrypt.hashSync(password, 10);
         // Insert data into the database
         const { error } = await supabase
@@ -232,16 +266,21 @@ export async function createUser(prevState: UserState, formData: FormData){
               image: image,
               password: hashedPassword,
               status: 'logout',
+              email_verified: false,
+              token: emailVerifyToken,
+              expires: expiresAt.toISOString(),
             },
           ])
           .eq('email', email);
+          
+        await sendVerificationEmail(email, name, emailVerifyToken);
         // If a database error occurs, return a more specific error.
         if (error) {
           return {
             message: 'Database Error: Failed to Create User. Reason: ' + error.message,
           };
         } else {
-          redirect('/signin');
+          redirect('/signupreponse');
         }
 
       } else {
@@ -537,7 +576,6 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 export async function changeUserPass(prevState: ChangePassState, formData: FormData){
   
   const validatedFields = ChangePass.safeParse({
-    email: formData.get('email'),
     newpassword: formData.get('newpassword'),
     renewpassword: formData.get('renewpassword'),
   });
@@ -600,6 +638,62 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
   }
 }
 
+export async function resetUserPass(email: string, prevState: ChangePassState, formData: FormData){
+  
+  const validatedFields = ResetPass.safeParse({
+    newpassword: formData.get('newpassword'),
+    renewpassword: formData.get('renewpassword'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { newpassword, renewpassword } = validatedFields.data;
+
+    if (newpassword === renewpassword){
+
+      const user = await getUserByEmail(email);
+
+      if (user !== undefined){
+
+        const hashedPassword = bcrypt.hashSync(newpassword, 10);
+
+        const { error } = await supabase
+          .from('users')
+          .update({
+            password: hashedPassword,
+            token: null, 
+            expires: null
+          })
+          .eq('id', user.id);
+        
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
+          };
+        } else {
+          redirect('/resetreponse');
+        }
+        
+      } else {
+        return {
+          message: 'User of this email do not see in Database. Failed to Reset Password.',
+        };
+      }
+
+    } else {
+      return {
+        message: 'New Password must be look like Re-New Password. Failed to Reset Password.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Change Password.',
+    };
+  }
+}
+
 async function changeUserStatusLogout() {
   try {
     const email = await getSessionEmail();
@@ -626,6 +720,51 @@ async function changeUserStatusLogout() {
   } catch (error : any) {
     console.error('Failed to fix user logout. Reason: ', error.message);
     throw new Error('Failed to fix user logout. Reason: ' + error.message);
+  }
+}
+
+export async function forgotUserPass(prevState: ForgotPassState, formData: FormData){
+  
+  const validatedFields = ForgotPass.safeParse({
+    email: formData.get('email'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { email } = validatedFields.data;
+    const user = await getUserByEmail(email);
+
+    if (user !== undefined){
+
+      const token = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 giờ
+      const { error } = await supabase
+        .from('users')
+        .update({
+          token: token,
+          expires: expiresAt.toISOString(),
+        }).eq('email', email);
+      await sendResetPasswordEmail(email, user.name, token);
+      
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
+        };
+      } else {
+        redirect('forgotreponse');
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Reset Password.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Change Password.',
+    };
   }
 }
 
@@ -728,7 +867,7 @@ export async function deleteUser(
   prevState: DeleteUserState,
   formData: FormData,
 ) {
-  const validatedFields = DeleteCustomer.safeParse({
+  const validatedFields = DeleteUser.safeParse({
     reid: formData.get('reid')
   });
   if (validatedFields.success) {

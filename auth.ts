@@ -100,6 +100,10 @@ export const { auth, signIn, signOut } = NextAuth({
           })
           .eq('id', user.id);
 
+        if (!user.email_verified) {
+          throw new Error('You need to verify your email before logging in.');
+        }
+
         // Đăng nhập thành công, cập nhật status như cũ
         const { error } = await supabase
           .from('users')
