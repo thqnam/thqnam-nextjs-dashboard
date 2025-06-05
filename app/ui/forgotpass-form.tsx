@@ -12,16 +12,23 @@ import {
   ArrowTurnDownRightIcon
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { forgotUserPass, ForgotPassState } from '@/app/lib/actions';
 import Link from 'next/link';
  
 export default function ForgotForm() {
   const initialState: ForgotPassState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(forgotUserPass, initialState);
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
  
   return (
-    <form action={formAction} className="space-y-3">
+    <form
+      action={formAction}
+      className="space-y-3"
+      onReset={() => setShowError(false)} // Ẩn lỗi khi reset
+      onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
+      onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+    >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Input email if Forgot Password
@@ -45,6 +52,14 @@ export default function ForgotForm() {
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
+            <div id="email-error" aria-live="polite" aria-atomic="true">
+              {showError && state.errors?.email &&
+                state.errors.email.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+              ))}
+            </div>
           </div>
         </div>
         <div
@@ -52,7 +67,7 @@ export default function ForgotForm() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {state.message && (
+          {showError && state.message && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
               <p className="text-sm text-red-500">{state.message}</p>

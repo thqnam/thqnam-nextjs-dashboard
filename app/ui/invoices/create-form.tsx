@@ -45,6 +45,8 @@ export default function Form() {
   }, []);
   const initialState: InvoiceState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(createInvoice, initialState);
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
+
   if (!customers) {
     return (
       <form >
@@ -153,7 +155,13 @@ export default function Form() {
     );
   } else {
     return (
-      <form action={formAction} onReset={() => {setSelectedCustomer('')}}>
+      <form
+        action={formAction}
+        className="space-y-3"
+        onReset={() => {setSelectedCustomer(''); setShowError(false);}} // Ẩn lỗi khi reset
+        onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
+        onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+      >
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Customer Name */}
           <div className="mb-4">
@@ -195,12 +203,12 @@ export default function Form() {
               <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
             </div>
             <div id="customer-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.customerId &&
+              {showError && state.errors?.customerId &&
                 state.errors.customerId.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
-                ))}
+              ))}
             </div>
           </div>
 
@@ -224,12 +232,12 @@ export default function Form() {
               </div>
             </div>
             <div id="amount-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.amount &&
+              {showError && state.errors?.amount &&
                 state.errors.amount.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
-                ))}
+              ))}
             </div>
           </div>
 
@@ -274,12 +282,12 @@ export default function Form() {
                 </div>
               </div>
               <div id="status-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.status &&
+                {showError && state.errors?.status &&
                   state.errors.status.map((error: string) => (
                     <p className="mt-2 text-sm text-red-500" key={error}>
                       {error}
                     </p>
-                  ))}
+                ))}
               </div>
             </div>
           </fieldset>
@@ -288,7 +296,7 @@ export default function Form() {
             aria-live="polite"
             aria-atomic="true"
           >
-            {state.message && (
+            {showError && state.message && (
               <>
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
                 <p className="text-sm text-red-500">{state.message}</p>

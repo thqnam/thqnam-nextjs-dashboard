@@ -1,5 +1,5 @@
 'use client';
- 
+
 import { lusitana } from '@/app/ui/fonts';
 import {
   AtSymbolIcon,
@@ -18,7 +18,7 @@ import { useActionState } from 'react';
 import { authenticate } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
- 
+
 export default function SignInForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
@@ -26,7 +26,9 @@ export default function SignInForm() {
     authenticate,
     undefined,
   );
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
   const [passwordInputType, setPasswordInputType] = useState('');
+
   const changePasswordInputStatus = () => {
     if (passwordInputType === 'password'){
       setPasswordInputType('text');
@@ -37,9 +39,15 @@ export default function SignInForm() {
   useEffect(() => {
     setPasswordInputType('password');
   }, []);
- 
+
   return (
-    <form action={formAction} className="space-y-3">
+    <form
+      action={formAction}
+      className="space-y-3"
+      onReset={() => setShowError(false)} // Ẩn lỗi khi reset
+      onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
+      onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+    >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Input for Sign In
@@ -94,7 +102,7 @@ export default function SignInForm() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {errorMessage && (
+          {showError && errorMessage && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
               <p className="text-sm text-red-500">{errorMessage}</p>

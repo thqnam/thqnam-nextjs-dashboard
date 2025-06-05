@@ -73,6 +73,7 @@ export default function EditCustomerForm({ id }: { id: string }) {
   const initialState: CustomerState = { message: null, errors: {} };
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const [state, formAction, isPending] = useActionState(updateCustomerWithId, initialState);
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
   
   if (!customer || !images){
     return (
@@ -165,7 +166,13 @@ export default function EditCustomerForm({ id }: { id: string }) {
     );
   } else {
     return (
-      <form action={formAction} onReset={() => {setSelectedImage('')}}>
+      <form
+        action={formAction}
+        className="space-y-3"
+        onReset={() => {setSelectedImage(''); setShowError(false);}} // Ẩn lỗi khi reset
+        onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
+        onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+      >
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Image_URL */}
           <div>

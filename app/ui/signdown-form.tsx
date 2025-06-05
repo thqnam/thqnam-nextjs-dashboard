@@ -81,6 +81,7 @@ export default async function SignDownForm() {
 
   const initialState: DeleteUserState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(deleteUser, initialState);
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
   if (!user || !image || id === ''){
     return (
@@ -171,6 +172,9 @@ export default async function SignDownForm() {
           <Button className="mt-4 w-full" disabled>
             Sign Down <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
+          <Button className="mt-4 w-full" disabled>
+            Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
           <button 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             onClick={() => resetTarget('/dashboard')}
@@ -183,7 +187,13 @@ export default async function SignDownForm() {
 
   } else {
     return (
-      <form action={formAction} className="space-y-3">
+      <form
+        action={formAction}
+        className="space-y-3"
+        onReset={() => setShowError(false)} // Ẩn lỗi khi reset
+        onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
+        onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+      >
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
           <h1 className={`${lusitana.className} mb-3 text-2xl`}>
             Input for Sign Down
@@ -197,11 +207,11 @@ export default async function SignDownForm() {
               >
                 Choose Image{' '}
                 <Image
-                    src={image.path}
-                    className="rounded-full"
-                    alt={`${user.name}'s profile image`}
-                    width={28}
-                    height={28}
+                  src={image.path}
+                  className="rounded-full"
+                  alt={`${user.name}'s profile image`}
+                  width={28}
+                  height={28}
                 />
               </label>
               <div className="relative">
@@ -280,7 +290,7 @@ export default async function SignDownForm() {
                 <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
               <div id="reid-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.reid &&
+                {showError && state.errors?.reid &&
                   state.errors.reid.map((error: string) => (
                     <p className="mt-2 text-sm text-red-500" key={error}>
                       {error}
@@ -294,7 +304,7 @@ export default async function SignDownForm() {
             aria-live="polite"
             aria-atomic="true"
           >
-            {state.message && (
+            {showError && state.message && (
               <>
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
                 <p className="text-sm text-red-500">{state.message}</p>

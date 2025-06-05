@@ -73,6 +73,7 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
   const initialState: DeleteCustomerState = { message: null, errors: {} };
   const deleteCustomerWithId = deleteCustomer.bind(null, customer.id);
   const [state, formAction, isPending] = useActionState(deleteCustomerWithId, initialState);
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
   if (!customer || !image){
     return (
@@ -184,7 +185,13 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
     );
   } else {
     return (
-      <form action={formAction}>
+      <form
+        action={formAction}
+        className="space-y-3"
+        onReset={() => setShowError(false)} // Ẩn lỗi khi reset
+        onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
+        onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+      >
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Image_URL */}
           <div>
@@ -279,12 +286,12 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
               <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="reid-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.reid &&
+              {showError && state.errors?.reid &&
                 state.errors.reid.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
-                ))}
+              ))}
             </div>
           </div>
           <div
@@ -292,7 +299,7 @@ export default function DeleteCustomerForm({ id }: { id: string }) {
             aria-live="polite"
             aria-atomic="true"
           >
-            {state.message && (
+            {showError && state.message && (
               <>
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
                 <p className="text-sm text-red-500">{state.message}</p>

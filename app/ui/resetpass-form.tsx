@@ -52,9 +52,16 @@ export default async function ChangePassForm( {email, name, image} : ResetFormPr
   const initialState: ChangePassState = { message: null, errors: {} };
   const resetUserPassWithEmail = resetUserPass.bind(null, email);
   const [state, formAction, isPending] = useActionState(resetUserPassWithEmail, initialState);
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
  
   return (
-    <form action={formAction} className="space-y-3">
+    <form
+      action={formAction}
+      className="space-y-3"
+      onReset={() => setShowError(false)} // Ẩn lỗi khi reset
+      onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
+      onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+    >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Input for Reset Pass
@@ -151,12 +158,12 @@ export default async function ChangePassForm( {email, name, image} : ResetFormPr
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="newpassword-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.newpassword &&
+              {showError && state.errors?.newpassword &&
                 state.errors.newpassword.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
+                  <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
-                    </p>
-                ))}
+                  </p>
+              ))}
             </div>
           </div>
           <div className="mt-4">
@@ -183,12 +190,12 @@ export default async function ChangePassForm( {email, name, image} : ResetFormPr
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="renewpassword-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.renewpassword &&
+              {showError && state.errors?.renewpassword &&
                 state.errors.renewpassword.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
+                  <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
-                    </p>
-                ))}
+                  </p>
+              ))}
             </div>
           </div>
         </div>
@@ -197,7 +204,7 @@ export default async function ChangePassForm( {email, name, image} : ResetFormPr
           aria-live="polite"
           aria-atomic="true"
         >
-          {state.message && (
+          {showError && state.message && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
               <p className="text-sm text-red-500">{state.message}</p>

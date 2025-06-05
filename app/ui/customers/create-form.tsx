@@ -43,6 +43,7 @@ export default function Form() {
   }, []);
   const initialState: CustomerState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(createCustomer, initialState);
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
   if (!images){
     return (
@@ -130,7 +131,13 @@ export default function Form() {
 
   } else {
     return (
-      <form action={formAction} onReset={() => {setSelectedImage('')}}>
+      <form
+        action={formAction}
+        className="space-y-3"
+        onReset={() => {setSelectedImage(''); setShowError(false);}} // Ẩn lỗi khi reset
+        onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
+        onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+      >
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
           {/* Image_URL */}
           <div>
@@ -171,12 +178,12 @@ export default function Form() {
               <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
             </div>
             <div id="image_url-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.image_url &&
+              {showError && state.errors?.image_url &&
                 state.errors.image_url.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
-                ))}
+              ))}
             </div>
           </div>
           {/* Name */}
@@ -201,12 +208,12 @@ export default function Form() {
               <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="name-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.name &&
+              {showError && state.errors?.name &&
                 state.errors.name.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
-                ))}
+              ))}
             </div>
           </div>
           {/* Email */}
@@ -230,12 +237,12 @@ export default function Form() {
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="email-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.email &&
+              {showError && state.errors?.email &&
                 state.errors.email.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
-                ))}
+              ))}
             </div>
           </div>
           <div
@@ -243,7 +250,7 @@ export default function Form() {
             aria-live="polite"
             aria-atomic="true"
           >
-            {state.message && (
+            {showError && state.message && (
               <>
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
                 <p className="text-sm text-red-500">{state.message}</p>
