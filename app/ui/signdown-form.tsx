@@ -21,7 +21,7 @@ import {
     resetTarget 
 } from '@/app/lib/actions';
 import { fetchImageByURL, getSessionEmail } from '@/app/lib/data';
-import { getUserByEmail } from '@/auth';
+import { getUserByEmail } from '@/app/lib/data';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function SignDownForm() {

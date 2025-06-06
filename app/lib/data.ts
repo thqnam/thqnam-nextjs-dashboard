@@ -9,10 +9,12 @@ import {
   LatestInvoiceRaw,
   Revenue,
   ImageField,
+  User
 } from './definitions';
 import { formatCurrency } from './utils';
 import { supabase } from '@/app/lib/supabaseClient';
 import { auth } from '@/auth';
+import { PostgrestError } from '@supabase/supabase-js';
 
 export async function getSessionInfor() {
   const sessionInfor = await auth();
@@ -145,6 +147,50 @@ export async function fetchCardData() {
   } catch (error : any) {
     console.error('Database Error: ', error.message);
     throw new Error('Failed to fetch card data. Reason: ' + error.message);
+  }
+}
+
+export async function getUserByEmail(email: string): Promise<User | undefined> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .maybeSingle();
+  if (error) {
+    console.error('Failed to fetch user by email: Reason', error.message);
+    let talada : PostgrestError;
+    talada = error;
+    talada.message = 'Failed to fetch user by email. Reason' + error.message;
+    throw talada;
+  } else {
+    if (data === null){
+      return undefined;
+    } else {
+      const user = data as User;
+      return user;
+    }
+  }
+}
+
+export async function getUserByID(id: string): Promise<User | undefined> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) {
+    console.error('Failed to fetch user by id: Reason', error.message);
+    let talada : PostgrestError;
+    talada = error;
+    talada.message = 'Failed to fetch user by id. Reason' + error.message;
+    throw talada;
+  } else {
+    if (data === null){
+      return undefined;
+    } else {
+      const user = data as User;
+      return user;
+    }
   }
 }
 

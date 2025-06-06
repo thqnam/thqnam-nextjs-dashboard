@@ -9,7 +9,7 @@ import { lusitana } from '@/app/ui/fonts';
 import {
   AtSymbolIcon,
   ExclamationCircleIcon,
-  IdentificationIcon,
+  //IdentificationIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { 
@@ -25,9 +25,9 @@ import {
 } from '@/app/lib/actions';
 import { 
   // fetchImages, 
-  getSessionEmail 
+  getSessionEmail,
+  getUserByEmail
 } from '@/app/lib/data';
-import { getUserByEmail } from '@/auth';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function ChangeInforForm() {

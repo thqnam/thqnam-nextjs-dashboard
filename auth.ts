@@ -3,96 +3,10 @@ import Credentials from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
-import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { AuthError } from 'next-auth';
-import { PostgrestError } from '@supabase/supabase-js';
- 
-export async function getUserByEmail(email: string): Promise<User | undefined> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email)
-    .maybeSingle();
-  if (error) {
-    console.error('Failed to fetch user by email: Reason', error.message);
-    let talada : PostgrestError;
-    talada = error;
-    talada.message = 'Failed to fetch user by email. Reason' + error.message;
-    throw talada;
-  } else {
-    if (data === null){
-      return undefined;
-    } else {
-      const user = data as User;
-      return user;
-    }
-  }
-}
-
-export async function updateUser(id: string, email: string, name: string, image: string): Promise<void> {
-  const { error } = await supabase
-    .from('users')
-    .update({
-      name: name,
-      email: email,
-      image: image,
-    })
-    .eq('id', id)
-    .eq('email', email);
-  if (error) {
-    console.error('Failed to Pre Google Sign In. Reason: ', error.message);
-    let talada : PostgrestError;
-    talada = error;
-    talada.message = 'Failed to Pre Google Sign In. Reason: ' + error.message;
-    throw talada;
-  }
-}
-
-export async function insertUser(email: string, name: string, image: string): Promise<void> {
-  const { error } = await supabase
-    .from('users')
-    .insert([
-      {
-        name: name,
-        email: email,
-        image: image,
-        status: 'logout',
-        email_verified: true,
-      },
-    ]);
-
-  if (error){
-    console.error('Failed to Google Sign In. Reason: ', error.message);
-    let talada : PostgrestError;
-    talada = error;
-    talada.message = 'Failed to Google Sign In. Reason: ' + error.message;
-    throw talada;
-  }
-}
-
-export async function getUserByID(id: string): Promise<User | undefined> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle();
-  if (error) {
-    console.error('Failed to fetch user by id: Reason', error.message);
-    let talada : PostgrestError;
-    talada = error;
-    talada.message = 'Failed to fetch user by id. Reason' + error.message;
-    throw talada;
-  } else {
-    if (data === null){
-      return undefined;
-    } else {
-      const user = data as User;
-      return user;
-    }
-  }
-}
+import { getUserByEmail } from '@/app/lib/data';
  
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,

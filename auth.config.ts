@@ -1,6 +1,6 @@
 import type { NextAuthConfig } from 'next-auth';
-import { getUserByEmail, updateUser, insertUser } from '@/auth';
-import { threadId } from 'worker_threads';
+import { getUserByEmail,  } from '@/app/lib/data';
+import { updateUser, insertUser } from '@/app/lib/actions';
 
 export const authConfig = {
   pages: {
