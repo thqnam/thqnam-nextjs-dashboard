@@ -1,4 +1,6 @@
 import type { NextAuthConfig } from 'next-auth';
+import { getUserByEmail, updateUser, insertUser } from '@/auth';
+import { threadId } from 'worker_threads';
 
 export const authConfig = {
   pages: {
@@ -25,7 +27,32 @@ export const authConfig = {
         return true;
       }
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
+      // Nếu đăng nhập bằng OAuth (Google, GitHub, ...)
+      if (account && account.provider !== 'credentials') {
+        // Kiểm tra user đã tồn tại trong DB chưa
+        const dbUser = await getUserByEmail(token.email as string);
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.name = profile?.name;
+          token.email = profile?.email;
+          token.picture = profile?.picture;
+          await updateUser(token.id as string, token.email as string, token.name as string, token.picture  as string);
+        } else {
+          token.name = profile?.name;
+          token.email = profile?.email;
+          token.picture = profile?.picture;
+          await insertUser(token.email as string, token.name as string, token.picture  as string);
+          const dbUser = await getUserByEmail(token.email as string);
+          if (dbUser){
+            token.id = dbUser.id;
+          } else {
+            console.error('Failed to Post Google Sign In.');
+            throw new Error('Failed to Post Google Sign In.');
+          }
+        }
+      }
+      // Nếu đăng nhập bằng credentials, logic cũ vẫn giữ nguyên
       if (user && user.id) {
         token.id = user.id;
       }
