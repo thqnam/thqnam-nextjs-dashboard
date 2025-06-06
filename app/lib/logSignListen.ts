@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { signOut } from 'next-auth/react'
-import { getUserByEmail } from '@/app/lib/data';
+import { getUserByEmail } from '@/app/lib/utils';
 
 export default function UserGreetingClient({ userEmail }: { userEmail: string | null | undefined}) {
 

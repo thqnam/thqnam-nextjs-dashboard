@@ -150,50 +150,6 @@ export async function fetchCardData() {
   }
 }
 
-export async function getUserByEmail(email: string): Promise<User | undefined> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email)
-    .maybeSingle();
-  if (error) {
-    console.error('Failed to fetch user by email: Reason', error.message);
-    let talada : PostgrestError;
-    talada = error;
-    talada.message = 'Failed to fetch user by email. Reason' + error.message;
-    throw talada;
-  } else {
-    if (data === null){
-      return undefined;
-    } else {
-      const user = data as User;
-      return user;
-    }
-  }
-}
-
-export async function getUserByID(id: string): Promise<User | undefined> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle();
-  if (error) {
-    console.error('Failed to fetch user by id: Reason', error.message);
-    let talada : PostgrestError;
-    talada = error;
-    talada.message = 'Failed to fetch user by id. Reason' + error.message;
-    throw talada;
-  } else {
-    if (data === null){
-      return undefined;
-    } else {
-      const user = data as User;
-      return user;
-    }
-  }
-}
-
 const ITEMS_PER_PAGE = 6;
 
 export async function fetchInvoicesPages(query: string) {

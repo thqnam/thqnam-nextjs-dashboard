@@ -4,7 +4,8 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn, signOut } from '@/auth';
-import { getSessionEmail, getSessionID, getUserByEmail, getUserByID } from './data';
+import { getSessionEmail, getSessionID } from './data';
+import { getUserByEmail, getUserByID } from './utils';
 import { AuthError } from 'next-auth';
 import { PostgrestError } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
@@ -409,47 +410,6 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create Customer.',
     };
-  }
-}
-
-export async function updateUser(id: string, email: string, name: string, image: string): Promise<void> {
-  const { error } = await supabase
-    .from('users')
-    .update({
-      name: name,
-      email: email,
-      image: image,
-    })
-    .eq('id', id)
-    .eq('email', email);
-  if (error) {
-    console.error('Failed to Pre Google Sign In. Reason: ', error.message);
-    let talada : PostgrestError;
-    talada = error;
-    talada.message = 'Failed to Pre Google Sign In. Reason: ' + error.message;
-    throw talada;
-  }
-}
-
-export async function insertUser(email: string, name: string, image: string): Promise<void> {
-  const { error } = await supabase
-    .from('users')
-    .insert([
-      {
-        name: name,
-        email: email,
-        image: image,
-        status: 'logout',
-        email_verified: true,
-      },
-    ]);
-
-  if (error){
-    console.error('Failed to Google Sign In. Reason: ', error.message);
-    let talada : PostgrestError;
-    talada = error;
-    talada.message = 'Failed to Google Sign In. Reason: ' + error.message;
-    throw talada;
   }
 }
 

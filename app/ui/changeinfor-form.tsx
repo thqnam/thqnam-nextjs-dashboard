@@ -26,8 +26,8 @@ import {
 import { 
   // fetchImages, 
   getSessionEmail,
-  getUserByEmail
 } from '@/app/lib/data';
+import { getUserByEmail } from '../lib/utils';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function ChangeInforForm() {
