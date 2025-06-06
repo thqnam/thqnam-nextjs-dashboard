@@ -1,8 +1,8 @@
 'use client';
  
 import { lusitana } from '@/app/ui/fonts';
-import { ImageField } from '@/app/lib/definitions';
-import Image from 'next/image';
+// import { ImageField } from '@/app/lib/definitions';
+// import Image from 'next/image';
 import {
   AtSymbolIcon,
   IdentificationIcon,
@@ -17,16 +17,17 @@ import {
   ArrowTurnDownRightIcon
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { fetchImages } from '@/app/lib/data';
+// import { fetchImages } from '@/app/lib/data';
 import { useActionState } from 'react';
 import { createUser, UserState } from '@/app/lib/actions';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/app/lib/supabaseClient';
+import { signIn } from 'next-auth/react';
+// import { supabase } from '@/app/lib/supabaseClient';
 import Link from 'next/link';
  
 export default function SignUpForm() {
-    const [images, setImages] = useState([] as ImageField[]);
-    const [selectedImage, setSelectedImage] = useState('');
+    // const [images, setImages] = useState([] as ImageField[]);
+    // const [selectedImage, setSelectedImage] = useState('');
     const [passwordInputType, setPasswordInputType] = useState('');
     const [repasswordInputType, setRePasswordInputType] = useState('');
     const changePasswordInputStatus = () => {
@@ -48,33 +49,33 @@ export default function SignUpForm() {
       setRePasswordInputType('password');
     }, []);
     // Hàm fetch lại dữ liệu
-    const loadImages = async () => {
-      const data = await fetchImages();
-      setImages(data);
-    };
+    // const loadImages = async () => {
+    //   const data = await fetchImages();
+    //   setImages(data);
+    // };
     // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
-    useEffect(() => {
-      loadImages();
+    // useEffect(() => {
+    //   loadImages();
 
-    // Lắng nghe realtime trên customers và invoices
-    const channel = supabase
-      .channel('user-create')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'images' },
-        loadImages
-      )
-      .subscribe();
+    // // Lắng nghe realtime trên customers và invoices
+    // const channel = supabase
+    //   .channel('user-create')
+    //   .on(
+    //     'postgres_changes',
+    //     { event: '*', schema: 'public', table: 'images' },
+    //     loadImages
+    //   )
+    //   .subscribe();
 
-      return () => {
-          supabase.removeChannel(channel);
-      };
-    }, []);
+    //   return () => {
+    //       supabase.removeChannel(channel);
+    //   };
+    // }, []);
   const initialState: UserState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(createUser, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
-  if (!images){
+  if (false){
     return (
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
@@ -183,6 +184,9 @@ export default function SignUpForm() {
           <Button className="mt-4 w-full" disabled>
             Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
+          <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => signIn('google')}>
+            Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             href="/signin"
@@ -204,7 +208,10 @@ export default function SignUpForm() {
       <form
         action={formAction}
         className="space-y-3"
-        onReset={() => {setSelectedImage(''); setShowError(false);}} // Ẩn lỗi khi reset
+        onReset={() => {
+          // setSelectedImage(''); 
+          setShowError(false);
+        }} // Ẩn lỗi khi reset
         onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
         onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
       >
@@ -213,7 +220,7 @@ export default function SignUpForm() {
             Input for Sign Up
           </h1>
           <div className="w-full">
-            <div>
+            {/* <div>
               <label
                 className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="image"
@@ -258,7 +265,7 @@ export default function SignUpForm() {
                     </p>
                   ))}
               </div>
-            </div>
+            </div> */}
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"

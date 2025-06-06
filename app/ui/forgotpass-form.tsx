@@ -14,6 +14,7 @@ import {
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
 import { forgotUserPass, ForgotPassState } from '@/app/lib/actions';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
  
 export default function ForgotForm() {
@@ -79,6 +80,9 @@ export default function ForgotForm() {
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Form<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => signIn('google')}>
+          Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 

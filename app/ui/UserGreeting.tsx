@@ -16,6 +16,7 @@ export default async function UserGreeting() {
             alt={`${sessionUser.name}'s profile image`}
             width={28}
             height={28}
+            hidden={!sessionUser.image}
           />{' '}<b>{sessionUser.name}</b>
         </div>
         <div className="text-sm text-gray-700 text-left md:text-right">

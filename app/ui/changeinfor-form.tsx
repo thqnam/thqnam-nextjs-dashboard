@@ -1,6 +1,9 @@
 'use client';
 
-import { ImageField, User } from '@/app/lib/definitions';
+import { 
+  // ImageField, 
+  User 
+} from '@/app/lib/definitions';
 import Image from 'next/image'; 
 import { lusitana } from '@/app/ui/fonts';
 import {
@@ -20,14 +23,17 @@ import {
     ChangeInforState,
     resetTarget 
 } from '@/app/lib/actions';
-import { fetchImages, getSessionEmail } from '@/app/lib/data';
+import { 
+  // fetchImages, 
+  getSessionEmail 
+} from '@/app/lib/data';
 import { getUserByEmail } from '@/auth';
 import { supabase } from '@/app/lib/supabaseClient';
  
 export default async function ChangeInforForm() {
   const [id, setID] = useState('');
   const [user, setUser] = useState({} as User);
-  const [images, setImages] = useState([] as ImageField[]);
+  // const [images, setImages] = useState([] as ImageField[]);
   const [selectedImage, setSelectedImage] = useState(user.image);
   const loadUser = async () => {
     const idTerm = await getSessionEmail();
@@ -39,10 +45,10 @@ export default async function ChangeInforForm() {
       }
     }
   };
-  const loadImages = async () => {
-    const data = await fetchImages();
-    setImages(data);
-  };
+  // const loadImages = async () => {
+  //   const data = await fetchImages();
+  //   setImages(data);
+  // };
 
   useEffect(() => {
     setSelectedImage(user.image);
@@ -50,16 +56,16 @@ export default async function ChangeInforForm() {
 
   useEffect(() => {
     loadUser();
-    loadImages(); 
+    // loadImages(); 
 
     // Lắng nghe realtime chỉ trên customers mà thôi
     const channel = supabase
       .channel('user-edit')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'images' },
-        loadImages
-      )
+      // .on(
+      //   'postgres_changes',
+      //   { event: '*', schema: 'public', table: 'images' },
+      //   loadImages
+      // )
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'users' },
@@ -76,7 +82,7 @@ export default async function ChangeInforForm() {
   const [state, formAction, isPending] = useActionState(changeUserInfor, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
-  if (!user || !images || id === ''){
+  if (!user || id === ''){
     return (
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
@@ -85,27 +91,27 @@ export default async function ChangeInforForm() {
           </h1>
           <div className="w-full">
             {/* Image_URL */}
-              <div>
-                <label
-                  className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                  htmlFor="image"
+            {/* <div>
+              <label
+                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="image"
+              >
+                Choose Image
+              </label>
+              <div className="relative">
+                <select
+                  id="image"
+                  name="image"
+                  className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  disabled
                 >
-                  Choose Image
-                </label>
-                <div className="relative">
-                  <select
-                    id="image"
-                    name="image"
-                    className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                    disabled
-                  >
-                    <option value="" disabled>
-                      Select a Image
-                    </option>
-                  </select>
-                  <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                </div>
+                  <option value="" disabled>
+                    Select a Image
+                  </option>
+                </select>
+                <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
+            </div> */}
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
@@ -174,7 +180,7 @@ export default async function ChangeInforForm() {
           </h1>
           <div className="w-full">
             {/* Image_URL */}
-            <div>
+            {/* <div>
               <label
                 className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="image"
@@ -219,13 +225,21 @@ export default async function ChangeInforForm() {
                     </p>
                 ))}
               </div>
-            </div>
+            </div> */}
             <div>
               <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="email"
               >
-                Email
+                Email{' '}
+                <Image
+                  src={selectedImage}
+                  className="rounded-full"
+                  alt={`${user.name}'s profile image`}
+                  width={28}
+                  height={28}
+                  hidden={selectedImage === ''}
+                />
               </label>
               <div className="relative">
                 <input

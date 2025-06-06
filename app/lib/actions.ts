@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { signIn, signOut, getUserByEmail, getUserByID } from '@/auth';
 import { getSessionEmail, getSessionID } from './data';
 import { AuthError } from 'next-auth';
+import { PostgrestError } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { randomUUID } from 'crypto';
@@ -22,10 +23,10 @@ const UserFormSchema = z.object({
   }).email({
     message: 'The string data must be look like email format'
   }),
-  image: z.string({
-    invalid_type_error: 'Please select a image.',
-    required_error: 'Must be select a image',
-  }),
+  // image: z.string({
+  //   invalid_type_error: 'Please select a image.',
+  //   required_error: 'Must be select a image',
+  // }),
   password: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the password of this user',
@@ -79,10 +80,10 @@ const ChangeInforFormSchema = z.object({
   }).email({
     message: 'The string data must be look like email format'
   }),
-  image: z.string({
-    invalid_type_error: 'Please select a image.',
-    required_error: 'Must be select a image',
-  }),
+  // image: z.string({
+  //   invalid_type_error: 'Please select a image.',
+  //   required_error: 'Must be select a image',
+  // }),
 });
 
 const CustomerFormSchema = z.object({
@@ -176,7 +177,7 @@ export type UserState = {
   errors?: {
     name?: string[];
     email?: string[];
-    image?: string[];
+    // image?: string[];
     password?: string[];
     repassword?: string[];
   };
@@ -202,7 +203,7 @@ export type ChangeInforState = {
   errors?: {
     name?: string[];
     email?: string[];
-    image?: string[];
+    // image?: string[];
   };
   message?: string | null;
 };
@@ -238,7 +239,7 @@ export async function createUser(prevState: UserState, formData: FormData){
   const validatedFields = CreateUser.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
-    image: formData.get('image'),
+    // image: formData.get('image'),
     password: formData.get('password'),
     repassword: formData.get('repassword'),
   });
@@ -246,7 +247,13 @@ export async function createUser(prevState: UserState, formData: FormData){
   // If form validation fails, return errors early. Otherwise, continue.
   if (validatedFields.success) {
     // Prepare data for insertion into the database
-    const { name, email, image, password, repassword } = validatedFields.data;
+    const { 
+      name, 
+      email, 
+      // image, 
+      password, 
+      repassword 
+    } = validatedFields.data;
     const user = await getUserByEmail(email);
 
     if (user === undefined){
@@ -263,15 +270,14 @@ export async function createUser(prevState: UserState, formData: FormData){
             {
               name: name,
               email: email,
-              image: image,
+              // image: image,
               password: hashedPassword,
               status: 'logout',
               email_verified: false,
               token: emailVerifyToken,
               expires: expiresAt.toISOString(),
             },
-          ])
-          .eq('email', email);
+          ]);
           
         await sendVerificationEmail(email, name, emailVerifyToken);
         // If a database error occurs, return a more specific error.
@@ -510,12 +516,16 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
   const validatedFields = ChangeInfor.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
-    image: formData.get('image'),
+    // image: formData.get('image'),
   });
 
   if (validatedFields.success) {
     
-    const { name, email, image } = validatedFields.data;
+    const { 
+      name, 
+      email, 
+      // image 
+    } = validatedFields.data;
 
     const id = await getSessionID();
 
@@ -533,7 +543,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
             .update({
               name: name,
               email: email,
-              image: image,
+              // image: image,
             })
             .eq('id', userID.id)
             .eq('email', email);
@@ -919,12 +929,24 @@ export async function authenticate(
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
+          console.error('Invalid credentials.');
           return 'Invalid credentials.';
+        case 'AccessDenied':
+          console.error('You have entered too many incorrect attempts. Please try again in 5 minutes.');
+          return 'You have entered too many incorrect attempts. Please try again in 5 minutes.';
+        case 'EmailSignInError':
+          console.error('You need to verify your email before logging in.');
+          return 'You need to verify your email before logging in.';
         default:
+          console.error('Something went wrong.');
           return 'Something went wrong.';
       }
+    } else if (error instanceof PostgrestError) {
+      console.error(error.message);
+      return error.message;
+    } else {
+      throw error;
     }
-    throw error;
   }
 }
 

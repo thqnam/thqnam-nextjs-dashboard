@@ -1,10 +1,13 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
+import { AuthError } from 'next-auth';
+import { PostgrestError } from '@supabase/supabase-js';
  
 export async function getUserByEmail(email: string): Promise<User | undefined> {
   const { data, error } = await supabase
@@ -14,7 +17,10 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
     .maybeSingle();
   if (error) {
     console.error('Failed to fetch user by email: Reason', error.message);
-    throw new Error('Failed to fetch user by email. Reason' + error.message); 
+    let talada : PostgrestError;
+    talada = error;
+    talada.message = 'Failed to fetch user by email. Reason' + error.message;
+    throw talada;
   } else {
     if (data === null){
       return undefined;
@@ -22,6 +28,47 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
       const user = data as User;
       return user;
     }
+  }
+}
+
+export async function updateUser(id: string, email: string, name: string, image: string): Promise<void> {
+  const { error } = await supabase
+    .from('users')
+    .update({
+      name: name,
+      email: email,
+      image: image,
+    })
+    .eq('id', id)
+    .eq('email', email);
+  if (error) {
+    console.error('Failed to Pre Google Sign In. Reason: ', error.message);
+    let talada : PostgrestError;
+    talada = error;
+    talada.message = 'Failed to Pre Google Sign In. Reason: ' + error.message;
+    throw talada;
+  }
+}
+
+export async function insertUser(email: string, name: string, image: string): Promise<void> {
+  const { error } = await supabase
+    .from('users')
+    .insert([
+      {
+        name: name,
+        email: email,
+        image: image,
+        status: 'logout',
+        email_verified: true,
+      },
+    ]);
+
+  if (error){
+    console.error('Failed to Google Sign In. Reason: ', error.message);
+    let talada : PostgrestError;
+    talada = error;
+    talada.message = 'Failed to Google Sign In. Reason: ' + error.message;
+    throw talada;
   }
 }
 
@@ -33,7 +80,10 @@ export async function getUserByID(id: string): Promise<User | undefined> {
     .maybeSingle();
   if (error) {
     console.error('Failed to fetch user by id: Reason', error.message);
-    throw new Error('Failed to fetch user by id. Reason' + error.message); 
+    let talada : PostgrestError;
+    talada = error;
+    talada.message = 'Failed to fetch user by id. Reason' + error.message;
+    throw talada;
   } else {
     if (data === null){
       return undefined;
@@ -59,6 +109,12 @@ export const { auth, signIn, signOut } = NextAuth({
         const user = await getUserByEmail(email);
         if (!user) return null;
 
+        if (!user.email_verified) {
+          let talada = new AuthError();
+          talada.type = 'EmailSignInError';
+          throw talada;
+        }
+
         // --- Rate limit logic ---
         const now = new Date();
         const MAX_ATTEMPTS = 5;
@@ -73,7 +129,9 @@ export const { auth, signIn, signOut } = NextAuth({
           const lastFailed = new Date(user.last_failed_at);
           const diffMinutes = (now.getTime() - lastFailed.getTime()) / 60000;
           if (diffMinutes < BLOCK_TIME_MINUTES) {
-            throw new Error('You have entered too many incorrect attempts. Please try again in 5 minutes.');
+            let talada = new AuthError();
+            talada.type = 'AccessDenied';
+            throw talada;
           }
         }
 
@@ -100,10 +158,6 @@ export const { auth, signIn, signOut } = NextAuth({
           })
           .eq('id', user.id);
 
-        if (!user.email_verified) {
-          throw new Error('You need to verify your email before logging in.');
-        }
-
         // Đăng nhập thành công, cập nhật status như cũ
         const { error } = await supabase
           .from('users')
@@ -117,6 +171,10 @@ export const { auth, signIn, signOut } = NextAuth({
         }
         return user;
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
 });
