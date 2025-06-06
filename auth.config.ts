@@ -21,8 +21,9 @@ export const authConfig = {
         }
       } else if (isLoggedIn) {
         return Response.redirect(new URL('/dashboard', nextUrl));
+      } else {
+        return true;
       }
-      return true;
     },
     async jwt({ token, user }) {
       if (user && user.id) {
