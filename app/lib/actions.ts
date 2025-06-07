@@ -951,8 +951,8 @@ export async function authenticate(
   }
 }
 
-export async function googleSignIn() {
-  await signIn('google', { redirectTo: 'https://qned.vercel.app/dashboard', redirect: true });
+export async function OAuthSignIn(id : string) {
+  await signIn(id, { redirectTo: 'https://qned.vercel.app/dashboard', redirect: true });
 }
 
 export async function logOut() {

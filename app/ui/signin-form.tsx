@@ -15,7 +15,7 @@ import {
 import { Button } from '@/app/ui/button';
 import { useEffect, useState } from 'react';
 import { useActionState } from 'react';
-import { authenticate, googleSignIn } from '@/app/lib/actions';
+import { authenticate, OAuthSignIn } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -115,7 +115,7 @@ export default function SignInForm() {
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Sign<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => googleSignIn()}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => OAuthSignIn('github')}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 
