@@ -1,9 +1,6 @@
 import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import GithubProvider from 'next-auth/providers/github';
-import Auth0Provider from 'next-auth/providers/auth0';
 import Credentials from 'next-auth/providers/credentials';
-import { authConfig } from './auth.config';
+import { authConfig } from '@/auth.config';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
@@ -88,21 +85,5 @@ export const { auth, signIn, signOut } = NextAuth({
         return user;
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      id: 'google',
-    }),
-    GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      id: 'github',
-    }),
-    Auth0Provider({
-      clientId: process.env.AUTH0_CLIENT_ID,
-      clientSecret: process.env.AUTH0_CLIENT_SECRET,
-      issuer: process.env.AUTH0_CLIENT_DOMAIN,
-      id: 'auth0',
-    })
   ],
 });

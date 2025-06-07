@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn, signOut } from '@/app/api/auth';
+import { signIn, signOut } from '@/auth';
 import { getSessionEmail, getSessionID } from './data';
 import { getUserByEmail, getUserByID } from './utils';
 import { AuthError } from 'next-auth';

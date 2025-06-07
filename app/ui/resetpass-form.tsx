@@ -217,6 +217,12 @@ export default async function ChangePassForm( {email, name, image} : ResetFormPr
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Form <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => OAuthSignIn('auth0')}>
+          Auth0 Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => OAuthSignIn('google')}>
+          Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => OAuthSignIn('github')}>
           Github Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
