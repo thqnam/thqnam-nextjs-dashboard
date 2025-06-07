@@ -18,8 +18,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { resetUserPass, ChangePassState, resetTarget } from '@/app/lib/actions';
-import { signIn } from 'next-auth/react';
+import { resetUserPass, ChangePassState, resetTarget, googleSignIn } from '@/app/lib/actions';
 import Link from 'next/link';
 
 type ResetFormProps = {
@@ -218,7 +217,7 @@ export default async function ChangePassForm( {email, name, image} : ResetFormPr
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Form <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => signIn('google')}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => googleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 

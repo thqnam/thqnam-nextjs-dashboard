@@ -951,6 +951,10 @@ export async function authenticate(
   }
 }
 
+export async function googleSignIn() {
+  await signIn('google', { redirectTo: '/dashboard' });
+}
+
 export async function logOut() {
   await changeUserStatusLogout();
   await signOut({ redirectTo: '/' });

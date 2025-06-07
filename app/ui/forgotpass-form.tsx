@@ -13,8 +13,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
-import { forgotUserPass, ForgotPassState } from '@/app/lib/actions';
-import { signIn } from 'next-auth/react';
+import { forgotUserPass, ForgotPassState, googleSignIn } from '@/app/lib/actions';
 import Link from 'next/link';
  
 export default function ForgotForm() {
@@ -81,7 +80,7 @@ export default function ForgotForm() {
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Form<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => signIn('google')}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => googleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 

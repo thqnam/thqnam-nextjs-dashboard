@@ -15,9 +15,8 @@ import {
 import { Button } from '@/app/ui/button';
 import { useEffect, useState } from 'react';
 import { useActionState } from 'react';
-import { authenticate } from '@/app/lib/actions';
+import { authenticate, googleSignIn } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
 export default function SignInForm() {
@@ -116,7 +115,7 @@ export default function SignInForm() {
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Sign<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => signIn('google')}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => googleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 
