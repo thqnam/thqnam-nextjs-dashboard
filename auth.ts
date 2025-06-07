@@ -96,6 +96,7 @@ export const { auth, signIn, signOut } = NextAuth({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       id: 'github',
+      redirectProxyUrl: '/dashboard',
     }),
   ],
 });
