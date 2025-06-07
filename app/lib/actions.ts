@@ -952,7 +952,7 @@ export async function authenticate(
 }
 
 export async function googleSignIn() {
-  await signIn('google');
+  await signIn('google', { redirectTo: '/dashboard', redirect: true });
 }
 
 export async function logOut() {
