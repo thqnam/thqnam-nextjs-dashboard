@@ -70,6 +70,7 @@ export const authConfig = {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       id: 'google',
+      redirectProxyUrl: '/signin',
     }),
   ], // Add providers with an empty array for now
 } satisfies NextAuthConfig;
