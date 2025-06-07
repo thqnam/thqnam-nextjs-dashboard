@@ -13,7 +13,7 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 import { supabase } from '@/app/lib/supabaseClient';
-import { auth } from '@/auth';
+import { auth } from '@/app/api/auth';
 import { PostgrestError } from '@supabase/supabase-js';
 
 export async function getSessionInfor() {
