@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
+import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
@@ -85,6 +85,11 @@ export const { auth, signIn, signOut } = NextAuth({
         }
         return user;
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      id: 'google',
     }),
   ],
 });

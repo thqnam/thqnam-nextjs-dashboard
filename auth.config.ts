@@ -1,5 +1,4 @@
 import type { NextAuthConfig } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
 import { getUserByEmail, updateUser, insertUser } from '@/app/lib/utils';
 
 export const authConfig = {
@@ -65,18 +64,5 @@ export const authConfig = {
       return session;
     }
   },
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      id: 'google',
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code"
-        }
-      }
-    }),
-  ], // Add providers with an empty array for now
+  providers: [], // Add providers with an empty array for now
 } satisfies NextAuthConfig;
