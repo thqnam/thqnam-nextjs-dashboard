@@ -952,7 +952,7 @@ export async function authenticate(
 }
 
 export async function googleSignIn() {
-  await signIn('google', { redirectTo: 'https://qned.vercel.app/dashboard' });
+  await signIn('google');
 }
 
 export async function logOut() {
