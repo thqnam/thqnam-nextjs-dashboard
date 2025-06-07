@@ -86,10 +86,5 @@ export const { auth, signIn, signOut } = NextAuth({
         return user;
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      id: 'google',
-    }),
   ],
 });
