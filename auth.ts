@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import GithubProvider from 'next-auth/providers/github';
+import Auth0Provider from 'next-auth/providers/auth0';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
@@ -96,8 +97,11 @@ export const { auth, signIn, signOut } = NextAuth({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       id: 'github',
-      redirectProxyUrl: 'https://qned.vercel.app/dashboard',
-
     }),
+    Auth0Provider({
+      clientId: process.env.AUTH0_CLIENT_ID,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET,
+      id: 'auth0',
+    })
   ],
 });
