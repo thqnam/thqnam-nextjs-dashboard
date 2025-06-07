@@ -101,6 +101,7 @@ export const { auth, signIn, signOut } = NextAuth({
     Auth0Provider({
       clientId: process.env.AUTH0_CLIENT_ID,
       clientSecret: process.env.AUTH0_CLIENT_SECRET,
+      issuer: process.env.AUTH0_CLIENT_DOMAIN,
       id: 'auth0',
     })
   ],
