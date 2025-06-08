@@ -24,10 +24,10 @@ const UserFormSchema = z.object({
   }).email({
     message: 'The string data must be look like email format'
   }),
-  // image: z.string({
-  //   invalid_type_error: 'Please select a image.',
-  //   required_error: 'Must be select a image',
-  // }),
+  image: z.string({
+    invalid_type_error: 'Please select a image.',
+    required_error: 'Must be select a image',
+  }),
   password: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the password of this user',
@@ -81,10 +81,10 @@ const ChangeInforFormSchema = z.object({
   }).email({
     message: 'The string data must be look like email format'
   }),
-  // image: z.string({
-  //   invalid_type_error: 'Please select a image.',
-  //   required_error: 'Must be select a image',
-  // }),
+  image: z.string({
+    invalid_type_error: 'Please select a image.',
+    required_error: 'Must be select a image',
+  }),
 });
 
 const CustomerFormSchema = z.object({
@@ -178,7 +178,7 @@ export type UserState = {
   errors?: {
     name?: string[];
     email?: string[];
-    // image?: string[];
+    image?: string[];
     password?: string[];
     repassword?: string[];
   };
@@ -204,7 +204,7 @@ export type ChangeInforState = {
   errors?: {
     name?: string[];
     email?: string[];
-    // image?: string[];
+    image?: string[];
   };
   message?: string | null;
 };
@@ -240,7 +240,7 @@ export async function createUser(prevState: UserState, formData: FormData){
   const validatedFields = CreateUser.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
-    // image: formData.get('image'),
+    image: formData.get('image'),
     password: formData.get('password'),
     repassword: formData.get('repassword'),
   });
@@ -251,7 +251,7 @@ export async function createUser(prevState: UserState, formData: FormData){
     const { 
       name, 
       email, 
-      // image, 
+      image, 
       password, 
       repassword 
     } = validatedFields.data;
@@ -271,7 +271,7 @@ export async function createUser(prevState: UserState, formData: FormData){
             {
               name: name,
               email: email,
-              // image: image,
+              image: image,
               password: hashedPassword,
               status: 'logout',
               email_verified: false,
@@ -517,7 +517,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
   const validatedFields = ChangeInfor.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
-    // image: formData.get('image'),
+    image: formData.get('image'),
   });
 
   if (validatedFields.success) {
@@ -525,7 +525,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
     const { 
       name, 
       email, 
-      // image 
+      image 
     } = validatedFields.data;
 
     const id = await getSessionID();
@@ -544,7 +544,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
             .update({
               name: name,
               email: email,
-              // image: image,
+              image: image,
             })
             .eq('id', userID.id)
             .eq('email', email);
@@ -949,10 +949,6 @@ export async function authenticate(
       throw error;
     }
   }
-}
-
-export async function OAuthSignIn(id : string) {
-  await signIn(id);
 }
 
 export async function logOut() {
