@@ -121,6 +121,8 @@ export async function updateUser(id: string, email: string, name: string, image:
       name: name,
       email: email,
       image: image,
+      status: 'logout',
+      email_verified: true,
     })
     .eq('id', id)
     .eq('email', email);

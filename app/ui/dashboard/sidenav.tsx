@@ -3,6 +3,7 @@
 import NavLinks from '@/app/ui/dashboard/nav-links';
 import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon, ArrowTurnRightUpIcon, ArrowTurnLeftUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
+import { OAuthGlobalSignOut, OAuthLocalSignOut } from '@/app/lib/supabaseAuth';
 import { resetTarget, logOut } from '@/app/lib/actions';
 
 export default function SideNav() {
@@ -48,6 +49,26 @@ export default function SideNav() {
           >
             <ArrowDownIcon className="w-6" />
             <div className="hidden md:block">Sign Down</div>
+          </button>
+        </form>
+        <form
+          action={() => {OAuthGlobalSignOut()}}
+        >
+          <button 
+           className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+          >
+            <PowerIcon className="w-6" />
+            <div className="hidden md:block">OAu GoSign</div>
+          </button>
+        </form>
+        <form
+          action={() => {OAuthLocalSignOut()}}
+        >
+          <button 
+           className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+          >
+            <PowerIcon className="w-6" />
+            <div className="hidden md:block">OAu LoSign</div>
           </button>
         </form>
         <form
