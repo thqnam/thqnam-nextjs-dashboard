@@ -102,9 +102,7 @@ const providers = [
   }),
 ];
 
-const handler = NextAuth({
+export const { } =  NextAuth({
   ...authConfig,
   providers,
 });
-
-export { handler as GET, handler as POST };
