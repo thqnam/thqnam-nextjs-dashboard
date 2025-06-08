@@ -48,7 +48,7 @@ export const { auth, signIn, signOut } = NextAuth({
           }
         }
 
-        const passwordsMatch = await bcrypt.compare(password, user.password);
+        const passwordsMatch = bcrypt.compareSync(user.salt === '' ? password : bcrypt.hashSync(password, user.salt), user.password);
 
         if (!passwordsMatch) {
           // Cập nhật số lần sai và thời điểm

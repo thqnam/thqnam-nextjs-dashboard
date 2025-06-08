@@ -12,6 +12,7 @@ export type User = {
   last_failed_at: string;
   token: string;
   expires: string;
+  salt: string;
   failed_attempts: number;
   email_verified: boolean;
 };

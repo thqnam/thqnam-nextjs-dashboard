@@ -263,7 +263,8 @@ export async function createUser(prevState: UserState, formData: FormData){
 
         const emailVerifyToken = randomUUID();
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
-        const hashedPassword = bcrypt.hashSync(password, 10);
+        const salt = bcrypt.genSaltSync(100);
+        const hashedPassword = bcrypt.hashSync(password, salt);
         // Insert data into the database
         const { error } = await supabase
           .from('users')
@@ -273,6 +274,7 @@ export async function createUser(prevState: UserState, formData: FormData){
               email: email,
               image: image,
               password: hashedPassword,
+              salt: salt,
               status: 'logout',
               email_verified: false,
               token: emailVerifyToken,
@@ -605,11 +607,14 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
 
         if (user !== undefined){
 
-          const hashedPassword = bcrypt.hashSync(newpassword, 10);
+          const salt = bcrypt.genSaltSync(100);
+
+          const hashedPassword = bcrypt.hashSync(newpassword, salt);
 
           const { error } = await supabase
             .from('users')
             .update({
+              salt: salt,
               password: hashedPassword,
             })
             .eq('id', user.id);
@@ -666,11 +671,14 @@ export async function resetUserPass(email: string, prevState: ChangePassState, f
 
       if (user !== undefined){
 
-        const hashedPassword = bcrypt.hashSync(newpassword, 10);
+        const salt = bcrypt.genSaltSync(100);
+
+        const hashedPassword = bcrypt.hashSync(newpassword, salt);
 
         const { error } = await supabase
           .from('users')
           .update({
+            salt: salt,
             password: hashedPassword,
             token: null, 
             expires: null
