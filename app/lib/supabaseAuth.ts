@@ -52,7 +52,7 @@ export async function OAuthLocalSignOut() {
 }
 
 export async function OAuthSignUp(email: string, password: string, phone: string, name: string, image: string) {
-    await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
         email,
         phone,
         password,
@@ -60,6 +60,25 @@ export async function OAuthSignUp(email: string, password: string, phone: string
             data: { name: name, image: image },
         }
     });
+    if (error){
+        throw error;
+    } else {
+        await OAuthGetUser();
+    }
+}
+
+export async function OAuthUpdateUser(email: string, password: string, phone: string, name: string, image: string) {
+    const { error } = await supabase.auth.updateUser({
+        email,
+        phone,
+        password,
+        data: { name: name, image: image },
+    });
+    if (error){
+        throw error;
+    } else {
+        await OAuthGetUser();
+    }
 }
 
 async function OAuthGetUser() {
