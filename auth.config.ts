@@ -5,6 +5,7 @@ export const authConfig = {
   pages: {
     signIn: '/signin',
     signOut: '/',
+    newUser: '/signupreponse',
   },
   session: {
     strategy: 'jwt', // hoặc 'jwt' 'database'
@@ -27,7 +28,7 @@ export const authConfig = {
         return true;
       }
     },
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user }) {
       if (user && user.id) {
         token.id = user.id;
       }
