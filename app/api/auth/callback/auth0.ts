@@ -13,3 +13,7 @@ export const { auth, signIn, signOut } = NextAuth({
     })
   ],
 });
+
+export async function Auth0SignIn(){
+    await signIn('auth0');
+}

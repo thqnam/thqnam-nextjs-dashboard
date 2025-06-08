@@ -15,7 +15,10 @@ import {
 import { Button } from '@/app/ui/button';
 import { useEffect, useState } from 'react';
 import { useActionState } from 'react';
-import { authenticate, OAuthSignIn } from '@/app/lib/actions';
+import { authenticate } from '@/app/lib/actions';
+import { GoogleSignIn } from '../api/auth/callback/google';
+import { GithubSignIn } from '../api/auth/callback/github';
+import { Auth0SignIn } from '../api/auth/callback/auth0';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -115,13 +118,13 @@ export default function SignInForm() {
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Sign<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => OAuthSignIn('auth0')}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => Auth0SignIn()}>
           Auth0 Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => OAuthSignIn('google')}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => GoogleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => OAuthSignIn('github')}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => GithubSignIn()}>
           Github Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 
