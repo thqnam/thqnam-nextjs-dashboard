@@ -16,5 +16,5 @@ export const { auth, signIn, signOut } = NextAuth({
 });
 
 export async function GoogleSignIn(){
-    await signIn('google');
+    await signIn('google', {redirect: true, redirectTo: '/dashboard'});
 }

@@ -3,8 +3,9 @@ import { getUserByEmail, updateUser, insertUser } from '@/app/lib/utils';
 
 export const authConfig = {
   pages: {
-      signIn: '/dashboard',
-      signOut: '/'
+      signIn: '/signin',
+      signOut: '/',
+      newUser: '/verifyemail'
   },
   session: {
     strategy: 'jwt', // hoặc 'jwt' 'database'
