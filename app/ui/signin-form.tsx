@@ -19,6 +19,7 @@ import { authenticate } from '@/app/lib/actions';
 import { GoogleSignIn } from '../api/auth/callback/google';
 import { GithubSignIn } from '../api/auth/callback/github';
 import { Auth0SignIn } from '../api/auth/callback/auth0';
+import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -121,7 +122,7 @@ export default function SignInForm() {
         <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await Auth0SignIn()}>
           Auth0 Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await GoogleSignIn()}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={() => signIn('google')}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await GithubSignIn()}>
