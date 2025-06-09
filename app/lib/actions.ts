@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn, signOut } from '@/auth';
+import { signIn, signOut, unstable_update } from '@/auth';
 import { getSessionEmail, getSessionID } from './data';
 import { getUserByEmail, getUserByID } from './utils';
 import { AuthError } from 'next-auth';
@@ -554,8 +554,15 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
               message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
             };
           } else {
-            revalidatePath('/dashboard/');
-            redirect('/dashboard/');
+            const result = await unstable_update({user: {name: name, email: email, image: image}});
+            if (result === null){
+              return {
+                message: 'Failed to Update Session. Failed to Change Infor.',
+              };
+            } else {
+              revalidatePath('/dashboard/');
+              redirect('/dashboard/');
+            }
           }
           
         } else {
