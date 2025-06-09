@@ -25,7 +25,7 @@ export async function OAuthGoogleSignIn() {
     if (error){
         throw error;
     } else {
-        await OAuthGetUser();
+        //await OAuthGetUser();
     }
 }
 
@@ -39,7 +39,7 @@ export async function OAuthGithubSignIn() {
     if (error){
         throw error;
     } else {
-        await OAuthGetUser();
+        //await OAuthGetUser();
     }
 }
 

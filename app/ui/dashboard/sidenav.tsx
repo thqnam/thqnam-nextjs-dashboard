@@ -3,7 +3,7 @@
 import NavLinks from '@/app/ui/dashboard/nav-links';
 import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon, ArrowTurnRightUpIcon, ArrowTurnLeftUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
-// import { OAuthGlobalSignOut, OAuthLocalSignOut } from '@/app/lib/supabaseAuth';
+import { OAuthGlobalSignOut, OAuthLocalSignOut } from '@/app/lib/supabaseAuth';
 import { resetTarget, logOut } from '@/app/lib/actions';
 
 export default function SideNav() {
@@ -51,7 +51,7 @@ export default function SideNav() {
             <div className="hidden md:block">Sign Down</div>
           </button>
         </form>
-        {/* <form
+        <form
           action={() => {OAuthGlobalSignOut()}}
         >
           <button 
@@ -70,7 +70,7 @@ export default function SideNav() {
             <PowerIcon className="w-6" />
             <div className="hidden md:block">OAu LoSign</div>
           </button>
-        </form> */}
+        </form>
         <form
           action={() => {logOut()}}
         >
