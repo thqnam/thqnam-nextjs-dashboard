@@ -13,9 +13,8 @@ import {
   ArrowTurnDownRightIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useEffect, useState } from 'react';
-import { useActionState } from 'react';
-import { authenticate } from '@/app/lib/actions';
+import { useEffect, useState, useActionState } from 'react';
+import { authenticate, resetTarget } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
 import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
@@ -27,6 +26,14 @@ export default function SignInForm() {
     authenticate,
     undefined,
   );
+  const SignInGoogle = async () => {
+    await OAuthGoogleSignIn();
+    resetTarget(callbackUrl);
+  }
+  const SignInGithub = async () => {
+    await OAuthGithubSignIn();
+    resetTarget(callbackUrl);
+  }
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
   const [passwordInputType, setPasswordInputType] = useState('');
 
@@ -116,10 +123,10 @@ export default function SignInForm() {
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Sign<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await OAuthGoogleSignIn()}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={SignInGoogle}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await OAuthGithubSignIn()}>
+        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={SignInGithub}>
           Github Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 
