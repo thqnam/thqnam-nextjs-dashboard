@@ -26,13 +26,6 @@ export default function SignInForm() {
     authenticate,
     undefined,
   );
-  const SignInGoogle = async () => {
-    await OAuthGoogleSignIn();
-    
-  }
-  const SignInGithub = async () => {
-    await OAuthGithubSignIn()
-  }
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
   const [passwordInputType, setPasswordInputType] = useState('');
 
