@@ -47,11 +47,11 @@ export const { auth, signIn, signOut } = NextAuth({
             throw talada;
           }
         }
-
+        console.log('PassSalt: ' + user.salt);
         const passwordInput = bcrypt.hashSync(password, user.salt)
-        
+        console.log('PassInput: ' + passwordInput);
         const passwordsMatch = bcrypt.compareSync(passwordInput, user.password);
-
+        console.log('PassData: ' + user.password);
         if (!passwordsMatch) {
           // Cập nhật số lần sai và thời điểm
           await supabase
