@@ -1,14 +1,14 @@
 import type { NextAuthConfig } from 'next-auth';
-import { supabase } from '@/app/lib/supabaseClient';
+// import { supabase } from '@/app/lib/supabaseClient';
 
-async function checkLocal() {
-  const {data, error} = await supabase.auth.getUser();
-  if (error || data === null){
-    return false;
-  } else {
-    return true;
-  }
-}
+// async function checkLocal() {
+//   const {data, error} = await supabase.auth.getUser();
+//   if (error || data === null){
+//     return false;
+//   } else {
+//     return true;
+//   }
+// }
 
 export const authConfig = {
   pages: {
@@ -23,8 +23,8 @@ export const authConfig = {
   },
   callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
-      const isCheckLocal = await checkLocal();
-      const isLoggedIn = !!auth?.user || isCheckLocal;
+      //const isCheckLocal = await checkLocal();
+      const isLoggedIn = !!auth?.user; //|| isCheckLocal;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       if (isOnDashboard) {
         if (isLoggedIn) {
