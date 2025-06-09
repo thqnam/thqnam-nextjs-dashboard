@@ -75,12 +75,6 @@ const ChangeInforFormSchema = z.object({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the name of this user',
   }),
-  email: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
-  }),
   image: z.string({
     invalid_type_error: 'Please select a image.',
     required_error: 'Must be select a image',
@@ -203,7 +197,6 @@ export type ForgotPassState = {
 export type ChangeInforState = {
   errors?: {
     name?: string[];
-    email?: string[];
     image?: string[];
   };
   message?: string | null;
@@ -524,51 +517,39 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
     
     const { 
       name, 
-      email, 
       image 
     } = validatedFields.data;
 
     const id = await getSessionID();
 
     if (id !== ''){
+
       const userID = await getUserByID(id);
 
-      if (userID !== undefined && userID !== null){
+      if (userID !== undefined){
 
-        const userEmail = await getUserByEmail(email);
-
-        if (userEmail === undefined){
-
-          const { error } = await supabase
-            .from('users')
-            .update({
-              name: name,
-              email: email,
-              image: image,
-            })
-            .eq('id', userID.id)
-            .eq('email', email);
-          
-          if (error) {
+        const { error } = await supabase
+          .from('users')
+          .update({
+            name: name,
+            image: image,
+          })
+          .eq('id', userID.id);
+        
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+          };
+        } else {
+          const result = await unstable_update({user: {name: name, image: image}});
+          if (result === null){
             return {
-              message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+              message: 'Failed to Update Next Auth Session. Failed to Change Infor.',
             };
           } else {
-            const result = await unstable_update({user: {name: name, email: email, image: image}});
-            if (result === null){
-              return {
-                message: 'Failed to Update Session. Failed to Change Infor.',
-              };
-            } else {
-              revalidatePath('/dashboard/');
-              redirect('/dashboard/');
-            }
+            revalidatePath('/dashboard/');
+            redirect('/dashboard/');
           }
-          
-        } else {
-          return {
-            message: 'This email compare with a email of user in Database. Failed to Change Infor.',
-          };
         }
 
       } else {
