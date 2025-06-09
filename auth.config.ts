@@ -1,5 +1,4 @@
 import type { NextAuthConfig } from 'next-auth';
-import { getUserByEmail, updateUser, insertUser } from '@/app/lib/utils';
 
 export const authConfig = {
   pages: {

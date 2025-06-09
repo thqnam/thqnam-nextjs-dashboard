@@ -263,7 +263,7 @@ export async function createUser(prevState: UserState, formData: FormData){
 
         const emailVerifyToken = randomUUID();
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
-        const salt = bcrypt.genSaltSync(100);
+        const salt = bcrypt.genSaltSync(12);
         const hashedPassword = bcrypt.hashSync(password, salt);
         // Insert data into the database
         const { error } = await supabase
@@ -607,7 +607,7 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
 
         if (user !== undefined){
 
-          const salt = bcrypt.genSaltSync(100);
+          const salt = bcrypt.genSaltSync(12);
 
           const hashedPassword = bcrypt.hashSync(newpassword, salt);
 
@@ -655,26 +655,26 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
 }
 
 export async function resetUserPass(email: string, prevState: ChangePassState, formData: FormData){
-  console.log('1');
+  
   const validatedFields = ResetPass.safeParse({
     newpassword: formData.get('newpassword'),
     renewpassword: formData.get('renewpassword'),
   });
-  console.log('2');
+  
   if (validatedFields.success) {
-    console.log('3');
+    
     const { newpassword, renewpassword } = validatedFields.data;
-    console.log('4');
+    
     if (newpassword === renewpassword){
-      console.log('5');
+      
       const user = await getUserByEmail(email);
-      console.log('6');
+      
       if (user !== undefined){
-        console.log('7');
-        const salt = bcrypt.genSaltSync(100);
-        console.log('8');
+        
+        const salt = bcrypt.genSaltSync(12);
+        
         const hashedPassword = bcrypt.hashSync(newpassword, salt);
-        console.log('9');
+        
         const { error } = await supabase
           .from('users')
           .update({
@@ -684,14 +684,12 @@ export async function resetUserPass(email: string, prevState: ChangePassState, f
             expires: null
           })
           .eq('id', user.id);
-        console.log('10');
+        
         if (error) {
-          console.log('Database Error: Failed to Reset Password. Reason: ' + error.message);
           return {
             message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
           };
         } else {
-          console.log('11');
           redirect('/resetreponse');
         }
         
