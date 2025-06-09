@@ -44,6 +44,9 @@ importers:
       nodemailer:
         specifier: ^7.0.3
         version: 7.0.3
+      pnpm:
+        specifier: ^10.12.1
+        version: 10.12.1
       postcss:
         specifier: 8.5.1
         version: 8.5.1
@@ -1727,6 +1730,11 @@ packages:
   pkce-challenge@5.0.0:
     resolution: {integrity: sha512-ueGLflrrnvwB3xuo/uGob5pd5FN7l0MsLf0Z87o/UQmRtwjvfylfc9MurIxRAWywCYTgrvpXBcqjV4OfCYGCIQ==}
     engines: {node: '>=16.20.0'}
+
+  pnpm@10.12.1:
+    resolution: {integrity: sha512-8N2oWA8O6UgcXHmh2Se5Fk8sR46QmSrSaLuyRlpzaYQ5HWMz0sMnkTV4soBK8zR0ylVLopwEqLEwYKcXZ1rjrA==}
+    engines: {node: '>=18.12'}
+    hasBin: true
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -4008,6 +4016,8 @@ snapshots:
   pirates@4.0.6: {}
 
   pkce-challenge@5.0.0: {}
+
+  pnpm@10.12.1: {}
 
   possible-typed-array-names@1.1.0: {}
 
