@@ -12,35 +12,40 @@ export async function OAuthPasswordSignIn(email: string, password: string, phone
     if (error){
         throw error;
     } else {
-        await OAuthGetUser();
+        //await OAuthGetUser();
+        resetTarget('/dashboard');
     }
 }
 
 export async function OAuthGoogleSignIn() {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://qned.vercel.app/dashboard'
+        redirectTo: 'https://qned.vercel.app/dashboard',
+        skipBrowserRedirect: true,
       }
     });
     if (error){
         throw error;
     } else {
         //await OAuthGetUser();
+        resetTarget(data.url);
     }
 }
 
 export async function OAuthGithubSignIn() {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: 'https://qned.vercel.app/dashboard'
+        redirectTo: 'https://qned.vercel.app/dashboard',
+        skipBrowserRedirect: true,
       }
     });
     if (error){
         throw error;
     } else {
         //await OAuthGetUser();
+        resetTarget(data.url);
     }
 }
 
