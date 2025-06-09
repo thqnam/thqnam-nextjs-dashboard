@@ -770,7 +770,7 @@ export async function forgotUserPass(prevState: ForgotPassState, formData: FormD
           message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
         };
       } else {
-        redirect('forgotreponse');
+        redirect('/forgotreponse');
       }
       
     } else {
