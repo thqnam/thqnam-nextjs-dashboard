@@ -1,6 +1,7 @@
 'use client'
 import { supabase } from '@/app/lib/supabaseClient';
 import { getUserByEmail, insertUser, updateUser } from '@/app/lib/utils';
+import { resetTarget } from '@/app/lib/actions';
 
 export async function OAuthPasswordSignIn(email: string, password: string, phone: string) {
     const { error } = await supabase.auth.signInWithPassword({
@@ -18,14 +19,12 @@ export async function OAuthPasswordSignIn(email: string, password: string, phone
 export async function OAuthGoogleSignIn() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/dashboard',
-      },
     });
     if (error){
         throw error;
     } else {
         //await OAuthGetUser();
+        resetTarget('/dashboard');
     }
 }
 
@@ -40,15 +39,18 @@ export async function OAuthGithubSignIn() {
         throw error;
     } else {
         //await OAuthGetUser();
+        resetTarget('/dashboard');
     }
 }
 
 export async function OAuthGlobalSignOut() {
     await supabase.auth.signOut({scope: 'global'});
+    resetTarget('/');
 }
 
 export async function OAuthLocalSignOut() {
     await supabase.auth.signOut({scope: 'local'});
+    resetTarget('/');
 }
 
 export async function OAuthSignUp(email: string, password: string, phone: string, name: string, image: string) {
