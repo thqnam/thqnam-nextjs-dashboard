@@ -19,12 +19,14 @@ export async function OAuthPasswordSignIn(email: string, password: string, phone
 export async function OAuthGoogleSignIn() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo: 'https://qned.vercel.app/dashboard'
+      }
     });
     if (error){
         throw error;
     } else {
         //await OAuthGetUser();
-        resetTarget('/dashboard');
     }
 }
 
@@ -32,14 +34,13 @@ export async function OAuthGithubSignIn() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: window.location.origin + '/dashboard',
-      },
+        redirectTo: 'https://qned.vercel.app/dashboard'
+      }
     });
     if (error){
         throw error;
     } else {
         //await OAuthGetUser();
-        resetTarget('/dashboard');
     }
 }
 
