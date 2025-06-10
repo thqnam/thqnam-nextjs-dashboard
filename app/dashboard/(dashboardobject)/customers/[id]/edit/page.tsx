@@ -37,7 +37,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       <Suspense>
         <UserGreeting />
       </Suspense>
-      <Form id={id} />
+      <Suspense>
+        <Form id={id} />
+      </Suspense>
     </main>
   );
 }

@@ -18,6 +18,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
     changeUserInfor, 
     ChangeInforState,
@@ -78,9 +79,16 @@ export default async function ChangeInforForm() {
     };
   }, []);
 
+  const router = useRouter();
   const initialState: ChangeInforState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(changeUserInfor, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
+
+  useEffect(() => {
+    if (state.message === 'Successful') {
+      router.replace('/dashboard');
+    }
+  }, [state.message, router]);
 
   if (!user || id === ''){
     return (
@@ -260,6 +268,7 @@ export default async function ChangeInforForm() {
             className="flex h-8 items-end space-x-1"
             aria-live="polite"
             aria-atomic="true"
+            hidden={state.message === 'Successful'}
           >
             {showError && state.message && (
               <>

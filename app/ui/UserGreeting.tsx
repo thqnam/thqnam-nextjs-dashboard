@@ -24,7 +24,7 @@ export default async function UserGreeting() {
       .channel('user-session')
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'users' },
+        { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${email}` },
         async (payload) => {
           if (payload.new.name !== payload.old.name || payload.new.image !== payload.old.image) {
             loadSession();

@@ -1,11 +1,11 @@
-import Form from '@/app/ui/customers/create-form';
-import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
+import Form from '@/app/ui/invoices/edit-form';
+import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Create Customer',
+  title: 'Edit Invoices',
   applicationName: 'QNED',
   description: 'The official Dashboard of QNED App, built by Mr. Thiều Huỳnh Quang Nam.',
   metadataBase: new URL('https://qned.vercel.app/'),
@@ -18,17 +18,19 @@ export const metadata: Metadata = {
   publisher: 'Vercel firm'
 };
  
-export default async function Page() {
- 
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
+  
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },
-          { label: 'Customers', href: '/dashboard/customers' },
+          { label: 'Invoices', href: '/dashboard/invoices' },
           {
-            label: 'Create Customer',
-            href: '/dashboard/customers/create',
+            label: 'Edit Invoice',
+            href: `/dashboard/invoices/${id}/edit`,
             active: true,
           },
         ]}
@@ -36,7 +38,9 @@ export default async function Page() {
       <Suspense>
         <UserGreeting />
       </Suspense>
-      <Form/>
+      <Suspense>
+        <Form id={id} />
+      </Suspense>
     </main>
   );
 }

@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { auth, signIn, signOut, unstable_update } from '@/auth';
+import { signIn, signOut, unstable_update } from '@/auth';
 import { getSessionEmail, getSessionID } from './data';
 import { getUserByEmail, getUserByID } from './utils';
 import { AuthError } from 'next-auth';
@@ -528,7 +528,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
       if (userID !== undefined){
 
         await unstable_update({user: {name: name, image: image}});
-        
+
         const { error } = await supabase
           .from('users')
           .update({
@@ -542,8 +542,8 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
             message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
           };
         } else {
-          revalidatePath('/dashboard/');
-          redirect('/dashboard/');
+          revalidatePath('/dashboard');
+          return { message: 'Successful' };
         }
 
       } else {
@@ -601,8 +601,8 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
               message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
             };
           } else {
-            revalidatePath('/dashboard/');
-            redirect('/dashboard/');
+            revalidatePath('/dashboard');
+            redirect('/dashboard');
           }
           
         } else {
