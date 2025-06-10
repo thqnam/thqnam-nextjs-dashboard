@@ -21,7 +21,7 @@ export default async function UserGreeting() {
     loadSession(); 
 
     const channel = supabase
-      .channel('user-edit')
+      .channel('user-session')
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'users' },
@@ -41,8 +41,20 @@ export default async function UserGreeting() {
   // const { data: { session } } = await supabase.auth.getSession();
   // const sessionOAuth = session;
   
-  if (email !== '' && name !== '' && image !== ''){
+  if (email === '' || name === '' || image === ''){
 
+    return (
+      <div className="flex flex-col items-start gap-1 p-4 bg-white rounded-lg shadow-sm md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-2 text-sm text-gray-700 text-left">
+          👋 Welcome
+        </div>
+        <div className="text-sm text-gray-700 text-left md:text-right">
+          Email:
+        </div>
+      </div>
+    );
+
+  } else {
     return (
       <div className="flex flex-col items-start gap-1 p-4 bg-white rounded-lg shadow-sm md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-2 text-sm text-gray-700 text-left">
@@ -60,9 +72,6 @@ export default async function UserGreeting() {
         <UserGreetingClient userEmail={email} />
       </div>
     );
-
-  } else {
-    return null;
   }
   // else if (sessionOAuth !== null){
 
