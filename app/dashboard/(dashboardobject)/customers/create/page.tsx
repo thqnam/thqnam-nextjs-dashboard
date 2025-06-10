@@ -1,5 +1,5 @@
 import Form from '@/app/ui/customers/create-form';
-import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
+import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
 import { Suspense } from 'react';
 import { Metadata } from 'next';

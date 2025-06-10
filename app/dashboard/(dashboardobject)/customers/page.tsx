@@ -6,7 +6,7 @@ import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import UserGreeting from '@/app/ui/UserGreeting';
 import { Metadata } from 'next';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Breadcrumbs from '@/app/ui/breadcrumbs';
  
 export const metadata: Metadata = {
   title: 'Customers',

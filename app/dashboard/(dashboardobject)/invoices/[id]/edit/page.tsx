@@ -1,5 +1,5 @@
 import Form from '@/app/ui/invoices/edit-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
