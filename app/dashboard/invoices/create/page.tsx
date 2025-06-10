@@ -22,9 +22,6 @@ export default async function Page() {
  
   return (
     <main>
-      <Suspense>
-        <UserGreeting />
-      </Suspense>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },
@@ -36,6 +33,9 @@ export default async function Page() {
           },
         ]}
       />
+      <Suspense>
+        <UserGreeting />
+      </Suspense>
       <Form />
     </main>
   );

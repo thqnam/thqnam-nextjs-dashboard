@@ -23,9 +23,6 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   const id = params.id;
   return (
     <main>
-      <Suspense>
-        <UserGreeting />
-      </Suspense>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },
@@ -37,6 +34,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           },
         ]}
       />
+      <Suspense>
+        <UserGreeting />
+      </Suspense>
       <Form id={id} />
     </main>
   );
