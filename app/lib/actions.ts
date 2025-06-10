@@ -509,7 +509,6 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
   
   const validatedFields = ChangeInfor.safeParse({
     name: formData.get('name'),
-    email: formData.get('email'),
     image: formData.get('image'),
   });
 
@@ -537,9 +536,9 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
           if (sessionUser !== undefined){
 
             const sessionName = sessionUser.name;
-
+            console.log(sessionName);
             const sessionImage = sessionUser.image;
-
+            console.log(sessionImage);
             if (sessionName !== null && sessionName !== undefined && sessionName !== '' &&
                 sessionImage !== null && sessionImage !== undefined && sessionImage !== ''){
 
