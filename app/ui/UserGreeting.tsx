@@ -1,31 +1,61 @@
 import { getSessionInfor } from '@/app/lib/data'
-import UserGreetingClient from '../lib/logSignListen';
-// import { supabase } from '@/app/lib/supabaseClient';
+import UserGreetingClient from '@/app/lib/logSignListen';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
 
 export default async function UserGreeting() {
-  const sessionUser = await getSessionInfor();
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const loadSession = async () => {
+    const sessionUser = await getSessionInfor();
+    setEmail(`${sessionUser.email}`);
+    setName(`${sessionUser.name}`);
+    setImage(`${sessionUser.image}`);
+  };
+
+  useEffect(() => {
+    loadSession(); 
+
+    const channel = supabase
+      .channel('user-edit')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'users' },
+        async (payload) => {
+          if (payload.new.name !== payload.old.name || payload.new.image !== payload.old.image) {
+            loadSession();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   // const { data: { session } } = await supabase.auth.getSession();
   // const sessionOAuth = session;
   
-  if (sessionUser){
+  if (email !== '' && name !== '' && image !== ''){
 
     return (
       <div className="flex flex-col items-start gap-1 p-4 bg-white rounded-lg shadow-sm md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-2 text-sm text-gray-700 text-left">
           👋 Welcome{' '}<Image
-            src={`${sessionUser.image}`}
+            src={image}
             className="rounded-full"
-            alt={`${sessionUser.name}'s profile image`}
+            alt={`${name}'s profile image`}
             width={28}
             height={28}
-            hidden={!sessionUser.image}
-          />{' '}<b>{sessionUser.name}</b>
+          />{' '}<b>{name}</b>
         </div>
         <div className="text-sm text-gray-700 text-left md:text-right">
-          Email: <b>{sessionUser.email}</b>
+          Email: <b>{email}</b>
         </div>
-        <UserGreetingClient userEmail={sessionUser.email} />
+        <UserGreetingClient userEmail={email} />
       </div>
     );
 

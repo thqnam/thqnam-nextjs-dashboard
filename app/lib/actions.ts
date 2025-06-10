@@ -528,28 +528,41 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
       if (userID !== undefined){
 
-        const { error } = await supabase
-          .from('users')
-          .update({
-            name: name,
-            image: image,
-          })
-          .eq('id', userID.id);
-        
-        if (error) {
-          return {
-            message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
-          };
-        } else {
-          const result = await unstable_update({user: {name: name, image: image}});
-          if (result === null){
-            return {
-              message: 'Failed to Update Next Auth Session. Failed to Change Infor.',
-            };
+        const session = await unstable_update({user: {name: name, image: image}});
+
+        if (session !== null){
+
+          const sessionUser = session.user;
+
+          if (sessionUser !== undefined){
+
+            const { error } = await supabase
+              .from('users')
+              .update({
+                name: sessionUser.name,
+                image: sessionUser.image,
+              })
+              .eq('id', userID.id);
+            
+            if (error) {
+              return {
+                message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+              };
+            } else {
+              revalidatePath('/dashboard/');
+              redirect('/dashboard/');
+            }
+
           } else {
-            revalidatePath('/dashboard/');
-            redirect('/dashboard/');
+            return {
+              message: 'Failed to Fetching Next Auth User. Failed to Change Infor.',
+            };
           }
+
+        } else {
+          return {
+            message: 'Failed to Update Next Auth Session. Failed to Change Infor.',
+          };
         }
 
       } else {
