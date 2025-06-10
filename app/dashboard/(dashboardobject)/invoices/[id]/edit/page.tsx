@@ -1,6 +1,7 @@
 import Form from '@/app/ui/invoices/edit-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
+import { getSessionEmail } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
-  
+  const email = await getSessionEmail();
   return (
     <main>
       <Breadcrumbs
@@ -36,7 +37,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         ]}
       />
       <Suspense>
-        <UserGreeting />
+        <UserGreeting email={email}/>
       </Suspense>
       <Suspense>
         <Form id={id} />

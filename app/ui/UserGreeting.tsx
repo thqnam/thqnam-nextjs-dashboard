@@ -3,28 +3,21 @@
 import { getSessionInfor } from '@/app/lib/data'
 import UserGreetingClient from '@/app/lib/logSignListen';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
 
-export default async function UserGreeting() {
-  const [email, setEmail] = useState('');
+export default async function UserGreeting({ email }: { email: string }) {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
-  const router = useRouter();
+  const loadSession = async () => {
+    const sessionUser = await getSessionInfor();
+    setName(`${sessionUser.name}`);
+    setImage(`${sessionUser.image}`);
+  };
 
   useEffect(() => {
-    const loadSession = async () => {
-      const sessionUser = await getSessionInfor();
-      setEmail(`${sessionUser.email || ''}`);
-      setName(`${sessionUser.name || ''}`);
-      setImage(`${sessionUser.image || ''}`);
-    };
+
     loadSession();
-  }, []);
-
-  useEffect(() => {
-    if (!email) return;
 
     const channel = supabase
       .channel('user-session')
@@ -36,7 +29,7 @@ export default async function UserGreeting() {
             payload.new.name !== payload.old.name ||
             payload.new.image !== payload.old.image
           ) {
-            router.refresh();
+            loadSession();
           }
         }
       )
@@ -45,12 +38,12 @@ export default async function UserGreeting() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [email, router]);
+  }, []);
 
   // const { data: { session } } = await supabase.auth.getSession();
   // const sessionOAuth = session;
   
-  if (email === '' || name === '' || image === ''){
+  if (name === '' || image === ''){
 
     return (
       <div className="flex flex-col items-start gap-1 p-4 bg-white rounded-lg shadow-sm md:flex-row md:items-center md:justify-between">
