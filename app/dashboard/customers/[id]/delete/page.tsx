@@ -1,6 +1,7 @@
 import Form from '@/app/ui/customers/delete-form';
 import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
+import { Suspense } from 'react';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -22,7 +23,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   const id = params.id;
   return (
     <main>
-      <UserGreeting />
+      <Suspense>
+        <UserGreeting />
+      </Suspense>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },

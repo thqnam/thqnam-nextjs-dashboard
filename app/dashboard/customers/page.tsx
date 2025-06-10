@@ -2,7 +2,6 @@ import CustomersPagination from '@/app/ui/customers/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/customers/table';
 import { CreateCustomer } from '@/app/ui/customers/buttons';
-import { lusitana } from '@/app/ui/fonts';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import UserGreeting from '@/app/ui/UserGreeting';
@@ -35,7 +34,9 @@ export default async function Page(props: {
   
   return (
     <main>
-      <UserGreeting />
+      <Suspense>
+        <UserGreeting />
+      </Suspense>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },

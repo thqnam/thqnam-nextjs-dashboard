@@ -22,7 +22,9 @@ export const metadata: Metadata = {
 export default function ChangeInforPage() {
   return (
     <main >
-      <UserGreeting />
+      <Suspense>
+        <UserGreeting />
+      </Suspense>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },

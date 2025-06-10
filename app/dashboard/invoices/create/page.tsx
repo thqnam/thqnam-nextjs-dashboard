@@ -1,6 +1,7 @@
 import Form from '@/app/ui/invoices/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
+import { Suspense } from 'react';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ export default async function Page() {
  
   return (
     <main>
-      <UserGreeting />
+      <Suspense>
+        <UserGreeting />
+      </Suspense>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },

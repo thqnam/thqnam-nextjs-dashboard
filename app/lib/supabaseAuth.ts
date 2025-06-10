@@ -1,4 +1,5 @@
 'use client'
+
 import { supabase } from '@/app/lib/supabaseClient';
 import { getUserByEmail, insertUser, updateUser } from '@/app/lib/utils';
 import { resetTarget } from '@/app/lib/actions';

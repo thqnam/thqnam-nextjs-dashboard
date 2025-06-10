@@ -36,7 +36,9 @@ export default async function Page(props: {
   
   return (
     <main>
-      <UserGreeting />
+      <Suspense>
+        <UserGreeting />
+      </Suspense>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Dashboard', href: '/dashboard' },
