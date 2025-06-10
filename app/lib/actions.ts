@@ -518,7 +518,8 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
       name, 
       image 
     } = validatedFields.data;
-
+    console.log('Form Name: ' + name);
+    console.log('Form Image: ' + image);
     const id = await getSessionID();
 
     if (id !== ''){
@@ -536,9 +537,9 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
           if (sessionUser !== undefined){
 
             const sessionName = sessionUser.name;
-            console.log(sessionName);
+            console.log('Session Name: ' + sessionName);
             const sessionImage = sessionUser.image;
-            console.log(sessionImage);
+            console.log('Session Image: ' +sessionImage);
             if (sessionName !== null && sessionName !== undefined && sessionName !== '' &&
                 sessionImage !== null && sessionImage !== undefined && sessionImage !== ''){
 
