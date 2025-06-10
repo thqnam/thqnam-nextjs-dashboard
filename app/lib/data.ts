@@ -9,7 +9,6 @@ import {
   LatestInvoiceRaw,
   Revenue,
   ImageField,
-  User
 } from './definitions';
 import { formatCurrency } from './utils';
 import { supabase } from '@/app/lib/supabaseClient';
