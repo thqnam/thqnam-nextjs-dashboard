@@ -12,15 +12,19 @@ export default async function UserGreeting() {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const router = useRouter();
-  const loadSession = async () => {
-    const sessionUser = await getSessionInfor();
-    setEmail(`${sessionUser.email}`);
-    setName(`${sessionUser.name}`);
-    setImage(`${sessionUser.image}`);
-  };
 
   useEffect(() => {
-    loadSession(); 
+    const loadSession = async () => {
+      const sessionUser = await getSessionInfor();
+      setEmail(`${sessionUser.email || ''}`);
+      setName(`${sessionUser.name || ''}`);
+      setImage(`${sessionUser.image || ''}`);
+    };
+    loadSession();
+  }, []);
+
+  useEffect(() => {
+    if (!email) return;
 
     const channel = supabase
       .channel('user-session')
@@ -28,7 +32,10 @@ export default async function UserGreeting() {
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${email}` },
         async (payload) => {
-          if (payload.new.name !== payload.old.name || payload.new.image !== payload.old.image) {
+          if (
+            payload.new.name !== payload.old.name ||
+            payload.new.image !== payload.old.image
+          ) {
             router.refresh();
           }
         }
@@ -38,7 +45,7 @@ export default async function UserGreeting() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [email, router]);
 
   // const { data: { session } } = await supabase.auth.getSession();
   // const sessionOAuth = session;
