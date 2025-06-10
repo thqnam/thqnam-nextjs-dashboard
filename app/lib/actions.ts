@@ -937,3 +937,7 @@ export async function logOut() {
   await changeUserStatusLogout();
   await signOut({ redirectTo: '/' });
 }
+
+export async function LogOut() {
+  await signOut({ redirectTo: '/' });
+}

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { signOut } from 'next-auth/react'
+import { LogOut } from '@/app/lib/actions';
 import { getUserByEmail } from '@/app/lib/utils';
 
 export default function UserGreetingClient({ userEmail }: { userEmail: string }) {
@@ -12,10 +12,10 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string })
     if (user !== undefined){
       const userStatus = user.status;
       if (userStatus === 'logout'){
-        await signOut({ redirectTo: '/' });
+        await LogOut();
       }
     } else {
-      await signOut({ redirectTo: '/' });
+      await LogOut();
     }
   };
 
@@ -28,7 +28,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string })
         { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${userEmail}` },
         async (payload) => {
           if (payload.new.status === 'logout') {
-            await signOut({ redirectTo: '/' });
+            await LogOut();
           }
         }
       )
@@ -37,7 +37,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string })
         { event: 'DELETE', schema: 'public', table: 'users' },
         async (payload) => {
           if (payload.old?.email === userEmail) {
-            await signOut({ redirectTo: '/' });
+            await LogOut();
           }
         }
       )
@@ -46,7 +46,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string })
     return () => {
       supabase.removeChannel(channel);
     };
-    
+
   }, [userEmail]);
 
   return null;
