@@ -268,9 +268,8 @@ export default async function ChangeInforForm() {
             className="flex h-8 items-end space-x-1"
             aria-live="polite"
             aria-atomic="true"
-            hidden={state.message === 'Successful'}
           >
-            {showError && state.message && (
+            {showError && state.message !== 'Successful' && (
               <>
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
                 <p className="text-sm text-red-500">{state.message}</p>

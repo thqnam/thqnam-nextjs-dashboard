@@ -30,7 +30,6 @@ export default async function UserGreeting() {
         async (payload) => {
           if (payload.new.name !== payload.old.name || payload.new.image !== payload.old.image) {
             router.refresh();
-            loadSession();
           }
         }
       )
