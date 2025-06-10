@@ -3,6 +3,7 @@
 import { getSessionInfor } from '@/app/lib/data'
 import UserGreetingClient from '@/app/lib/logSignListen';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
 
@@ -10,6 +11,7 @@ export default async function UserGreeting() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
+  const router = useRouter();
   const loadSession = async () => {
     const sessionUser = await getSessionInfor();
     setEmail(`${sessionUser.email}`);
@@ -27,6 +29,7 @@ export default async function UserGreeting() {
         { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${email}` },
         async (payload) => {
           if (payload.new.name !== payload.old.name || payload.new.image !== payload.old.image) {
+            router.refresh();
             loadSession();
           }
         }

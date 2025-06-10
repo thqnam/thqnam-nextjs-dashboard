@@ -86,7 +86,7 @@ export default async function ChangeInforForm() {
 
   useEffect(() => {
     if (state.message === 'Successful') {
-      router.replace('/dashboard');
+      router.push('/dashboard');
     }
   }, [state.message, router]);
 
