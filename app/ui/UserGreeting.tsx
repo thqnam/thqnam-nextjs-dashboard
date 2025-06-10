@@ -19,15 +19,12 @@ export default async function UserGreeting({ email }: { email: string }) {
       const sessionUser = await getSessionInfor();
       const sessionName = `${sessionUser.name}`;
       const sessionImage = `${sessionUser.image}`;
-      if (userName === sessionName){
+      if (userName === sessionName && userImage === sessionImage){
         setName(sessionName);
-      } else {
-        await unstable_update({user: { name: userName }})
-      }
-      if (userImage === sessionImage){
         setImage(sessionImage);
       } else {
-        await unstable_update({user: { image: userImage }})
+        await unstable_update({user: { name: userName, image: userImage }})
+        await loadSession();
       }
     }
   };
