@@ -536,21 +536,34 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
           if (sessionUser !== undefined){
 
-            const { error } = await supabase
-              .from('users')
-              .update({
-                name: sessionUser.name,
-                image: sessionUser.image,
-              })
-              .eq('id', userID.id);
-            
-            if (error) {
-              return {
-                message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
-              };
+            const sessionName = sessionUser.name;
+
+            const sessionImage = sessionUser.image;
+
+            if (sessionName !== null && sessionName !== undefined && sessionName !== '' &&
+                sessionImage !== null && sessionImage !== undefined && sessionImage !== ''){
+
+              const { error } = await supabase
+                .from('users')
+                .update({
+                  name: sessionName,
+                  image: sessionImage,
+                })
+                .eq('id', userID.id);
+              
+              if (error) {
+                return {
+                  message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+                };
+              } else {
+                revalidatePath('/dashboard/');
+                redirect('/dashboard/');
+              }
+
             } else {
-              revalidatePath('/dashboard/');
-              redirect('/dashboard/');
+              return {
+                message: 'Failed to Update Next Auth User. Failed to Change Infor.',
+              };
             }
 
           } else {
