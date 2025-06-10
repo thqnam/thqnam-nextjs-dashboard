@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import SignInForm from '@/app/ui/signin-form';
+import SignInForm from '@/app/ui/user/signin-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  

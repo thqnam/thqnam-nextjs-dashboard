@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import ForgotForm from '@/app/ui/forgotpass-form';
+import ForgotForm from '@/app/ui/user/forgotpass-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  

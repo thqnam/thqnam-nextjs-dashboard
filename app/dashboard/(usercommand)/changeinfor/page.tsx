@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import ChangeInforForm from '@/app/ui/changeinfor-form';
+import ChangeInforForm from '@/app/ui/user/changeinfor-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
 import { Suspense } from 'react';

@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import ResetForm from '@/app/ui/resetpass-form';
+import ResetForm from '@/app/ui/user/resetpass-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { supabase } from '@/app/lib/supabaseClient';
