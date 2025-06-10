@@ -16,10 +16,8 @@ export type User = {
   email_verified: boolean;
 };
 
-export type UserRequest = {
-  id: string;
+export type UserSession = {
   name: string;
-  email: string;
   image: string;
 };
 

@@ -527,7 +527,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
       if (userID !== undefined){
 
-        await unstable_update({user: {name: name, image: image}});
+        await unstable_update({user: { name: name, image: image }});
 
         const { error } = await supabase
           .from('users')
@@ -543,7 +543,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
           };
         } else {
           revalidatePath('/dashboard');
-          return { message: 'Successful' };
+          redirect('/dashboard');
         }
 
       } else {
@@ -593,16 +593,18 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
             .from('users')
             .update({
               password: hashedPassword,
+              status: 'logout',
             })
-            .eq('id', user.id);
-          
+            .eq('id', user.id)
+            .eq('status', 'login');
+
           if (error) {
             return {
               message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
             };
           } else {
-            revalidatePath('/dashboard');
-            redirect('/dashboard');
+            await signOut();
+            redirect('/signin');
           }
           
         } else {
@@ -654,11 +656,13 @@ export async function resetUserPass(email: string, prevState: ChangePassState, f
           .from('users')
           .update({
             password: hashedPassword,
+            status: "logout",
             token: null, 
             expires: null
           })
-          .eq('id', user.id);
-        
+          .eq('id', user.id)
+          .eq('status', 'login');
+          
         if (error) {
           return {
             message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,

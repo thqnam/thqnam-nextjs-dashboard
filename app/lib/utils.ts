@@ -1,4 +1,4 @@
-import { Revenue, User } from './definitions';
+import { Revenue, User, UserSession } from './definitions';
 import { supabase } from './supabaseClient';
 import { PostgrestError } from '@supabase/supabase-js';
 
@@ -87,6 +87,28 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
       return undefined;
     } else {
       const user = data as User;
+      return user;
+    }
+  }
+}
+
+export async function getUserSessionByEmail(email: string): Promise<UserSession | undefined> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('name, image')
+    .eq('email', email)
+    .maybeSingle();
+  if (error) {
+    console.error('Failed to fetch user session by email: Reason', error.message);
+    let talada : PostgrestError;
+    talada = error;
+    talada.message = 'Failed to fetch user session by email. Reason' + error.message;
+    throw talada;
+  } else {
+    if (data === null){
+      return undefined;
+    } else {
+      const user = data as UserSession;
       return user;
     }
   }

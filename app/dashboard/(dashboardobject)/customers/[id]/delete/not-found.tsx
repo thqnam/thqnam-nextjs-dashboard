@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FaceFrownIcon } from '@heroicons/react/24/outline';
 import UserGreeting from '@/app/ui/UserGreeting';
+import { getSessionEmail } from '@/app/lib/data';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -17,10 +18,11 @@ export const metadata: Metadata = {
   publisher: 'Vercel firm'
 };
  
-export default function NotFound() {
+export default async function NotFound() {
+  const email = await getSessionEmail();
   return (
     <main className="flex h-full flex-col items-center justify-center gap-2">
-      <UserGreeting />
+      <UserGreeting email={email}/>
       <FaceFrownIcon className="w-10 text-gray-400" />
       <h2 className="text-xl font-semibold">404 Not Found</h2>
       <p>Could not find the requested customer.</p>

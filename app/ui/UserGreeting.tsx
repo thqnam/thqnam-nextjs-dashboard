@@ -1,8 +1,10 @@
 'use client';
 
-import { getSessionInfor } from '@/app/lib/data'
+import { getSessionInfor } from '@/app/lib/data';
+import { getUserSessionByEmail } from '@/app/lib/utils';
 import UserGreetingClient from '@/app/lib/logSignListen';
 import { useEffect, useState } from 'react';
+import { unstable_update } from '@/auth';
 import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
 
@@ -10,9 +12,24 @@ export default async function UserGreeting({ email }: { email: string }) {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const loadSession = async () => {
-    const sessionUser = await getSessionInfor();
-    setName(`${sessionUser.name}`);
-    setImage(`${sessionUser.image}`);
+    const userSession = await getUserSessionByEmail(email);
+    if (userSession !== undefined){
+      const userName = userSession.name;
+      const userImage = userSession.image;
+      const sessionUser = await getSessionInfor();
+      const sessionName = `${sessionUser.name}`;
+      const sessionImage = `${sessionUser.image}`;
+      if (userName === sessionName){
+        setName(sessionName);
+      } else {
+        await unstable_update({user: { name: userName }})
+      }
+      if (userImage === sessionImage){
+        setImage(sessionImage);
+      } else {
+        await unstable_update({user: { image: userImage }})
+      }
+    }
   };
 
   useEffect(() => {

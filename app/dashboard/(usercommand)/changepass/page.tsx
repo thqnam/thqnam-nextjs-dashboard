@@ -2,6 +2,7 @@ import AcmeLogo from '@/app/ui/acme-logo';
 import ChangePassForm from '@/app/ui/user/changepass-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
+import { getSessionEmail } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
@@ -19,7 +20,8 @@ export const metadata: Metadata = {
   publisher: 'Vercel firm'
 };
  
-export default function ChangePassPage() {
+export default async function ChangePassPage() {
+  const email = await getSessionEmail();
   return (
     <main >
       <Breadcrumbs
@@ -33,7 +35,7 @@ export default function ChangePassPage() {
         ]}
       />
       <Suspense>
-        <UserGreeting />
+        <UserGreeting email={email}/>
       </Suspense>
       <div className="flex items-center justify-center md:h-screen">
         <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
