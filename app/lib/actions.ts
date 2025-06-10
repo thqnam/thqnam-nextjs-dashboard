@@ -518,8 +518,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
       name, 
       image 
     } = validatedFields.data;
-    console.log('Form Name: ' + name);
-    console.log('Form Image: ' + image);
+    
     const id = await getSessionID();
 
     if (id !== ''){
@@ -528,54 +527,23 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
       if (userID !== undefined){
 
-        const session = await unstable_update({user: {name: name, image: image}});
-
-        if (session !== null){
-
-          const sessionUser = session.user;
-
-          if (sessionUser !== undefined){
-
-            const sessionName = sessionUser.name;
-            console.log('Session Name: ' + sessionName);
-            const sessionImage = sessionUser.image;
-            console.log('Session Image: ' +sessionImage);
-            if (sessionName !== null && sessionName !== undefined && sessionName !== '' &&
-                sessionImage !== null && sessionImage !== undefined && sessionImage !== ''){
-
-              const { error } = await supabase
-                .from('users')
-                .update({
-                  name: sessionName,
-                  image: sessionImage,
-                })
-                .eq('id', userID.id);
-              
-              if (error) {
-                return {
-                  message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
-                };
-              } else {
-                revalidatePath('/dashboard/');
-                redirect('/dashboard/');
-              }
-
-            } else {
-              return {
-                message: 'Failed to Update Next Auth User. Failed to Change Infor.',
-              };
-            }
-
-          } else {
-            return {
-              message: 'Failed to Fetching Next Auth User. Failed to Change Infor.',
-            };
-          }
-
-        } else {
+        await unstable_update({user: {name: name, image: image}});
+        
+        const { error } = await supabase
+          .from('users')
+          .update({
+            name: name,
+            image: image,
+          })
+          .eq('id', userID.id);
+        
+        if (error) {
           return {
-            message: 'Failed to Update Next Auth Session. Failed to Change Infor.',
+            message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
           };
+        } else {
+          revalidatePath('/dashboard/');
+          redirect('/dashboard/');
         }
 
       } else {
