@@ -269,10 +269,10 @@ export default async function ChangeInforForm() {
             aria-live="polite"
             aria-atomic="true"
           >
-            {showError && state.message !== 'Successful' && (
+            {showError && state.message && (
               <>
-                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-500">{state.message}</p>
+                <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden={state.message === 'Successful'}/>
+                <p className="text-sm text-red-500" hidden={state.message === 'Successful'}>{state.message}</p>
               </>
             )}
           </div>
