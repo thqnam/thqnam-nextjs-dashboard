@@ -1,3 +1,5 @@
+'use client';
+
 import { getSessionInfor } from '@/app/lib/data'
 import UserGreetingClient from '@/app/lib/logSignListen';
 import { useEffect, useState } from 'react';
