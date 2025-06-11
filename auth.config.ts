@@ -41,7 +41,7 @@ export const authConfig = {
     async jwt({ token, user, trigger }) {
       if (user && user.id) {
         token.id = user.id;
-        if (trigger === "update") {
+        if (trigger === 'update' || trigger === 'signIn') {
           token.name = user.name;
           token.picture = user.image;
         }
