@@ -13,7 +13,7 @@ import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
 import { changeUserPass, ChangePassState, resetTarget } from '@/app/lib/actions';
  
-export default async function ChangePassForm() {
+export default function ChangePassForm() {
   const [passwordInputType, setPasswordInputType] = useState('');
   const [repasswordInputType, setRePasswordInputType] = useState('');
   const changePasswordInputStatus = () => {

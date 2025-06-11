@@ -8,7 +8,7 @@ import { supabase } from '@/app/lib/supabaseClient';
 import { CustomersTableType } from '@/app/lib/definitions';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 
-export default async function CustomersTable({
+export default function CustomersTable({
   query,
   currentPage,
 }: {

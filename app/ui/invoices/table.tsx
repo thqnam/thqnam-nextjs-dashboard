@@ -10,7 +10,7 @@ import { supabase } from '@/app/lib/supabaseClient';
 import { InvoicesTable } from '@/app/lib/definitions';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 
-export default async function InvoiceTable({
+export default function InvoiceTable({
   query,
   currentPage,
 }: {

@@ -14,7 +14,7 @@ import { Revenue } from '@/app/lib/definitions';
 // https://www.chartjs.org/
 // https://airbnb.io/visx/
 
-export default async function RevenueChart() { // Make component async, remove the props
+export default function RevenueChart() { // Make component async, remove the props
   const [revenue, setRevenue] = useState([] as Revenue[]);
   // Hàm fetch lại dữ liệu
   const loadRevenue = async () => {

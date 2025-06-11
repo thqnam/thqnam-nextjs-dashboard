@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { LatestInvoiceRaw } from '@/app/lib/definitions';
 
-export default async function LatestInvoices() {
+export default function LatestInvoices() {
   const [lastestInvoices, setLastestInvoices] = useState([] as LatestInvoiceRaw[]);
   // Hàm fetch lại dữ liệu
   const loadLastesInvoices = async () => {
