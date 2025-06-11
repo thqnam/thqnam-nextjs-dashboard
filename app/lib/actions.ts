@@ -228,6 +228,10 @@ export async function resetTarget(target : string) {
   redirect(target);
 }
 
+export async function resetSession(name : string, image : string) {
+  await unstable_update({ user: { name: name, image: image } })
+}
+
 export async function createUser(prevState: UserState, formData: FormData){
   // Validate form using Zod
   const validatedFields = CreateUser.safeParse({
@@ -540,7 +544,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
             message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
           };
         } else {
-          await unstable_update({user: { name: name, image: image }});
+          await resetSession(name, image);
           revalidatePath('/dashboard');
           redirect('/dashboard');
         }

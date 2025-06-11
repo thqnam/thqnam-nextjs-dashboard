@@ -3,6 +3,7 @@
 import { getSessionInfor } from '@/app/lib/data';
 import { getUserSessionByEmail } from '@/app/lib/utils';
 import UserGreetingClient from '@/app/lib/logSignListen';
+import { resetSession } from '@/app/lib/actions';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
@@ -24,6 +25,7 @@ export default function UserGreeting({ email }: { email: string }) {
       } else {
         setName(userName);
         setImage(userImage);
+        await resetSession(userName, userImage);
       }
     }
   };
