@@ -4,8 +4,6 @@ import { getSessionInfor } from '@/app/lib/data';
 import { getUserSessionByEmail } from '@/app/lib/utils';
 import UserGreetingClient from '@/app/lib/logSignListen';
 import { useEffect, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation'
-import { resetAndUpdateTarget } from '@/app/lib/actions';
 import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
 
@@ -24,17 +22,8 @@ export default function UserGreeting({ email }: { email: string }) {
         setName(sessionName);
         setImage(sessionImage);
       } else {
-        const pathName = usePathname();
-        const allParams = useSearchParams();
-        let searchString : string = '?';
-        allParams.forEach((value, key) => {
-          searchString += `${key}=${value},`
-        })
-        if (searchString === '?'){
-          await resetAndUpdateTarget(pathName, name, image);
-        } else {
-          await resetAndUpdateTarget(pathName + searchString, name, image);
-        }
+        setName(userName);
+        setImage(userImage);
       }
     }
   };
@@ -49,10 +38,9 @@ export default function UserGreeting({ email }: { email: string }) {
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${email}` },
         async (payload) => {
-          if (
-            payload.new.name !== payload.old.name ||
-            payload.new.image !== payload.old.image
-          ) {
+          if (payload.new.name !== payload.old.name ||
+             payload.new.image !== payload.old.image
+          ){
             loadSession();
           }
         }

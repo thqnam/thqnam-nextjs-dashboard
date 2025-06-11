@@ -228,12 +228,6 @@ export async function resetTarget(target : string) {
   redirect(target);
 }
 
-export async function resetAndUpdateTarget(target : string, name : string, image : string) {
-  await unstable_update({ user: { name: name, image: image } })
-  revalidatePath(target);
-  redirect(target);
-}
-
 export async function createUser(prevState: UserState, formData: FormData){
   // Validate form using Zod
   const validatedFields = CreateUser.safeParse({
