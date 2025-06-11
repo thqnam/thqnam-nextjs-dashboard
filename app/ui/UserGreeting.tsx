@@ -4,7 +4,9 @@ import { getSessionInfor } from '@/app/lib/data';
 import { getUserSessionByEmail } from '@/app/lib/utils';
 import UserGreetingClient from '@/app/lib/logSignListen';
 import { useEffect, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation'
 import { unstable_update } from '@/auth';
+import { resetAndUpdateTarget } from '@/app/lib/actions';
 import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
 
@@ -23,8 +25,17 @@ export default async function UserGreeting({ email }: { email: string }) {
         setName(sessionName);
         setImage(sessionImage);
       } else {
-        await unstable_update({user: { name: userName, image: userImage }})
-        await loadSession();
+        const pathName = usePathname();
+        const allParams = useSearchParams();
+        let searchString : string = '?';
+        allParams.forEach((value, key) => {
+          searchString += `${key}=${value},`
+        })
+        if (searchString === '?'){
+          await resetAndUpdateTarget(pathName, name, image);
+        } else {
+          await resetAndUpdateTarget(pathName + searchString, name, image);
+        }
       }
     }
   };
