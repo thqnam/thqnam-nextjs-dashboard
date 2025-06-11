@@ -10,13 +10,16 @@ export async function sendVerificationEmail(email: string, name: string, token: 
     });
   const verifyUrl = `https://qned.vercel.app/${token}/verifyemail`;
   await transporter.sendMail({
-    from: `"${process.env.APP_NAME} Admin" <${process.env.GMAIL_USER}>`,
+    from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
     subject: `Verify email of your ${process.env.APP_NAME} account`,
     html: `
       <p>Hi ${name},</p>
+      <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
+      <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
       <p>Please press to <a href="${verifyUrl}">this</a> for verify your email.</p>
-      <p>If you do not have an account in ${process.env.APP_NAME} App, please ignore this email.</p>
+      <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
+      <p>Please ignore this email, sorry for bothering you<p>
     `,
   });
   transporter.close();
@@ -32,13 +35,16 @@ export async function sendResetPasswordEmail(email: string, name: string, token:
     });
   const resetUrl = `https://qned.vercel.app/${token}/resetpassword`;
   await transporter.sendMail({
-    from: `"${process.env.APP_NAME} Admin" <${process.env.GMAIL_USER}>`,
+    from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
     subject: `Reset password of your ${process.env.APP_NAME} account`,
     html: `
       <p>Hi ${name},</p>
+      <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
+      <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
       <p>Please press to <a href="${resetUrl}">this</a> for reset your password.</p>
-      <p>If you do not have an account in ${process.env.APP_NAME} App, please ignore this email.</p>
+      <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
+      <p>Please ignore this email, sorry for bothering you<p>
     `,
   });
   transporter.close();

@@ -8,16 +8,16 @@ import { Metadata } from 'next';
  
 export const metadata: Metadata = {
   title: 'Change Pass',
-  applicationName: 'QNED',
-  description: 'The official Dashboard of QNED App, built by Mr. Thiều Huỳnh Quang Nam.',
-  metadataBase: new URL('https://qned.vercel.app/'),
-  authors: [{name: 'Thiều Huỳnh Quang Nam', url: 'https://thqnam-myself.vercel.app/'}],
-  assets: 'https://qned.vercel.app/public',
-  archives: 'https://qned.vercel.app/public/customers',
-  creator: 'Thiều Huỳnh Quang Nam',
-  generator: 'Next.js',
-  keywords: 'QNED, Thiều Huỳnh Quang Nam',
-  publisher: 'Vercel firm'
+  applicationName: `${process.env.APP_NAME}`,
+  description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
+  metadataBase: new URL(`${process.env.APP_HOMEPAGE}`),
+  authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
+  assets: `${process.env.APP_ASSET}`,
+  archives: `${process.env.APP_ARCHIVES}`,
+  creator: `${process.env.APP_OWNER}`,
+  generator: `${process.env.APP_GENERATOR}`,
+  keywords: `${process.env.APP_NAME}, ${process.env.APP_NAME} App, ${process.env.APP_OWNER}`,
+  publisher: `${process.env.APP_PUBLISHER}`,
 };
  
 export default async function ChangePassPage() {
