@@ -5,12 +5,11 @@ import { getUserSessionByEmail } from '@/app/lib/utils';
 import UserGreetingClient from '@/app/lib/logSignListen';
 import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation'
-import { unstable_update } from '@/auth';
 import { resetAndUpdateTarget } from '@/app/lib/actions';
 import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
 
-export default async function UserGreeting({ email }: { email: string }) {
+export default function UserGreeting({ email }: { email: string }) {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const loadSession = async () => {
