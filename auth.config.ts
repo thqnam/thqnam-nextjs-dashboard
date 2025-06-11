@@ -48,7 +48,7 @@ export const authConfig = {
       }
       return token;
     },
-    async session({ session, token, trigger }) {
+    async session({ session, token }) {
       if (session.user && typeof token.id === 'string') {
         (session.user as { id: string }).id = token.id;
       }
@@ -57,17 +57,6 @@ export const authConfig = {
       }
       if (session.user && typeof token.picture === 'string') {
         (session.user as { image: string }).image = token.picture;
-      }
-      if (trigger === 'update'){
-        if (session.user && typeof token.id === 'string') {
-          (session.user as { id: string }).id = token.id;
-        }
-        if (session.user && typeof token.name === 'string') {
-          (session.user as { name: string }).name = token.name;
-        }
-        if (session.user && typeof token.picture === 'string') {
-          (session.user as { image: string }).image = token.picture;
-        }
       }
       return session;
     }
