@@ -598,8 +598,7 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
               password: hashedPassword,
               status: 'logout',
             })
-            .eq('id', user.id)
-            .eq('status', 'login');
+            .eq('id', user.id);
 
           if (error) {
             return {
@@ -663,8 +662,7 @@ export async function resetUserPass(email: string, prevState: ChangePassState, f
             token: null, 
             expires: null
           })
-          .eq('id', user.id)
-          .eq('status', 'login');
+          .eq('id', user.id);
           
         if (error) {
           return {
@@ -942,9 +940,9 @@ export async function authenticate(
 
 export async function logOut() {
   await changeUserStatusLogout();
-  await signOut({ redirectTo: '/' });
+  await signOut({});
 }
 
 export async function LogOut() {
-  await signOut({ redirectTo: '/' });
+  await signOut({});
 }

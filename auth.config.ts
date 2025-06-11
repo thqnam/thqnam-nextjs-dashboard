@@ -13,7 +13,7 @@ import type { NextAuthConfig } from 'next-auth';
 export const authConfig = {
   pages: {
     signIn: '/signin',
-    signOut: '/',
+    signOut: '/signin',
     newUser: '/signupreponse',
   },
   session: {
