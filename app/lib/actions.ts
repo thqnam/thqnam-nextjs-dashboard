@@ -605,8 +605,9 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
               message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
             };
           } else {
-            await signOut();
-            redirect('/signin');
+            return {
+              message: 'Change Password Successful',
+            };
           }
           
         } else {
