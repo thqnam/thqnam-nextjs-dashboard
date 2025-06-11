@@ -12,7 +12,7 @@ import type { NextAuthConfig } from 'next-auth';
 
 export const authConfig = {
   pages: {
-    signIn: '/signin',
+    signIn: '/dashboard',
     signOut: '/signin',
     newUser: '/signupreponse',
   },

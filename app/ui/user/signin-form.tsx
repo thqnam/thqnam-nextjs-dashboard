@@ -21,7 +21,7 @@ import Link from 'next/link';
 
 export default function SignInForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const callbackUrl = searchParams.get('callbackUrl') || '';
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined,
