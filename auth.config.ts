@@ -30,7 +30,7 @@ export const authConfig = {
         if (isLoggedIn) {
           return true;
         } else {
-          return false;
+          return Response.redirect(new URL('/signin', nextUrl));
         }
       } else if (isLoggedIn) {
         return Response.redirect(new URL('/dashboard', nextUrl));
