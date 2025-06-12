@@ -44,6 +44,7 @@ export default function UserGreeting({ email }: { email: string }) {
                 payload.new.image !== image ) &&
                 payload.new.status !== 'logout'
           ){
+            console.log('Talada');
             loadSession();
           }
         }
