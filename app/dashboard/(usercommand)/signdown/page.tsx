@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   title: 'Sign Down',
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
-  metadataBase: new URL(`${process.env.APP_HOMEPAGE}`, window.location.origin),
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
   assets: `${process.env.APP_ASSET}`,
   archives: `${process.env.APP_ARCHIVES}`,
