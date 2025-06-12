@@ -592,21 +592,31 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
 
           const hashedPassword = bcrypt.hashSync(newpassword, 12);
 
-          const { error } = await supabase
-            .from('users')
-            .update({
-              password: hashedPassword,
-              status: 'logout',
-            })
-            .eq('id', user.id);
+          const oldPassword = user.password;
 
-          if (error) {
-            return {
-              message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
-            };
+          if (hashedPassword !== oldPassword){
+
+            const { error } = await supabase
+              .from('users')
+              .update({
+                password: hashedPassword,
+                status: 'logout',
+              })
+              .eq('id', user.id);
+
+            if (error) {
+              return {
+                message: 'Database Error: Failed to Change Password. Reason: ' + error.message,
+              };
+            } else {
+              return {
+                message: 'Change Password Successful',
+              };
+            }
+
           } else {
             return {
-              message: 'Change Password Successful',
+              message: 'New Password look like Old Password. Failed to Change Password.',
             };
           }
           
@@ -654,23 +664,49 @@ export async function resetUserPass(email: string, prevState: ChangePassState, f
       if (user !== undefined){
         
         const hashedPassword = bcrypt.hashSync(newpassword, 12);
-        
-        const { error } = await supabase
-          .from('users')
-          .update({
-            password: hashedPassword,
-            status: "logout",
-            token: null, 
-            expires: null
-          })
-          .eq('id', user.id);
-          
-        if (error) {
-          return {
-            message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
-          };
+
+        const oldPassword = user.password;
+
+        if (hashedPassword !== oldPassword){
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              password: hashedPassword,
+              status: "logout",
+              token: null, 
+              expires: null
+            })
+            .eq('id', user.id);
+            
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
+            };
+          } else {
+            redirect('/resetreponse');
+          }
+
         } else {
-          redirect('/resetreponse');
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              token: null, 
+              expires: null
+            })
+            .eq('id', user.id);
+            
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
+            };
+          } else {
+            return {
+              message: 'New Password look like Old Password. Failed to Reset Password.',
+            };
+          }
+          
         }
         
       } else {

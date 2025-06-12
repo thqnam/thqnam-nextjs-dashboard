@@ -31,7 +31,7 @@ export default function Page() {
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Reset Password successful !</strong>
+            <strong>Reset Password requested successful !</strong>
           </p>
           <Link
             href="/signin"
