@@ -43,6 +43,10 @@ export default function UserGreeting({ email }: { email: string }) {
           if (payload.new.name !== payload.old.name ||
              payload.new.image !== payload.old.image
           ){
+            console.log('New Name: ' + payload.new.name);
+            console.log('Old Name: ' + payload.old.name);
+            console.log('New Image: ' + payload.new.image);
+            console.log('Old Image: ' + payload.old.image);
             loadSession();
           }
         }
