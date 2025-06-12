@@ -92,6 +92,28 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
   }
 }
 
+export async function getUserByToken(token: string): Promise<User | undefined> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('token', token)
+    .maybeSingle();
+  if (error) {
+    console.error('Failed to fetch user by token: Reason', error.message);
+    let talada : PostgrestError;
+    talada = error;
+    talada.message = 'Failed to fetch user by token. Reason' + error.message;
+    throw talada;
+  } else {
+    if (data === null){
+      return undefined;
+    } else {
+      const user = data as User;
+      return user;
+    }
+  }
+}
+
 export async function getUserSessionByEmail(email: string): Promise<UserSession | undefined> {
   const { data, error } = await supabase
     .from('users')

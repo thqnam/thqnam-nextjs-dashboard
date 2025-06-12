@@ -11,7 +11,7 @@ import { PostgrestError } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { randomUUID } from 'crypto';
-import { sendResetPasswordEmail, sendVerificationEmail } from '@/app/lib/mailer';
+import { sendResetPasswordEmail, sendVerificationEmail, sendSignDownEmail } from '@/app/lib/mailer';
 
 const UserFormSchema = z.object({
   name: z.string({
@@ -148,7 +148,6 @@ const ChangePass = ChangePassFormSchema.omit({});
 const ForgotPass = ForgotPassFormSchema.omit({});
 const ResetPass = ResetPassFormSchema.omit({ email: true});
 const ChangeInfor = ChangeInforFormSchema.omit({});
-
 
 export type InvoiceState = {
   errors?: {
@@ -822,7 +821,7 @@ export async function deleteInvoice(
           .from('invoices')
           .delete()
           .eq('id', id);
-
+        
         if (error) {
           return { 
             message: 'Database Error: Failed to Delete Invoice. Reason: ' + error.message 
@@ -834,7 +833,7 @@ export async function deleteInvoice(
         
       } else {
         return {
-          message: 'Please just copy Invoice ID and paste to Re input ID',
+          message: 'Please just copy Invoice ID and paste to Re input ID. Failed to Delete Invoice.',
         };
       }
 
@@ -880,7 +879,7 @@ export async function deleteCustomer(
 
       } else {
         return {
-          message: 'Please just copy Customer ID and paste to Re input ID',
+          message: 'Please just copy Customer ID and paste to Re input ID. Failed to Delete Customer.',
         };
       }
 
@@ -908,31 +907,36 @@ export async function deleteUser(
   if (validatedFields.success) {
     const { reid } = validatedFields.data;
     const userID = await getSessionID();
-    if (userID !== ''){
-      if (userID === reid) {
-        await changeUserStatusLogout();
+    if (userID === reid) {
+      const user = await getUserByID(userID);
+      if (user !== undefined){
+        const token = crypto.randomUUID();
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
         const { error } = await supabase
-            .from('users')
-            .delete()
-            .eq('id', userID);
+          .from('users')
+          .update({
+            token: token,
+            expires: expiresAt.toISOString(),
+          }).eq('id', userID);
+        await sendSignDownEmail(user.email, user.name, token);
         if (error) {
           return { 
             message: 'Database Error: Failed to Delete User. Reason: ' + error.message 
           };
         } else {
-          revalidatePath('/dashboard');
-          redirect('/dashboard');
+          revalidatePath('/dashboard/signdownreponse');
+          redirect('/dashboard/signdownreponse');
         }
 
       } else {
         return {
-          message: 'Please just copy User ID and paste to Re input ID',
+          message: 'User of this email do not see in Database. Failed to Delete User.',
         };
       }
 
     } else {
       return {
-        message: 'Missing User ID. Failed to Delete User.',
+        message: 'Please just copy User ID and paste to Re input ID. Failed to Delete User.',
       };
     }
 

@@ -6,8 +6,8 @@ import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { supabase } from '@/app/lib/supabaseClient';
-import { User } from "@/app/lib/definitions";
 import { notFound } from 'next/navigation';
+import { getUserByToken } from '@/app/lib/utils';
  
 export const metadata: Metadata = {
   title: 'Verify Email',
@@ -27,16 +27,9 @@ export default async function Page(props: { params: Promise<{ token: string }> }
   const params = await props.params;
   const token = params.token;
   if (!token) notFound();
-
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('token', token)
-    .maybeSingle();
-
-  if (error || data === null) notFound();
-
-  const user: User = data;
+  const result = await getUserByToken(token);
+  if (result === undefined) notFound();
+  const user = result;
 
   if (user.expires && new Date(user.expires) < new Date()) {
     await supabase

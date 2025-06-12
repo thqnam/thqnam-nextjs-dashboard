@@ -31,7 +31,7 @@ export default function Page() {
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Forgot Password requested successful !</strong>{' '}
+            <strong>Forgot Password request successful !</strong>{' '}
             Please check your email to find your reset password link email.{' '}
             If you do not see the email, check your spam or promotions folder.{' '}
           </p>
