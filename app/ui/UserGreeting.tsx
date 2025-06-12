@@ -40,13 +40,9 @@ export default function UserGreeting({ email }: { email: string }) {
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${email}` },
         async (payload) => {
-          if (payload.new.name !== payload.old.name ||
-             payload.new.image !== payload.old.image
+          if (payload.new.name !== name ||
+             payload.new.image !== image
           ){
-            console.log('New Name: ' + payload.new.name);
-            console.log('Old Name: ' + payload.old.name);
-            console.log('New Image: ' + payload.new.image);
-            console.log('Old Image: ' + payload.old.image);
             loadSession();
           }
         }

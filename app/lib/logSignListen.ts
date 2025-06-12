@@ -36,7 +36,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string })
         'postgres_changes',
         { event: 'DELETE', schema: 'public', table: 'users' },
         async (payload) => {
-          if (payload.old?.email === userEmail) {
+          if (payload.old.email === userEmail) {
             await LogOut();
           }
         }
