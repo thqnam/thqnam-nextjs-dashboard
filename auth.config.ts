@@ -30,7 +30,8 @@ export const authConfig = {
         if (isLoggedIn) {
           return true;
         } else {
-          return Response.redirect(new URL('/signin', nextUrl));
+          const callbackUrl = nextUrl.searchParams.get('callbackUrl') || '';
+          return Response.redirect(new URL(callbackUrl === '' ? '/signin' : '/signin?callbackUrl=' + callbackUrl, nextUrl));
         }
       } else if (isLoggedIn) {
         return Response.redirect(new URL('/dashboard', nextUrl));
