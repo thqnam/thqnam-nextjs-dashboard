@@ -14,7 +14,6 @@ export const authConfig = {
   pages: {
     signIn: '/dashboard',
     signOut: '/signin',
-    newUser: '/signupreponse',
   },
   session: {
     strategy: 'jwt', // hoặc 'jwt' 'database'

@@ -44,8 +44,9 @@ export default function UserGreeting({ email }: { email: string }) {
                 payload.new.image !== image ) &&
                 payload.new.status !== 'logout'
           ){
-            console.log('Talada');
-            loadSession();
+            setName(payload.new.name);
+            setImage(payload.new.image);
+            await resetSession(payload.new.name, payload.new.image);
           }
         }
       )

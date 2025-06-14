@@ -10,7 +10,7 @@ import { notFound } from 'next/navigation';
 import { getUserByToken } from '@/app/lib/utils';
  
 export const metadata: Metadata = {
-  title: 'Verify Email',
+  title: 'Sign Up Complete',
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
@@ -36,7 +36,7 @@ export default async function Page(props: { params: Promise<{ token: string }> }
         .from('users')
         .delete()
         .eq('id', user.id);
-    reponseMessage = 'Your verify email request token has expired.';
+    reponseMessage = 'Your verify email request token has expired. Failed to Sign Up Complete';
   }
 
   await supabase
@@ -47,7 +47,7 @@ export default async function Page(props: { params: Promise<{ token: string }> }
         expires: null
     })
     .eq('id', user.id);
-  reponseMessage = 'Email of your account verified successfully !';
+  reponseMessage = 'Email of your account verified successfully ! Your Sign Up request is Completed';
 
   return (
     <main className="flex min-h-screen flex-col p-6">
@@ -69,10 +69,10 @@ export default async function Page(props: { params: Promise<{ token: string }> }
             <span>Sign In</span> <ArrowRightIcon className="w-5 md:w-6" />
           </Link>
           <Link
-            href="/signup"
+            href="/signuprequest"
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
           >
-            <span>Sign Up</span> <ArrowUpIcon className="w-5 md:w-6" />
+            <span>Sign Up Request</span> <ArrowUpIcon className="w-5 md:w-6" />
           </Link>
           <Link
             href="/forgotpass"

@@ -80,7 +80,7 @@ export default function Form() {
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
           <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-            Input for Sign Up
+            Input for Sign Up Request
           </h1>
           <div className="w-full">
             <div>

@@ -31,8 +31,9 @@ export default function Page() {
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Sign Up request successful !</strong>{' '}
-            Please check your email to verify your account.{' '}
+            <strong>Your Sign Up Request is successful !</strong>{' '}
+            But you need to complete your Sign Up Request.{' '}
+            By check your email to verify your account.{' '}
             If you do not see the email, check your spam or promotions folder.{' '}
           </p>
           <Link
@@ -42,10 +43,10 @@ export default function Page() {
             <span>Sign In</span> <ArrowRightIcon className="w-5 md:w-6" />
           </Link>
           <Link
-            href="/signup"
+            href="/signuprequest"
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
           >
-            <span>Sign Up</span> <ArrowUpIcon className="w-5 md:w-6" />
+            <span>Sign Up Request</span> <ArrowUpIcon className="w-5 md:w-6" />
           </Link>
           <Link
             href="/forgotpass"

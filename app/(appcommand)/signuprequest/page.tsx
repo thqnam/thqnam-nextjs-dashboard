@@ -1,10 +1,10 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import Form from '@/app/ui/user/signup-form';
+import Form from '@/app/ui/user/signuprequest-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Sign Up',
+  title: 'Sign Up Request',
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
