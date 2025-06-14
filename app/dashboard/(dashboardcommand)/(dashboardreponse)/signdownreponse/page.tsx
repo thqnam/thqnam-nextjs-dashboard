@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import SignDownReponseForm from '@/app/ui/user/signdownreponse-form';
+import Form from '@/app/ui/user/signdownreponse-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
  
-export default function SignDownReponsePage() {
+export default function Page() {
   return (
     <main className="flex items-center justify-center md:h-screen">
       <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
@@ -26,7 +26,7 @@ export default function SignDownReponsePage() {
           </div>
         </div>
         <Suspense>
-          <SignDownReponseForm />
+          <Form />
         </Suspense>
       </div>
     </main>

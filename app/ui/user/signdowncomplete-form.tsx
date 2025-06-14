@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { resetTarget } from '@/app/lib/actions';
  
-export default function SignDownCompleteForm() {
+export default function Form() {
 
   return (
     <form

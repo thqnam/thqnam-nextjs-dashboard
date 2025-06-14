@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import SignUpForm from '@/app/ui/user/signup-form';
+import Form from '@/app/ui/user/signup-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
  
-export default function SignUpPage() {
+export default function Page() {
   return (
     <main className="flex items-center justify-center md:h-screen">
       <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
@@ -26,7 +26,7 @@ export default function SignUpPage() {
           </div>
         </div>
         <Suspense>
-          <SignUpForm />
+          <Form />
         </Suspense>
       </div>
     </main>

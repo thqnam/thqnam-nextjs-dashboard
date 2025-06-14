@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import ChangePassForm from '@/app/ui/user/changepass-form';
+import Form from '@/app/ui/user/changepass-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
 import { getSessionEmail } from '@/app/lib/data';
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
  
-export default async function ChangePassPage() {
+export default async function Page() {
   const email = await getSessionEmail();
   return (
     <main >
@@ -44,7 +44,7 @@ export default async function ChangePassPage() {
             </div>
           </div>
           <Suspense>
-            <ChangePassForm />
+            <Form />
           </Suspense>
         </div>
       </div>

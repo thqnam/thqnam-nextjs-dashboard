@@ -24,7 +24,7 @@ import { fetchImageByURL, getSessionEmail } from '@/app/lib/data';
 import { getUserByEmail } from '@/app/lib/utils';
 import { supabase } from '@/app/lib/supabaseClient';
  
-export default function SignDownForm() {
+export default function Form() {
   const [id, setID] = useState('');
   const [user, setUser] = useState({} as User);
   const [image, setImage] = useState({} as ImageField);

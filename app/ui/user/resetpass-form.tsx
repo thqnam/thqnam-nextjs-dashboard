@@ -28,7 +28,7 @@ type ResetFormProps = {
   image: string;
 };
  
-export default function ChangePassForm( {email, name, image} : ResetFormProps) {
+export default function Form( {email, name, image} : ResetFormProps) {
   const [passwordInputType, setPasswordInputType] = useState('');
   const [repasswordInputType, setRePasswordInputType] = useState('');
   const changePasswordInputStatus = () => {

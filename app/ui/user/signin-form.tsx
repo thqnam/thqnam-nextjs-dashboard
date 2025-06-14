@@ -19,7 +19,7 @@ import { useSearchParams } from 'next/navigation';
 //import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
 
-export default function SignInForm() {
+export default function Form() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '';
   const [errorMessage, formAction, isPending] = useActionState(

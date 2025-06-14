@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import SignDownCompleteForm from '@/app/ui/user/signdowncomplete-form';
+import Form from '@/app/ui/user/signdowncomplete-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { getUserByToken } from '@/app/lib/utils';
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
  
-export default async function SignDownCompletePage(props: { params: Promise<{ token: string }> }) {
+export default async function Page(props: { params: Promise<{ token: string }> }) {
   const params = await props.params;
   const token = params.token;
   if (!token) notFound();
@@ -50,7 +50,7 @@ export default async function SignDownCompletePage(props: { params: Promise<{ to
           </div>
         </div>
         <Suspense>
-          <SignDownCompleteForm/>
+          <Form/>
         </Suspense>
       </div>
     </main>

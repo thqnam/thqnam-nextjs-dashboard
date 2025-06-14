@@ -30,7 +30,7 @@ import {
 import { getUserByEmail } from '../../lib/utils';
 import { supabase } from '@/app/lib/supabaseClient';
  
-export default function ChangeInforForm() {
+export default function Form() {
   const [id, setID] = useState('');
   const [user, setUser] = useState({} as User);
   const [images, setImages] = useState([] as ImageField[]);

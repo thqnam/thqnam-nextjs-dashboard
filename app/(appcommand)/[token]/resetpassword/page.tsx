@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import ResetForm from '@/app/ui/user/resetpass-form';
+import Form from '@/app/ui/user/resetpass-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { getUserByToken } from '@/app/lib/utils';
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
  
-export default async function ResetPassPage(props: { params: Promise<{ token: string }> }) {
+export default async function Page(props: { params: Promise<{ token: string }> }) {
   const params = await props.params;
   const token = params.token;
   if (!token) notFound();
@@ -35,7 +35,7 @@ export default async function ResetPassPage(props: { params: Promise<{ token: st
           </div>
         </div>
         <Suspense>
-          <ResetForm email={user.email} name={user.name} image={user.image}/>
+          <Form email={user.email} name={user.name} image={user.image}/>
         </Suspense>
       </div>
     </main>

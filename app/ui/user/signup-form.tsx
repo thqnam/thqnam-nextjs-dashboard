@@ -25,7 +25,7 @@ import { supabase } from '@/app/lib/supabaseClient';
 // import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
  
-export default function SignUpForm() {
+export default function Form() {
     const [images, setImages] = useState([] as ImageField[]);
     const [selectedImage, setSelectedImage] = useState('');
     const [passwordInputType, setPasswordInputType] = useState('');

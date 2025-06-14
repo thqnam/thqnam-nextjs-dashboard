@@ -17,7 +17,7 @@ import { forgotUserPass, ForgotPassState } from '@/app/lib/actions';
 // import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
  
-export default function ForgotForm() {
+export default function Form() {
   const initialState: ForgotPassState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(forgotUserPass, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi

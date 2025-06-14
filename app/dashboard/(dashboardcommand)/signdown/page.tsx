@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import SignDownForm from '@/app/ui/user/signdown-form';
+import Form from '@/app/ui/user/signdown-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
 import { getSessionEmail } from '@/app/lib/data';
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
  
-export default async function ChangeInforPage() {
+export default async function Page() {
   const email = await getSessionEmail();
   return (
     <main >
@@ -44,7 +44,7 @@ export default async function ChangeInforPage() {
             </div>
           </div>
           <Suspense>
-            <SignDownForm />
+            <Form />
           </Suspense>
         </div>
       </div>
