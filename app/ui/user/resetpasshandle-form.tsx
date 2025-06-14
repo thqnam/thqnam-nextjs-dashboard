@@ -71,9 +71,9 @@ export default function Form( {email, name, image} : ResetFormProps) {
           <div>
             <label
               className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="image"
+              htmlFor="name"
             >
-              Choose Image{' '}
+              Name{' '}
               <Image
                   src={image}
                   className="rounded-full"
@@ -83,18 +83,15 @@ export default function Form( {email, name, image} : ResetFormProps) {
               />
             </label>
             <div className="relative">
-              <select
-                id="image"
-                name="image"
-                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="name"
+                type="text"
+                name="name"
                 defaultValue={name}
                 disabled
-              >
-                <option key={name} value={name}>
-                  {name}
-                </option>
-              </select>
-              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              />
+              <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div>
@@ -114,25 +111,6 @@ export default function Form( {email, name, image} : ResetFormProps) {
                 disabled
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="name"
-            >
-              Name
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="name"
-                type="text"
-                name="name"
-                defaultValue={name}
-                disabled
-              />
-              <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div className="mt-4">
