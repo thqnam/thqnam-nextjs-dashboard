@@ -34,7 +34,7 @@ export async function sendVerificationEmail(email: string, name: string, token: 
 
 export async function sendResetPasswordEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const resetUrl = `https://qned.vercel.app/${token}/resetpassword`;
+  const resetUrl = `https://qned.vercel.app/${token}/resetpasshandle`
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,

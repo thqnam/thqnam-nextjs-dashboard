@@ -18,7 +18,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { resetUserPass, ChangePassState, resetTarget } from '@/app/lib/actions';
+import { resetPassHandle, ResetPassHandleState } from '@/app/lib/actions';
 // import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
 
@@ -50,9 +50,9 @@ export default function Form( {email, name, image} : ResetFormProps) {
     setRePasswordInputType('password');
   }, []);
 
-  const initialState: ChangePassState = { message: null, errors: {} };
-  const resetUserPassWithEmail = resetUserPass.bind(null, email);
-  const [state, formAction, isPending] = useActionState(resetUserPassWithEmail, initialState);
+  const initialState: ResetPassHandleState = { message: null, errors: {} };
+  const resetPassHandleWithEmail = resetPassHandle.bind(null, email);
+  const [state, formAction, isPending] = useActionState(resetPassHandleWithEmail, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
  
   return (
@@ -65,7 +65,7 @@ export default function Form( {email, name, image} : ResetFormProps) {
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Input for Reset Pass
+          Input for Reset Pass Handle
         </h1>
         <div className="w-full">
           <div>
@@ -240,18 +240,18 @@ export default function Form( {email, name, image} : ResetFormProps) {
         </Link>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-          href="/forgotpass"
+          href="/resetpassrequest"
           aria-disabled={isPending}
         >
-          Forgot Password <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Reset Pass Request <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
-        <button 
+        <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-          onClick={() => resetTarget('/')}
+          href="/"
           aria-disabled={isPending}
         >
-          Cancel Reset <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </button>
+          Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Link>
       </div>
     </form>
   );

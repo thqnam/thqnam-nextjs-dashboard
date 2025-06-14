@@ -1,10 +1,12 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import Form from '@/app/ui/user/forgotpass-form';
+import Form from '@/app/ui/user/resetpasshandle-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
+import { getUserByToken } from '@/app/lib/utils';
+import { notFound } from 'next/navigation';
  
 export const metadata: Metadata = {
-  title: 'Forgot Password',
+  title: 'Reset Pass Handle',
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
@@ -16,7 +18,14 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
  
-export default function Page() {
+export default async function Page(props: { params: Promise<{ token: string }> }) {
+  const params = await props.params;
+  const token = params.token;
+  if (!token) notFound();
+  const result = await getUserByToken(token);
+  if (result === undefined) notFound();
+  const user = result;
+
   return (
     <main className="flex items-center justify-center md:h-screen">
       <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
@@ -26,7 +35,7 @@ export default function Page() {
           </div>
         </div>
         <Suspense>
-          <Form />
+          <Form email={user.email} name={user.name} image={user.image}/>
         </Suspense>
       </div>
     </main>

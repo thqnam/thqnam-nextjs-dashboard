@@ -49,7 +49,7 @@ const ChangePassFormSchema = z.object({
   }),
 });
 
-const ResetPassFormSchema = z.object({
+const ResetPassHandleFormSchema = z.object({
   email: z.string(),
   newpassword: z.string({
     invalid_type_error: 'Please just input a string data',
@@ -61,7 +61,7 @@ const ResetPassFormSchema = z.object({
   }),
 });
 
-const ForgotPassFormSchema = z.object({
+const ResetPassRequestFormSchema = z.object({
   email: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the email of this user',
@@ -145,8 +145,8 @@ const DeleteInvoice = DeleteInvoiceSchema.omit({ id: true });
 const DeleteUser = DeleteUserSchema.omit({});
 const CreateUser = UserFormSchema.omit({});
 const ChangePass = ChangePassFormSchema.omit({});
-const ForgotPass = ForgotPassFormSchema.omit({});
-const ResetPass = ResetPassFormSchema.omit({ email: true});
+const ResetPassRequest = ResetPassRequestFormSchema.omit({});
+const ResetPassHandle = ResetPassHandleFormSchema.omit({ email: true});
 const ChangeInfor = ChangeInforFormSchema.omit({});
 
 export type InvoiceState = {
@@ -186,7 +186,15 @@ export type ChangePassState = {
   message?: string | null;
 };
 
-export type ForgotPassState = {
+export type ResetPassHandleState = {
+  errors?: {
+    newpassword?: string[];
+    renewpassword?: string[];
+  };
+  message?: string | null;
+};
+
+export type ResetPassRequestState = {
   errors?: {
     email?: string[];
   };
@@ -645,9 +653,9 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
   }
 }
 
-export async function resetUserPass(email: string, prevState: ChangePassState, formData: FormData){
+export async function resetPassHandle(email: string, prevState: ResetPassHandleState, formData: FormData){
   
-  const validatedFields = ResetPass.safeParse({
+  const validatedFields = ResetPassHandle.safeParse({
     newpassword: formData.get('newpassword'),
     renewpassword: formData.get('renewpassword'),
   });
@@ -683,7 +691,7 @@ export async function resetUserPass(email: string, prevState: ChangePassState, f
               message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
             };
           } else {
-            redirect('/resetreponse');
+            redirect('/resetpasscomplete');
           }
 
         } else {
@@ -757,9 +765,9 @@ async function changeUserStatusLogout() {
   }
 }
 
-export async function forgotUserPass(prevState: ForgotPassState, formData: FormData){
+export async function resetPassRequest(prevState: ResetPassRequestState, formData: FormData){
   
-  const validatedFields = ForgotPass.safeParse({
+  const validatedFields = ResetPassRequest.safeParse({
     email: formData.get('email'),
   });
 
@@ -785,7 +793,7 @@ export async function forgotUserPass(prevState: ForgotPassState, formData: FormD
           message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
         };
       } else {
-        redirect('/forgotreponse');
+        redirect('/resetpassreponse');
       }
       
     } else {

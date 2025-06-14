@@ -198,6 +198,12 @@ export default function Form() {
           </Link>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
+            href="/resetpassrequest"
+          >
+            Reset Pass Request <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Link>
+          <Link 
+            className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             href="/"
           >
             Come Back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
@@ -422,10 +428,10 @@ export default function Form() {
           </Link>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-            href="/forgotpass"
+            href="/resetpassrequest"
             aria-disabled={isPending}
           >
-            Forgot Password <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Reset Pass Request <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Link>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 

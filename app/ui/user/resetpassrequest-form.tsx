@@ -13,13 +13,13 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
-import { forgotUserPass, ForgotPassState } from '@/app/lib/actions';
+import { resetPassRequest, ResetPassRequestState } from '@/app/lib/actions';
 // import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
  
 export default function Form() {
-  const initialState: ForgotPassState = { message: null, errors: {} };
-  const [state, formAction, isPending] = useActionState(forgotUserPass, initialState);
+  const initialState: ResetPassRequestState = { message: null, errors: {} };
+  const [state, formAction, isPending] = useActionState(resetPassRequest, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
  
   return (
@@ -32,7 +32,7 @@ export default function Form() {
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Input email if Forgot Password
+          Input for Reset Pass Request
         </h1>
         <div className="w-full">
           <div>

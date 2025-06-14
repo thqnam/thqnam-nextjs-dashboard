@@ -4,7 +4,7 @@ import { Metadata } from 'next';
  
 export const metadata: Metadata = {
   title: {
-    template: `%s | ${process.env.APP_NAME} App`,
+    template: `${process.env.APP_NAME} App | %s`,
     default: `${process.env.APP_NAME} App`,
   },
   applicationName: `${process.env.APP_NAME}`,
