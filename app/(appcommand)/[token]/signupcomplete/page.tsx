@@ -8,6 +8,7 @@ import { Metadata } from 'next';
 import { supabase } from '@/app/lib/supabaseClient';
 import { notFound } from 'next/navigation';
 import { getUserByToken } from '@/app/lib/utils';
+import { signUpHandle } from '@/app/lib/actions';
  
 export const metadata: Metadata = {
   title: 'Sign Up Complete',
@@ -23,31 +24,11 @@ export const metadata: Metadata = {
 };
 
 export default async function Page(props: { params: Promise<{ token: string }> }) {
-  let reponseMessage : string;
   const params = await props.params;
   const token = params.token;
   if (!token) notFound();
-  const result = await getUserByToken(token);
-  if (result === undefined) notFound();
-  const user = result;
-
-  if (user.expires && new Date(user.expires) < new Date()) {
-    await supabase
-        .from('users')
-        .delete()
-        .eq('id', user.id);
-    reponseMessage = 'Your verify email request token has expired. Failed to Sign Up Complete';
-  }
-
-  await supabase
-    .from('users')
-    .update({ 
-        email_verified: true, 
-        token: null, 
-        expires: null
-    })
-    .eq('id', user.id);
-  reponseMessage = 'Email of your account verified successfully ! Your Sign Up request is Completed';
+  const reponseMessage = await signUpHandle(token);
+  if (reponseMessage === 'Not Found') notFound();
 
   return (
     <main className="flex min-h-screen flex-col p-6">

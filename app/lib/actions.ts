@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn, signOut, unstable_update } from '@/auth';
 import { getSessionEmail, getSessionID } from './data';
-import { getUserByEmail, getUserByID } from './utils';
+import { getUserByEmail, getUserByID, getUserByToken } from './utils';
 import { AuthError } from 'next-auth';
 import { PostgrestError } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
@@ -237,6 +237,31 @@ export async function resetTarget(target : string) {
 
 export async function resetSession(name : string, image : string) {
   await unstable_update({ user: { name: name, image: image } })
+}
+
+export async function signUpHandle(token : string) {
+  const user = await getUserByToken(token);
+  if (user === undefined) {
+    return 'Not Found';
+  } else {
+    if (user.expires && new Date(user.expires) < new Date()) {
+      await supabase
+          .from('users')
+          .delete()
+          .eq('id', user.id);
+      return 'Your verify email request token has expired. Failed to Sign Up Complete';
+    } else {
+      await supabase
+        .from('users')
+        .update({ 
+            email_verified: true, 
+            token: null, 
+            expires: null
+        })
+        .eq('id', user.id);
+      return 'Email of your account verified successfully ! Your Sign Up request is Completed';
+    }
+  }
 }
 
 export async function createUser(prevState: UserState, formData: FormData){
