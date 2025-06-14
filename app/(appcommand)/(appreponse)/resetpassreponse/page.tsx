@@ -1,6 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import { ArrowRightIcon, ArrowUpIcon, ArrowTurnDownRightIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
+import SideLink from '@/app/ui/sidelink';
 import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image';
@@ -36,24 +35,7 @@ export default function Page() {
             Please check your email to find your reset password link email.{' '}
             If you do not see the email, check your spam or promotions folder.{' '}
           </p>
-          <Link
-            href="/signin"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Sign In</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
-          <Link
-            href="/signuprequest"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Sign Up Request</span> <ArrowUpIcon className="w-5 md:w-6" />
-          </Link>
-          <Link
-            href="/resetpassrequest"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Reset Pass Request</span> <ArrowTurnDownRightIcon className="w-5 md:w-6" />
-          </Link>
+          <SideLink />
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           <Image

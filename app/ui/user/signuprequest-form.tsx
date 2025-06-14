@@ -179,7 +179,7 @@ export default function Form() {
             </div>
           </div>
           <Button className="mt-4 w-full" disabled>
-            Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Sign Up Requset <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
           <Button className="mt-4 w-full" disabled>
             Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />

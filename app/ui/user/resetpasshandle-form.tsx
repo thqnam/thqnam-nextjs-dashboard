@@ -204,17 +204,17 @@ export default function Form( {email, name, image} : ResetFormProps) {
         </Button> */}
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-          href="/signuprequest"
-          aria-disabled={isPending}
-        >
-          Sign Up <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Link>
-        <Link 
-          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
           href="/signin"
           aria-disabled={isPending}
         >
           Sign In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Link>
+        <Link 
+          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
+          href="/signuprequest"
+          aria-disabled={isPending}
+        >
+          Sign Up Request <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 

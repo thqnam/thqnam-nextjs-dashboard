@@ -1,0 +1,36 @@
+'use client';
+
+import { ArrowRightIcon, ArrowUpIcon, ArrowDownIcon ,ArrowTurnDownRightIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+
+export default function SideLink() {
+
+  return (
+    <>
+        <Link
+            href="/signin"
+            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+        >
+            <span>Sign In</span> <ArrowRightIcon className="w-5 md:w-6" />
+        </Link>
+        <Link
+            href="/resetpassrequest"
+            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+        >
+            <span>Reset Pass Request</span> <ArrowTurnDownRightIcon className="w-5 md:w-6" />
+        </Link>
+        <Link
+            href="/signuprequest"
+            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+        >
+            <span>Sign Up Request</span> <ArrowUpIcon className="w-5 md:w-6" />
+        </Link>
+        <Link
+            href="/signdownrequest"
+            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+        >
+            <span>Sign Down Request</span> <ArrowDownIcon className="w-5 md:w-6" />
+        </Link>
+    </>
+  );
+}
