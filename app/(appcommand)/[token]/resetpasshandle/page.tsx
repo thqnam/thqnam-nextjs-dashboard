@@ -3,6 +3,7 @@ import Form from '@/app/ui/user/resetpasshandle-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { getUserByToken } from '@/app/lib/utils';
+import { deleteDatabaseToken } from '@/app/lib/actions';
 import { notFound } from 'next/navigation';
  
 export const metadata: Metadata = {
@@ -25,6 +26,10 @@ export default async function Page(props: { params: Promise<{ token: string }> }
   const result = await getUserByToken(token);
   if (result === undefined) notFound();
   const user = result;
+  if (user.expires && new Date(user.expires) < new Date()) {
+    await deleteDatabaseToken(user.id);
+    notFound();
+  }
 
   return (
     <main className="flex items-center justify-center md:h-screen">

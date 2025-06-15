@@ -129,10 +129,20 @@ const DeleteInvoiceSchema = z.object({
   }),
 });
 
-const DeleteUserSchema = z.object({
-  id: z.string(),
-  reid: z.string({
-    required_error: 'Please re input User ID',
+const DeleteUserRequestFormSchema = z.object({
+  email: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
+  }),
+});
+
+const DeleteUserHandleFormSchema = z.object({
+  email: z.string(),
+  password: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the password of this user',
   }),
 });
  
@@ -142,7 +152,8 @@ const CreateCustomer = CustomerFormSchema.omit({ id: true, user_id: true });
 const UpdateCustomer = CustomerFormSchema.omit({ id: true, user_id: true });
 const DeleteCustomer = DeleteCustomerSchema.omit({ id: true});
 const DeleteInvoice = DeleteInvoiceSchema.omit({ id: true });
-const DeleteUser = DeleteUserSchema.omit({});
+const DeleteUserRequest = DeleteUserRequestFormSchema.omit({});
+const DeleteUserHandle = DeleteUserHandleFormSchema.omit({ email: true});
 const CreateUser = UserFormSchema.omit({});
 const ChangePass = ChangePassFormSchema.omit({});
 const ResetPassRequest = ResetPassRequestFormSchema.omit({});
@@ -223,9 +234,16 @@ export type DeleteInvoiceState = {
   message?: string | null;
 };
 
-export type DeleteUserState = {
+export type DeleteUserRequestState = {
   errors?: {
-    reid?: string[];
+    email?: string[];
+  };
+  message?: string | null;
+};
+
+export type DeleteUserHandleState = {
+  errors?: {
+    password?: string[];
   };
   message?: string | null;
 };
@@ -239,27 +257,48 @@ export async function resetSession(name : string, image : string) {
   await unstable_update({ user: { name: name, image: image } })
 }
 
+export async function deleteDatabaseToken(id : string) {
+  const { error } = await supabase
+    .from('users')
+    .update({  
+      token: null, 
+      expires: null
+    })
+    .eq('id', id);
+  if (error){
+    throw error;
+  }
+}
+
 export async function signUpHandle(token : string) {
   const user = await getUserByToken(token);
   if (user === undefined) {
     return 'Not Found';
   } else {
     if (user.expires && new Date(user.expires) < new Date()) {
-      await supabase
-          .from('users')
-          .delete()
-          .eq('id', user.id);
-      return 'Your verify email request token has expired. Failed to Sign Up Complete';
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', user.id);
+      if (error){
+        throw error;
+      } else {
+        return 'Your verify email request token has expired. Failed to Sign Up Complete';
+      }
     } else {
-      await supabase
+      const { error } = await supabase
         .from('users')
         .update({ 
-            email_verified: true, 
-            token: null, 
-            expires: null
+          email_verified: true, 
+          token: null, 
+          expires: null
         })
         .eq('id', user.id);
-      return 'Email of your account verified successfully ! Your Sign Up request is Completed';
+      if (error){
+        throw error;
+      } else {
+        return 'Email of your account verified successfully ! Your Sign Up request is Completed';
+      }
     }
   }
 }
@@ -761,35 +800,6 @@ export async function resetPassHandle(email: string, prevState: ResetPassHandleS
   }
 }
 
-async function changeUserStatusLogout() {
-  try {
-    const email = await getSessionEmail();
-    if (email !== ''){
-      const user = await getUserByEmail(email);
-      if (user !== undefined){
-        const { error } = await supabase
-          .from('users')
-          .update({
-            status: "logout"
-          })
-          .eq('email', email)
-          .eq('status', 'login');
-        if (error) {
-          throw error;
-        }
-      } else {
-        return;
-      }
-    } else {
-      console.error('Failed to fetch session email.');
-      throw new Error("Failed to fetch session email.");
-    }
-  } catch (error : any) {
-    console.error('Failed to fix user logout. Reason: ', error.message);
-    throw new Error('Failed to fix user logout. Reason: ' + error.message);
-  }
-}
-
 export async function resetPassRequest(prevState: ResetPassRequestState, formData: FormData){
   
   const validatedFields = ResetPassRequest.safeParse({
@@ -831,6 +841,118 @@ export async function resetPassRequest(prevState: ResetPassRequestState, formDat
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Change Password.',
+    };
+  }
+}
+
+export async function deleteUserRequest(prevState: DeleteUserRequestState, formData: FormData){
+  
+  const validatedFields = DeleteUserRequest.safeParse({
+    email: formData.get('email'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { email } = validatedFields.data;
+    const user = await getUserByEmail(email);
+
+    if (user !== undefined){
+
+      const token = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+      const { error } = await supabase
+        .from('users')
+        .update({
+          token: token,
+          expires: expiresAt.toISOString(),
+        }).eq('email', email);
+      
+      await sendSignDownEmail(user.email, user.name, token);
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
+        };
+      } else {
+        redirect('/signdownreponse');
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Reset Password.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Change Password.',
+    };
+  }
+}
+
+export async function deleteUserHandle(email: string, prevState: DeleteUserHandleState, formData: FormData){
+  
+  const validatedFields = DeleteUserHandle.safeParse({
+    password: formData.get('password'),
+  });
+  
+  if (validatedFields.success) {
+    
+    const { password } = validatedFields.data;
+
+    const user = await getUserByEmail(email);
+      
+    if (user !== undefined){
+
+      const oldPassword = user.password;
+
+      if (password === oldPassword){
+
+        const { error } = await supabase
+          .from('users')
+          .delete()
+          .eq('id', user.id);
+          
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Sign Down Handle. Reason: ' + error.message,
+          };
+        } else {
+          redirect('/signdowncomplete');
+        }
+
+      } else {
+
+        const { error } = await supabase
+          .from('users')
+          .update({
+            token: null, 
+            expires: null
+          })
+          .eq('id', user.id);
+          
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Sign Down Handle. Reason: ' + error.message,
+          };
+        } else {
+          return {
+            message: 'Input Wrong Password of this account. Failed to Sign Down Handle.',
+          };
+        }
+        
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Sign Down Handle.',
+      };
+    }
+    
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Sign Down Handle.',
     };
   }
 }
@@ -930,57 +1052,6 @@ export async function deleteCustomer(
   }
 }
 
-export async function deleteUser(
-  prevState: DeleteUserState,
-  formData: FormData,
-) {
-  const validatedFields = DeleteUser.safeParse({
-    reid: formData.get('reid')
-  });
-  if (validatedFields.success) {
-    const { reid } = validatedFields.data;
-    const userID = await getSessionID();
-    if (userID === reid) {
-      const user = await getUserByID(userID);
-      if (user !== undefined){
-        const token = crypto.randomUUID();
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
-        const { error } = await supabase
-          .from('users')
-          .update({
-            token: token,
-            expires: expiresAt.toISOString(),
-          }).eq('id', userID);
-        await sendSignDownEmail(user.email, user.name, token);
-        if (error) {
-          return { 
-            message: 'Database Error: Failed to Delete User. Reason: ' + error.message 
-          };
-        } else {
-          revalidatePath('/dashboard/signdownreponse');
-          redirect('/dashboard/signdownreponse');
-        }
-
-      } else {
-        return {
-          message: 'User of this email do not see in Database. Failed to Delete User.',
-        };
-      }
-
-    } else {
-      return {
-        message: 'Please just copy User ID and paste to Re input ID. Failed to Delete User.',
-      };
-    }
-
-  } else {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Delete User.',
-    };
-  }
-}
-
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -1009,6 +1080,35 @@ export async function authenticate(
     } else {
       throw error;
     }
+  }
+}
+
+async function changeUserStatusLogout() {
+  try {
+    const email = await getSessionEmail();
+    if (email !== ''){
+      const user = await getUserByEmail(email);
+      if (user !== undefined){
+        const { error } = await supabase
+          .from('users')
+          .update({
+            status: "logout"
+          })
+          .eq('email', email)
+          .eq('status', 'login');
+        if (error) {
+          throw error;
+        }
+      } else {
+        return;
+      }
+    } else {
+      console.error('Failed to fetch session email.');
+      throw new Error("Failed to fetch session email.");
+    }
+  } catch (error : any) {
+    console.error('Failed to fix user logout. Reason: ', error.message);
+    throw new Error('Failed to fix user logout. Reason: ' + error.message);
   }
 }
 

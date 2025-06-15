@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Sign Up Reponse',
+  title: 'Sign Down Reponse',
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
@@ -30,9 +30,9 @@ export default function Page() {
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Your Sign Up Request is successful !</strong>{' '}
-            But you need to complete your Sign Up Request.{' '}
-            Please check your email to find your sign up link email.{' '}
+            <strong>Your Sign Down Request is successful !</strong>{' '}
+            But you need to complete your Sign Down Request.{' '}
+            By check your email to verify your this request.{' '}
             If you do not see the email, check your spam or promotions folder.{' '}
           </p>
           <SideLink />

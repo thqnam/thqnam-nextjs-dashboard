@@ -1,35 +1,35 @@
 'use client';
-
+ 
 import { lusitana } from '@/app/ui/fonts';
+import Image from 'next/image'; 
 import {
-  AtSymbolIcon,
   KeyIcon,
+  AtSymbolIcon,
   ExclamationCircleIcon,
+  InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { 
-  ArrowRightIcon,
   ArrowLeftIcon,
+  ArrowTurnLeftUpIcon,
   ArrowUpIcon,
+  ArrowRightIcon,
   ArrowTurnDownRightIcon,
   ArrowDownIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useEffect, useState, useActionState } from 'react';
-import { authenticate } from '@/app/lib/actions';
-import { useSearchParams } from 'next/navigation';
-//import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
+import { useActionState, useEffect, useState } from 'react';
+import { deleteUserHandle, DeleteUserHandleState } from '@/app/lib/actions';
+// import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
 
-export default function Form() {
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '';
-  const [errorMessage, formAction, isPending] = useActionState(
-    authenticate,
-    undefined,
-  );
-  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
+type ResetFormProps = {
+  email: string;
+  name: string;
+  image: string;
+};
+ 
+export default function Form( {email, name, image} : ResetFormProps) {
   const [passwordInputType, setPasswordInputType] = useState('');
-
   const changePasswordInputStatus = () => {
     if (passwordInputType === 'password'){
       setPasswordInputType('text');
@@ -41,6 +41,11 @@ export default function Form() {
     setPasswordInputType('password');
   }, []);
 
+  const initialState: DeleteUserHandleState = { message: null, errors: {} };
+  const deleteUserHandleWithEmail = deleteUserHandle.bind(null, email);
+  const [state, formAction, isPending] = useActionState(deleteUserHandleWithEmail, initialState);
+  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
+ 
   return (
     <form
       action={formAction}
@@ -51,9 +56,35 @@ export default function Form() {
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Input for Sign In
+          Input for Sign Down Handle
         </h1>
         <div className="w-full">
+          <div>
+            <label
+              className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
+              htmlFor="name"
+            >
+              Name{' '}
+              <Image
+                  src={image}
+                  className="rounded-full"
+                  alt={`${name}'s profile image`}
+                  width={28}
+                  height={28}
+              />
+            </label>
+            <div className="relative">
+              <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="name"
+                type="text"
+                name="name"
+                defaultValue={name}
+                disabled
+              />
+              <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
           <div>
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
@@ -67,8 +98,8 @@ export default function Form() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
-                required
+                defaultValue={email}
+                disabled
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -89,32 +120,40 @@ export default function Form() {
                 id="password"
                 type={passwordInputType}
                 name="password"
-                placeholder="Enter your password"
+                placeholder="Enter your new password"
+                aria-describedby='newpassword-error'
                 required
                 minLength={10}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
+            <div id="newpassword-error" aria-live="polite" aria-atomic="true">
+              {showError && state.errors?.password &&
+                state.errors.password.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+              ))}
+            </div>
           </div>
         </div>
-        <input type="hidden" name="redirectTo" value={callbackUrl} />
         <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"
           aria-atomic="true"
         >
-          {showError && errorMessage && (
+          {showError && state.message && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{errorMessage}</p>
+              <p className="text-sm text-red-500">{state.message}</p>
             </>
           )}
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
-          Sign In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Sign Down <ArrowTurnLeftUpIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
-          Reset Sign<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         {/* <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await OAuthGoogleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
@@ -122,6 +161,13 @@ export default function Form() {
         <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await OAuthGithubSignIn()}>
           Github Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button> */}
+        <Link 
+          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
+          href="/signin"
+          aria-disabled={isPending}
+        >
+          Sign In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Link>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
           href="/signuprequest"
@@ -137,11 +183,11 @@ export default function Form() {
           Reset Pass Request <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
         <Link 
-          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-          href="/signdownrequest"
-          aria-disabled={isPending}
-        >
-          Sign Down Request <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
+            className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
+            href="/signdownrequest"
+            aria-disabled={isPending}
+          >
+            Sign Down Request <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 

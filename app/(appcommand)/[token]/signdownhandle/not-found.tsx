@@ -1,10 +1,9 @@
-import AcmeLogo from '@/app/ui/acme-logo';
-import Form from '@/app/ui/user/signdownreponse-form';
-import { Suspense } from 'react';
+import Link from 'next/link';
+import { FaceFrownIcon } from '@heroicons/react/24/outline';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Sign Down Reponse',
+  title: 'Not-Found Customer',
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
@@ -16,19 +15,19 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
  
-export default function Page() {
+export default function NotFound() {
+  
   return (
-    <main className="flex items-center justify-center md:h-screen">
-      <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
-        <div className="flex h-20 w-full items-end rounded-lg bg-blue-500 p-3 md:h-36">
-          <div className="w-32 text-white md:w-36">
-            <AcmeLogo />
-          </div>
-        </div>
-        <Suspense>
-          <Form />
-        </Suspense>
-      </div>
+    <main className="flex h-full flex-col items-center justify-center gap-2">
+      <FaceFrownIcon className="w-10 text-gray-400" />
+      <h2 className="text-xl font-semibold">404 Not Found</h2>
+      <p>Could not find token for complete your Sign Down Request.</p>
+      <Link
+        href="/"
+        className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
+      >
+        Go Back
+      </Link>
     </main>
   );
 }
