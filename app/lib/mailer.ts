@@ -12,9 +12,9 @@ function startMailer(){
   return transporter;
 }
 
-export async function sendVerificationEmail(email: string, name: string, token: string) {
+export async function sendSignUpEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const verifyUrl = `https://qned.vercel.app/${token}/signupcomplete`;
+  const verifyUrl = `https://qned.vercel.app/${token}/signuphandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,

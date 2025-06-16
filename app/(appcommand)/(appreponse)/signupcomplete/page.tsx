@@ -4,8 +4,6 @@ import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { signUpHandle } from '@/app/lib/actions';
  
 export const metadata: Metadata = {
   title: 'Sign Up Complete',
@@ -20,13 +18,7 @@ export const metadata: Metadata = {
   publisher: `${process.env.APP_PUBLISHER}`,
 };
 
-export default async function Page(props: { params: Promise<{ token: string }> }) {
-  const params = await props.params;
-  const token = params.token;
-  if (!token) notFound();
-  const reponseMessage = await signUpHandle(token);
-  if (reponseMessage === 'Not Found') notFound();
-
+export default function Page() {
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
@@ -38,7 +30,7 @@ export default async function Page(props: { params: Promise<{ token: string }> }
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>{reponseMessage}</strong> 
+            <strong>Your account sign up successfully ! Your Sign Up request is Completed</strong>
           </p>
           <SideLink />
         </div>

@@ -20,7 +20,7 @@ import {
 import { Button } from '@/app/ui/button';
 import { fetchImages } from '@/app/lib/data';
 import { useActionState } from 'react';
-import { createUser, UserState } from '@/app/lib/actions';
+import { createUserRequest, CreateUserRequestState } from '@/app/lib/actions';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 // import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
@@ -29,26 +29,7 @@ import Link from 'next/link';
 export default function Form() {
     const [images, setImages] = useState([] as ImageField[]);
     const [selectedImage, setSelectedImage] = useState('');
-    const [passwordInputType, setPasswordInputType] = useState('');
-    const [repasswordInputType, setRePasswordInputType] = useState('');
-    const changePasswordInputStatus = () => {
-      if (passwordInputType === 'password'){
-        setPasswordInputType('text');
-      } else {
-        setPasswordInputType('password');
-      }
-    }
-    const changeRePasswordInputStatus = () => {
-      if (repasswordInputType === 'password'){
-        setRePasswordInputType('text');
-      } else {
-        setRePasswordInputType('password');
-      }
-    }
-    useEffect(() => {
-      setPasswordInputType('password');
-      setRePasswordInputType('password');
-    }, []);
+
     //Hàm fetch lại dữ liệu
     const loadImages = async () => {
       const data = await fetchImages();
@@ -72,8 +53,8 @@ export default function Form() {
           supabase.removeChannel(channel);
       };
     }, []);
-  const initialState: UserState = { message: null, errors: {} };
-  const [state, formAction, isPending] = useActionState(createUser, initialState);
+  const initialState: CreateUserRequestState = { message: null, errors: {} };
+  const [state, formAction, isPending] = useActionState(createUserRequest, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
   if (!images){
@@ -142,48 +123,12 @@ export default function Form() {
                 <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
             </div>
-            <div className="mt-4">
-              <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  id="password"
-                  type="password"
-                  name="password"
-                  disabled
-                />
-                <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="repassword"
-              >
-                Re-Password
-              </label>
-              <div className="relative">
-                <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  id="repassword"
-                  type="password"
-                  name="repassword"
-                  disabled
-                />
-                <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-            </div>
           </div>
           <Button className="mt-4 w-full" disabled>
             Sign Up Requset <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
           <Button className="mt-4 w-full" disabled>
-            Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Reset Sign Request <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
           {/* <Button className="mt-4 w-full" disabled>
             Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
@@ -332,69 +277,6 @@ export default function Form() {
               <div id="name-error" aria-live="polite" aria-atomic="true">
                 {showError && state.errors?.name &&
                   state.errors.name.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                      {error}
-                    </p>
-                ))}
-              </div>
-            </div>
-            <div className="mt-4">
-              <label
-                className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="password"
-              >
-                Password{' '}
-                <button type="button" onClick={changePasswordInputStatus}>
-                  {passwordInputType === 'password' ? '(Unhide)' : '(Hide)'}
-                </button>
-              </label>
-              <div className="relative">
-                <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  id="password"
-                  type={passwordInputType}
-                  name="password"
-                  placeholder="Enter your password"
-                  required
-                  minLength={10}
-                />
-                <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-              <div id="password-error" aria-live="polite" aria-atomic="true">
-                {showError && state.errors?.password &&
-                  state.errors.password.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                      {error}
-                    </p>
-                ))}
-              </div>
-            </div>
-            <div className="mt-4">
-              <label
-                className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="repassword"
-              >
-                Re-Password{' '}
-                <button type="button" onClick={changeRePasswordInputStatus}>
-                  {repasswordInputType === 'password' ? '(Unhide)' : '(Hide)'}
-                </button>
-              </label>
-              <div className="relative">
-                <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  id="repassword"
-                  type={repasswordInputType}
-                  name="repassword"
-                  placeholder="Re-Enter your password"
-                  aria-describedby='repassword-error'
-                  required
-                  minLength={10}
-                />
-                <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-              <div id="repassword-error" aria-live="polite" aria-atomic="true">
-                {showError && state.errors?.repassword &&
-                  state.errors.repassword.map((error: string) => (
                     <p className="mt-2 text-sm text-red-500" key={error}>
                       {error}
                     </p>

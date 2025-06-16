@@ -11,9 +11,9 @@ import { PostgrestError } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { randomUUID } from 'crypto';
-import { sendResetPasswordEmail, sendVerificationEmail, sendSignDownEmail } from '@/app/lib/mailer';
+import { sendResetPasswordEmail, sendSignUpEmail, sendSignDownEmail } from '@/app/lib/mailer';
 
-const UserFormSchema = z.object({
+const CreateUserRequestFormSchema = z.object({
   name: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the name of this user',
@@ -28,6 +28,10 @@ const UserFormSchema = z.object({
     invalid_type_error: 'Please select a image.',
     required_error: 'Must be select a image',
   }),
+});
+
+const CreateUserHandleFormSchema = z.object({
+  email: z.string(),
   password: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the password of this user',
@@ -154,7 +158,8 @@ const DeleteCustomer = DeleteCustomerSchema.omit({ id: true});
 const DeleteInvoice = DeleteInvoiceSchema.omit({ id: true });
 const DeleteUserRequest = DeleteUserRequestFormSchema.omit({});
 const DeleteUserHandle = DeleteUserHandleFormSchema.omit({ email: true});
-const CreateUser = UserFormSchema.omit({});
+const CreateUserRequest = CreateUserRequestFormSchema.omit({});
+const CreateUserHandle = CreateUserHandleFormSchema.omit({ email: true});
 const ChangePass = ChangePassFormSchema.omit({});
 const ResetPassRequest = ResetPassRequestFormSchema.omit({});
 const ResetPassHandle = ResetPassHandleFormSchema.omit({ email: true});
@@ -178,11 +183,17 @@ export type CustomerState = {
   message?: string | null;
 };
 
-export type UserState = {
+export type CreateUserRequestState = {
   errors?: {
     name?: string[];
     email?: string[];
     image?: string[];
+  };
+  message?: string | null;
+};
+
+export type CreateUserHandleState = {
+  errors?: {
     password?: string[];
     repassword?: string[];
   };
@@ -267,114 +278,6 @@ export async function deleteDatabaseToken(id : string) {
     .eq('id', id);
   if (error){
     throw error;
-  }
-}
-
-export async function signUpHandle(token : string) {
-  const user = await getUserByToken(token);
-  if (user === undefined) {
-    return 'Not Found';
-  } else {
-    if (user.expires && new Date(user.expires) < new Date()) {
-      const { error } = await supabase
-        .from('users')
-        .delete()
-        .eq('id', user.id);
-      if (error){
-        throw error;
-      } else {
-        return 'Your verify email request token has expired. Failed to Sign Up Complete';
-      }
-    } else {
-      const { error } = await supabase
-        .from('users')
-        .update({ 
-          email_verified: true, 
-          token: null, 
-          expires: null
-        })
-        .eq('id', user.id);
-      if (error){
-        throw error;
-      } else {
-        return 'Email of your account verified successfully ! Your Sign Up request is Completed';
-      }
-    }
-  }
-}
-
-export async function createUser(prevState: UserState, formData: FormData){
-  // Validate form using Zod
-  const validatedFields = CreateUser.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    image: formData.get('image'),
-    password: formData.get('password'),
-    repassword: formData.get('repassword'),
-  });
-
-  // If form validation fails, return errors early. Otherwise, continue.
-  if (validatedFields.success) {
-    // Prepare data for insertion into the database
-    const { 
-      name, 
-      email, 
-      image, 
-      password, 
-      repassword 
-    } = validatedFields.data;
-    const user = await getUserByEmail(email);
-
-    if (user === undefined){
-
-      if (password === repassword){
-
-        const emailVerifyToken = randomUUID();
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
-        const hashedPassword = bcrypt.hashSync(password, 12);
-        // Insert data into the database
-        const { error } = await supabase
-          .from('users')
-          .insert([
-            {
-              name: name,
-              email: email,
-              image: image,
-              password: hashedPassword,
-              status: 'logout',
-              email_verified: false,
-              token: emailVerifyToken,
-              expires: expiresAt.toISOString(),
-            },
-          ]);
-          
-        await sendVerificationEmail(email, name, emailVerifyToken);
-        // If a database error occurs, return a more specific error.
-        if (error) {
-          return {
-            message: 'Database Error: Failed to Create User. Reason: ' + error.message,
-          };
-        } else {
-          redirect('/signupreponse');
-        }
-
-      } else {
-        return {
-          message: 'Password must be look like Re-Password. Failed to Create User.',
-        };
-      }
-
-    } else {
-      return {
-        message: 'This email compare with a email of user in Database. Failed to Create User.',
-      };
-    }
-
-  } else {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create User.',
-    };
   }
 }
 
@@ -528,6 +431,127 @@ export async function updateInvoice(
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Update Invoice.',
+    };
+  }
+}
+
+export async function createUserRequest(prevState: CreateUserRequestState, formData: FormData){
+  // Validate form using Zod
+  const validatedFields = CreateUserRequest.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image: formData.get('image'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (validatedFields.success) {
+    // Prepare data for insertion into the database
+    const { 
+      name, 
+      email, 
+      image, 
+    } = validatedFields.data;
+    const user = await getUserByEmail(email);
+
+    if (user === undefined){
+
+      const token = randomUUID();
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+      // Insert data into the database
+      const { error } = await supabase
+        .from('users')
+        .insert([
+          {
+            name: name,
+            email: email,
+            image: image,
+            status: 'logout',
+            email_verified: false,
+            token: token,
+            expires: expiresAt.toISOString(),
+          },
+        ]);
+        
+      // If a database error occurs, return a more specific error.
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Create User Request. Reason: ' + error.message,
+        };
+      } else {
+        await sendSignUpEmail(email, name, token);
+        redirect('/signupreponse');
+      }
+
+    } else {
+      return {
+        message: 'This email compare with a email of user in Database. Failed to Create User Request.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create User Request.',
+    };
+  }
+}
+
+export async function createUserHandle(email: string, prevState: CreateUserHandleState, formData: FormData){
+  // Validate form using Zod
+  const validatedFields = CreateUserHandle.safeParse({
+    password: formData.get('password'),
+    repassword: formData.get('repassword'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (validatedFields.success) {
+    // Prepare data for insertion into the database
+    const { 
+      password, 
+      repassword 
+    } = validatedFields.data;
+    const user = await getUserByEmail(email);
+
+    if (user !== undefined){
+      
+      if (password === repassword){
+
+        const hashedPassword = bcrypt.hashSync(password, 12);
+        // Insert data into the database
+        const { error } = await supabase
+          .from('users')
+          .update({
+            email_verified: true,
+            password: hashedPassword,
+          })
+          .eq('id', user.id);
+          
+        // If a database error occurs, return a more specific error.
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Create User Handle. Reason: ' + error.message,
+          };
+        } else {
+          await deleteDatabaseToken(user.id);
+          redirect('/signupcomplete');
+        }
+
+      } else {
+        return {
+          message: 'Password must be look like Re-Password. Failed to Create User Handle.',
+        };
+      }
+
+    } else {
+      return {
+        message: 'This email compare with a email of user in Database. Failed to Create User Handle.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create User Handle.',
     };
   }
 }
@@ -717,6 +741,51 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
   }
 }
 
+export async function resetPassRequest(prevState: ResetPassRequestState, formData: FormData){
+  
+  const validatedFields = ResetPassRequest.safeParse({
+    email: formData.get('email'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { email } = validatedFields.data;
+    const user = await getUserByEmail(email);
+
+    if (user !== undefined){
+
+      const token = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
+      const { error } = await supabase
+        .from('users')
+        .update({
+          token: token,
+          expires: expiresAt.toISOString(),
+        }).eq('email', email);
+      
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Reset Password Request. Reason: ' + error.message,
+        };
+      } else {
+        await sendResetPasswordEmail(email, user.name, token);
+        redirect('/resetpassreponse');
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Reset Password Request.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Reset Password Request.',
+    };
+  }
+}
+
 export async function resetPassHandle(email: string, prevState: ResetPassHandleState, formData: FormData){
   
   const validatedFields = ResetPassHandle.safeParse({
@@ -745,102 +814,40 @@ export async function resetPassHandle(email: string, prevState: ResetPassHandleS
             .update({
               password: hashedPassword,
               status: "logout",
-              token: null, 
-              expires: null
             })
             .eq('id', user.id);
             
           if (error) {
             return {
-              message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
+              message: 'Database Error: Failed to Reset Password Handle. Reason: ' + error.message,
             };
           } else {
+            await deleteDatabaseToken(user.id);
             redirect('/resetpasscomplete');
           }
 
         } else {
-
-          const { error } = await supabase
-            .from('users')
-            .update({
-              token: null, 
-              expires: null
-            })
-            .eq('id', user.id);
-            
-          if (error) {
-            return {
-              message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
-            };
-          } else {
-            return {
-              message: 'New Password look like Old Password. Failed to Reset Password.',
-            };
-          }
-          
+          return {
+            message: 'New Password look like Old Password. Failed to Reset Password Handle.',
+          };
         }
         
       } else {
         return {
-          message: 'User of this email do not see in Database. Failed to Reset Password.',
+          message: 'User of this email do not see in Database. Failed to Reset Password Handle.',
         };
       }
 
     } else {
       return {
-        message: 'New Password must be look like Re-New Password. Failed to Reset Password.',
+        message: 'New Password must be look like Re-New Password. Failed to Reset Password Handle.',
       };
     }
 
   } else {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Reset Password.',
-    };
-  }
-}
-
-export async function resetPassRequest(prevState: ResetPassRequestState, formData: FormData){
-  
-  const validatedFields = ResetPassRequest.safeParse({
-    email: formData.get('email'),
-  });
-
-  if (validatedFields.success) {
-    
-    const { email } = validatedFields.data;
-    const user = await getUserByEmail(email);
-
-    if (user !== undefined){
-
-      const token = crypto.randomUUID();
-      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 giờ
-      const { error } = await supabase
-        .from('users')
-        .update({
-          token: token,
-          expires: expiresAt.toISOString(),
-        }).eq('email', email);
-      await sendResetPasswordEmail(email, user.name, token);
-      
-      if (error) {
-        return {
-          message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
-        };
-      } else {
-        redirect('/resetpassreponse');
-      }
-      
-    } else {
-      return {
-        message: 'User of this email do not see in Database. Failed to Reset Password.',
-      };
-    }
-
-  } else {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Change Password.',
+      message: 'Missing Fields. Failed to Reset Password Handle.',
     };
   }
 }
@@ -867,25 +874,25 @@ export async function deleteUserRequest(prevState: DeleteUserRequestState, formD
           expires: expiresAt.toISOString(),
         }).eq('email', email);
       
-      await sendSignDownEmail(user.email, user.name, token);
       if (error) {
         return {
-          message: 'Database Error: Failed to Reset Password. Reason: ' + error.message,
+          message: 'Database Error: Failed to Sign Down Request. Reason: ' + error.message,
         };
       } else {
+        await sendSignDownEmail(user.email, user.name, token);
         redirect('/signdownreponse');
       }
       
     } else {
       return {
-        message: 'User of this email do not see in Database. Failed to Reset Password.',
+        message: 'User of this email do not see in Database. Failed to Sign Down Request.',
       };
     }
 
   } else {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Change Password.',
+      message: 'Missing Fields. Failed to Sign Down Request.',
     };
   }
 }
@@ -918,29 +925,14 @@ export async function deleteUserHandle(email: string, prevState: DeleteUserHandl
             message: 'Database Error: Failed to Sign Down Handle. Reason: ' + error.message,
           };
         } else {
+          await deleteDatabaseToken(user.id);
           redirect('/signdowncomplete');
         }
 
       } else {
-
-        const { error } = await supabase
-          .from('users')
-          .update({
-            token: null, 
-            expires: null
-          })
-          .eq('id', user.id);
-          
-        if (error) {
-          return {
-            message: 'Database Error: Failed to Sign Down Handle. Reason: ' + error.message,
-          };
-        } else {
-          return {
-            message: 'Input Wrong Password of this account. Failed to Sign Down Handle.',
-          };
-        }
-        
+        return {
+          message: 'Input Wrong Password of this account. Failed to Sign Down Handle.',
+        };
       }
       
     } else {

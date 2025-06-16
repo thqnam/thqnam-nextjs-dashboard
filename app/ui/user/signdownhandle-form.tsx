@@ -10,7 +10,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { 
   ArrowLeftIcon,
-  ArrowTurnLeftUpIcon,
   ArrowUpIcon,
   ArrowRightIcon,
   ArrowTurnDownRightIcon,
@@ -22,13 +21,13 @@ import { deleteUserHandle, DeleteUserHandleState } from '@/app/lib/actions';
 // import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
 
-type ResetFormProps = {
+type FormProps = {
   email: string;
   name: string;
   image: string;
 };
  
-export default function Form( {email, name, image} : ResetFormProps) {
+export default function Form( {email, name, image} : FormProps) {
   const [passwordInputType, setPasswordInputType] = useState('');
   const changePasswordInputStatus = () => {
     if (passwordInputType === 'password'){
@@ -150,10 +149,10 @@ export default function Form( {email, name, image} : ResetFormProps) {
           )}
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
-          Sign Down <ArrowTurnLeftUpIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Sign Down Right Now <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
-          Reset Sign <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Reset Sign Right Now <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         {/* <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await OAuthGoogleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />

@@ -40,22 +40,20 @@ export const authConfig = {
     async jwt({ token, user, trigger }) {
       if (user && user.id) {
         token.id = user.id;
-        if (trigger === 'update' || trigger === 'signIn') {
-          token.name = user.name;
-          token.picture = user.image;
-        }
+      }
+      if (trigger === 'update' && token.email === user.email){
+        token.name = user.name;
+        token.picture = user.image;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, trigger }) {
       if (session.user && typeof token.id === 'string') {
         (session.user as { id: string }).id = token.id;
       }
-      if (session.user && typeof token.name === 'string') {
-        (session.user as { name: string }).name = token.name;
-      }
-      if (session.user && typeof token.picture === 'string') {
-        (session.user as { image: string }).image = token.picture;
+      if (trigger === 'update' && session.user.email === token.email){
+        session.user.name = token.name;
+        session.user.image = token.picture;
       }
       return session;
     }

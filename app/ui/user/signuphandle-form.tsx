@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { 
   ArrowLeftIcon,
+  ArrowTurnLeftUpIcon,
   ArrowUpIcon,
   ArrowRightIcon,
   ArrowTurnDownRightIcon,
@@ -17,7 +18,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { resetPassHandle, ResetPassHandleState } from '@/app/lib/actions';
+import { createUserHandle, CreateUserHandleState } from '@/app/lib/actions';
 // import { OAuthGoogleSignIn, OAuthGithubSignIn } from '@/app/lib/supabaseAuth';
 import Link from 'next/link';
 
@@ -49,9 +50,9 @@ export default function Form( {email, name, image} : FormProps) {
     setRePasswordInputType('password');
   }, []);
 
-  const initialState: ResetPassHandleState = { message: null, errors: {} };
-  const resetPassHandleWithEmail = resetPassHandle.bind(null, email);
-  const [state, formAction, isPending] = useActionState(resetPassHandleWithEmail, initialState);
+  const initialState: CreateUserHandleState = { message: null, errors: {} };
+  const createUserHandleWithEmail = createUserHandle.bind(null, email);
+  const [state, formAction, isPending] = useActionState(createUserHandleWithEmail, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
  
   return (
@@ -64,7 +65,7 @@ export default function Form( {email, name, image} : FormProps) {
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Input for Reset Pass Handle
+          Input for Sign Up Handle
         </h1>
         <div className="w-full">
           <div>
@@ -136,8 +137,8 @@ export default function Form( {email, name, image} : FormProps) {
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="newpassword-error" aria-live="polite" aria-atomic="true">
-              {showError && state.errors?.newpassword &&
-                state.errors.newpassword.map((error: string) => (
+              {showError && state.errors?.password &&
+                state.errors.password.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
@@ -168,8 +169,8 @@ export default function Form( {email, name, image} : FormProps) {
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="renewpassword-error" aria-live="polite" aria-atomic="true">
-              {showError && state.errors?.renewpassword &&
-                state.errors.renewpassword.map((error: string) => (
+              {showError && state.errors?.repassword &&
+                state.errors.repassword.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
@@ -190,10 +191,10 @@ export default function Form( {email, name, image} : FormProps) {
           )}
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
-          Reset Pass Right Now <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Sign Up Right Now <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
-          Reset Form Rignt Now <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Reset Sign Right Now <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         {/* <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await OAuthGoogleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />

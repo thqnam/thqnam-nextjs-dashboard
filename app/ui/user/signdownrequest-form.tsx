@@ -9,7 +9,8 @@ import {
   ArrowRightIcon,
   ArrowLeftIcon,
   ArrowUpIcon,
-  ArrowTurnDownRightIcon
+  ArrowTurnDownRightIcon,
+  ArrowDownIcon
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
@@ -76,10 +77,10 @@ export default function Form() {
           )}
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
-          Sign Down Request <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Sign Down Request <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
-          Reset Sign<ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Reset Sign Request <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         {/* <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await OAuthGoogleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
