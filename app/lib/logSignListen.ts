@@ -3,12 +3,12 @@
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { LogOut } from '@/app/lib/actions';
-import { getUserByEmail } from '@/app/lib/utils';
+import { getUserByID } from '@/app/lib/utils';
 
-export default function UserGreetingClient({ userEmail }: { userEmail: string }) {
+export default function UserGreetingClient({ id }: { id: string }) {
 
-  const checkUserStatus = async (email : string) => {
-    const user = await getUserByEmail(email);
+  const checkUserStatus = async (id : string) => {
+    const user = await getUserByID(id);
     if (user !== undefined){
       const userStatus = user.status;
       if (userStatus === 'logout'){
@@ -20,12 +20,12 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string })
   };
 
   useEffect(() => {
-    checkUserStatus(userEmail);
+    checkUserStatus(id);
     const channel = supabase
       .channel('users-status')
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${userEmail}` },
+        { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${id}` },
         async (payload) => {
           if (payload.new.status === 'logout') {
             await LogOut();
@@ -36,7 +36,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string })
         'postgres_changes',
         { event: 'DELETE', schema: 'public', table: 'users' },
         async (payload) => {
-          if (payload.old.email === userEmail) {
+          if (payload.old.id === id) {
             await LogOut();
           }
         }
@@ -47,7 +47,7 @@ export default function UserGreetingClient({ userEmail }: { userEmail: string })
       supabase.removeChannel(channel);
     };
 
-  }, [userEmail]);
+  }, [id]);
 
   return null;
 }

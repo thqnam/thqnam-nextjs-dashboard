@@ -75,6 +75,12 @@ const ResetPassRequestFormSchema = z.object({
 });
 
 const ChangeInforFormSchema = z.object({
+  email: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
+  }),
   name: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the name of this user',
@@ -225,6 +231,7 @@ export type ResetPassRequestState = {
 
 export type ChangeInforState = {
   errors?: {
+    email?: string[];
     name?: string[];
     image?: string[];
   };
@@ -264,8 +271,8 @@ export async function resetTarget(target : string) {
   redirect(target);
 }
 
-export async function resetSession(name : string, image : string) {
-  await unstable_update({ user: { name: name, image: image } })
+export async function resetSession(email: string, name : string, image : string) {
+  await unstable_update({ user: { email: email, name: name, image: image } })
 }
 
 export async function deleteDatabaseToken(id : string) {
@@ -607,6 +614,7 @@ export async function updateCustomer(
 export async function changeUserInfor(prevState: ChangeInforState, formData: FormData){
   
   const validatedFields = ChangeInfor.safeParse({
+    email: formData.get('email'),
     name: formData.get('name'),
     image: formData.get('image'),
   });
@@ -614,8 +622,9 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
   if (validatedFields.success) {
     
     const { 
+      email,
       name, 
-      image 
+      image,
     } = validatedFields.data;
     
     const id = await getSessionID();
@@ -629,6 +638,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
         const { error } = await supabase
           .from('users')
           .update({
+            email: email,
             name: name,
             image: image,
           })
@@ -639,7 +649,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
             message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
           };
         } else {
-          await resetSession(name, image);
+          await resetSession(email, name, image);
           revalidatePath('/dashboard');
           redirect('/dashboard');
         }

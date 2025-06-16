@@ -114,11 +114,11 @@ export async function getUserByToken(token: string): Promise<User | undefined> {
   }
 }
 
-export async function getUserSessionByEmail(email: string): Promise<UserSession | undefined> {
+export async function getUserSessionByID(id: string): Promise<UserSession | undefined> {
   const { data, error } = await supabase
     .from('users')
-    .select('name, image')
-    .eq('email', email)
+    .select('email, name, image')
+    .eq('id', id)
     .maybeSingle();
   if (error) {
     console.error('Failed to fetch user session by email: Reason', error.message);

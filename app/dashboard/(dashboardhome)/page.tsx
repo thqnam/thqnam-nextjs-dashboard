@@ -9,7 +9,7 @@ import {
   CardsSkeleton,
 } from '@/app/ui/skeletons';
 import UserGreeting from '@/app/ui/UserGreeting';
-import { getSessionEmail } from '@/app/lib/data';
+import { getSessionID } from '@/app/lib/data';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
  
 export default async function Page() {
-  const email = await getSessionEmail();
+  const id = await getSessionID();
   return (
     <main>
       <Breadcrumbs
@@ -39,7 +39,7 @@ export default async function Page() {
         ]}
       />
       <Suspense>
-        <UserGreeting email={email}/>
+        <UserGreeting id={id}/>
       </Suspense>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense fallback={<CardsSkeleton />}>

@@ -18,6 +18,7 @@ export type User = {
 };
 
 export type UserSession = {
+  email: string;
   name: string;
   image: string;
 };

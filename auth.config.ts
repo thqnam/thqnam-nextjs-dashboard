@@ -41,7 +41,8 @@ export const authConfig = {
       if (user && user.id) {
         token.id = user.id;
       }
-      if (trigger === 'update' && token.email === user.email){
+      if (trigger === 'update'){
+        token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
       }
@@ -51,7 +52,8 @@ export const authConfig = {
       if (session.user && typeof token.id === 'string') {
         (session.user as { id: string }).id = token.id;
       }
-      if (trigger === 'update' && session.user.email === token.email){
+      if (trigger === 'update' && token.email !== null && token.email !== undefined){
+        session.user.email = token.email;
         session.user.name = token.name;
         session.user.image = token.picture;
       }
