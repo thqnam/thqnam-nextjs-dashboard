@@ -170,7 +170,7 @@ export async function updateUser(id: string, email: string, name: string, image:
       status: 'login',
       email_verified: true,
     })
-    .eq('id', id)
+    .eq('id', id);
     
   if (error) {
     console.error('Failed to OAuth Update User. Reason: ', error.message);
@@ -232,7 +232,7 @@ async function updateImage(id: string, image: string): Promise<void> {
     .update({
       path: image,
     })
-    .eq('id', id)
+    .eq('id', id);
     
   if (error) {
     console.error('Failed to Update Image. Reason: ', error.message);
