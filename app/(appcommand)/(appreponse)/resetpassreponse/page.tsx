@@ -32,7 +32,8 @@ export default function Page() {
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
             <strong>Reset Pass Request successful !</strong>{' '}
             But you need to complete your Reset Pass Request.{' '}
-            Please check your email to find your reset password link email.{' '}
+            Please check your email box to find your reset password link email.{' '}
+            For verify your this Reset Pass Request.{' '}
             If you do not see the email, check your spam or promotions folder.{' '}
           </p>
           <SideLink />

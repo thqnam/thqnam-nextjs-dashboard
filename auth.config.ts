@@ -37,14 +37,28 @@ export const authConfig = {
         return true;
       }
     },
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, profile }) {
       if (user && user.id) {
         token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
       }
       if (trigger === 'update'){
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
+      }
+      if (trigger === 'signIn' && profile){
+        token.id = profile.id;
+        token.email = profile.email;
+        token.name = profile.name;
+        token.picture = profile.picture;
+      }
+      if (trigger === 'update' && profile){
+        token.email = profile.email;
+        token.name = profile.name;
+        token.picture = profile.picture;
       }
       return token;
     },

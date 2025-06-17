@@ -46,9 +46,11 @@ export default function UserGreeting({ id }: { id: string }) {
         { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${email}` },
         async (payload) => {
           if (( payload.new.name !== name ||
-                payload.new.image !== image ) &&
+                payload.new.image !== image ||
+                payload.new.email !== email) &&
                 payload.new.status !== 'logout'
           ){
+            setEmail(payload.new.email);
             setName(payload.new.name);
             setImage(payload.new.image);
             await resetSession(payload.new.email, payload.new.name, payload.new.image);

@@ -4,9 +4,12 @@ import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image';
 import { Metadata } from 'next';
+import { getUserByToken } from '@/app/lib/utils';
+import { deleteDatabaseToken, changeEmailComplete } from '@/app/lib/actions';
+import { notFound } from 'next/navigation';
  
 export const metadata: Metadata = {
-  title: 'Sign Up Reponse',
+  title: 'Change Email Complete',
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
@@ -17,8 +20,21 @@ export const metadata: Metadata = {
   keywords: `${process.env.APP_NAME}, ${process.env.APP_NAME} App, ${process.env.APP_OWNER}`,
   publisher: `${process.env.APP_PUBLISHER}`,
 };
+ 
+export default async function Page(props: { params: Promise<{ token: string }> }) {
+  const params = await props.params;
+  const token = params.token;
+  if (!token) notFound();
+  const result = await getUserByToken(token);
+  if (result === undefined) notFound();
+  const user = result;
+  if (user.expires && new Date(user.expires) < new Date()) {
+    await deleteDatabaseToken(user.id);
+    notFound();
+  } else {
+    await changeEmailComplete(user.new_email, user.id);
+  }
 
-export default function Page() {
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
@@ -30,11 +46,7 @@ export default function Page() {
             className={styles.shape}
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Your Sign Up Request is successful !</strong>{' '}
-            But you need to complete your Sign Up Request.{' '}
-            Please check your email box to find your sign up link email.{' '}
-            For verify your this Sign Up Request.{' '}
-            If you do not see the email, check your spam or promotions folder.{' '}
+            <strong>Your email changed successfully ! Your Change Email request is Completed</strong>
           </p>
           <SideLink />
         </div>

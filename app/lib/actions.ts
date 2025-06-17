@@ -5,13 +5,13 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn, signOut, unstable_update } from '@/auth';
 import { getSessionEmail, getSessionID } from './data';
-import { getUserByEmail, getUserByID, getUserByToken } from './utils';
+import { getUserByEmail, getUserByID } from './utils';
 import { AuthError } from 'next-auth';
 import { PostgrestError } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { randomUUID } from 'crypto';
-import { sendResetPasswordEmail, sendSignUpEmail, sendSignDownEmail } from '@/app/lib/mailer';
+import { sendResetPasswordEmail, sendSignUpEmail, sendSignDownEmail, sendChangeInforEmail } from '@/app/lib/mailer';
 
 const CreateUserRequestFormSchema = z.object({
   name: z.string({
@@ -641,28 +641,32 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
           if (user === undefined){
 
+            const token = crypto.randomUUID();
+            const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
             const { error } = await supabase
               .from('users')
               .update({
-                email: email,
-                name: name,
-                image: image,
-              })
-              .eq('id', userID.id);
+                new_email: email,
+                email_verified: false,
+                token: token,
+                expires: expiresAt.toISOString(),
+              }).eq('id', userID.id);
             
             if (error) {
               return {
-                message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+                message: 'Database Error: Failed to Change Infor Request. Reason: ' + error.message,
               };
             } else {
-              await resetSession(email, name, image);
-              revalidatePath('/dashboard');
-              redirect('/dashboard');
+              await resetSession(userID.email, name, image);
+              await sendChangeInforEmail(email, name, token);
+              return {
+                message: 'Your Change Email Request need to complete by you must find verify link email in ' + email,
+              };
             }
 
           } else {
             return {
-              message: 'This email compare with an email of user in Database. Failed to Change Infor.',
+              message: 'This email compare with an email of user in Database. Failed to Change Infor Request.',
             };
           }
 
@@ -706,6 +710,23 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Change Infor.',
     };
+  }
+}
+
+export async function changeEmailComplete(email: string, id: string){
+  const { error } = await supabase
+    .from('users')
+    .update({
+      status: 'logout',
+      new_email: null,
+      email_verified: true,
+      email: email,
+    }).eq('new_email', email);
+  
+  if (error){
+    throw error;
+  } else {
+    await deleteDatabaseToken(id);
   }
 }
 
@@ -858,7 +879,7 @@ export async function resetPassHandle(email: string, prevState: ResetPassHandleS
             .from('users')
             .update({
               password: hashedPassword,
-              status: "logout",
+              status: 'logout',
             })
             .eq('id', user.id);
             
@@ -1137,12 +1158,14 @@ async function changeUserStatusLogout() {
         const { error } = await supabase
           .from('users')
           .update({
-            status: "logout"
+            status: 'logout',
           })
           .eq('email', email)
-          .eq('status', 'login');
+          
         if (error) {
           throw error;
+        } else {
+          return;
         }
       } else {
         return;

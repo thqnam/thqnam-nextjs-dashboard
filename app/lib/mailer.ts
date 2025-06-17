@@ -34,7 +34,7 @@ export async function sendSignUpEmail(email: string, name: string, token: string
 
 export async function sendResetPasswordEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const resetUrl = `https://qned.vercel.app/${token}/resetpasshandle`
+  const resetUrl = `https://qned.vercel.app/${token}/resetpasshandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -45,6 +45,26 @@ export async function sendResetPasswordEmail(email: string, name: string, token:
       <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
       <p>If you reset password of your account in my <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App<p>
       <p>Please press to <a href="${resetUrl}">this</a> for reset your ${process.env.APP_NAME} App account password.</p>
+      <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
+      <p>Please ignore this email, sorry for bothering you<p>
+    `,
+  });
+  transporter.close();
+}
+
+export async function sendChangeInforEmail(email: string, name: string, token: string) {
+  const transporter = startMailer();
+  const changEmailUrl = `https://qned.vercel.app/${token}/changeinforhandle`;
+  await transporter.sendMail({
+    from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: `Complete your ${process.env.APP_NAME} App Change Email Request`,
+    html: `
+      <p>Hi ${name},</p>
+      <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
+      <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
+      <p>If you change email of your account in my <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App<p>
+      <p>Please press to <a href="${changEmailUrl}">this</a> for change your ${process.env.APP_NAME} App account email.</p>
       <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
       <p>Please ignore this email, sorry for bothering you<p>
     `,

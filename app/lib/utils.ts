@@ -165,16 +165,16 @@ export async function updateUser(id: string, email: string, name: string, image:
       name: name,
       email: email,
       image: image,
-      status: 'logout',
+      status: 'login',
       email_verified: true,
     })
     .eq('id', id)
-    .eq('email', email);
+    
   if (error) {
-    console.error('Failed to Pre Google Sign In. Reason: ', error.message);
+    console.error('Failed to OAuth Update User. Reason: ', error.message);
     let talada : PostgrestError;
     talada = error;
-    talada.message = 'Failed to Pre Google Sign In. Reason: ' + error.message;
+    talada.message = 'Failed to OAuth Update User. Reason: ' + error.message;
     throw talada;
   }
 }
@@ -187,16 +187,16 @@ export async function insertUser(email: string, name: string, image: string): Pr
         name: name,
         email: email,
         image: image,
-        status: 'logout',
+        status: 'login',
         email_verified: true,
       },
     ]);
 
   if (error){
-    console.error('Failed to Google Sign In. Reason: ', error.message);
+    console.error('Failed to OAuth Insert User. Reason: ', error.message);
     let talada : PostgrestError;
     talada = error;
-    talada.message = 'Failed to Google Sign In. Reason: ' + error.message;
+    talada.message = 'Failed to OAuth Insert User. Reason: ' + error.message;
     throw talada;
   }
 }

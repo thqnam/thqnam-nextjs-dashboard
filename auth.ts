@@ -7,8 +7,7 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { AuthError } from 'next-auth';
-import { getUserByEmail } from '@/app/lib/utils';
-import { profile } from 'console';
+import { getUserByEmail, insertUser, updateUser } from '@/app/lib/utils';
  
 export const { auth, signIn, signOut, unstable_update } = NextAuth({
   ...authConfig,
@@ -92,14 +91,21 @@ export const { auth, signIn, signOut, unstable_update } = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       id: 'google',
+      name: 'QNED App Google Sign In',
       async profile(profile){
         const User = {
           id: profile.id as string || profile.sub as string,
           name: profile.name as string || profile.fullname as string,
           image: profile.image as string || profile.picture as string || profile.avatar_url as string,
           email: profile.email as string,
+        };
+        const dbUser = await getUserByEmail(User.email);
+        if (dbUser){
+            await updateUser(dbUser.id, User.email, User.name, User.image);
+        } else {
+            await insertUser(User.email, User.name, User.image);
         }
-        await unstable_update({user:{id: User.id, name: User.name, image: User.image, email: User.email}})
+        await unstable_update({user:{id: User.id, name: User.name, image: User.image, email: User.email}});
         return User;
       },
       authorization: {
@@ -114,6 +120,7 @@ export const { auth, signIn, signOut, unstable_update } = NextAuth({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       id: 'github',
+      name: 'QNED App Github Sign In',
       async profile(profile){
         const User = {
           id: new String(profile.id).valueOf() || profile.sub as string,
@@ -121,7 +128,13 @@ export const { auth, signIn, signOut, unstable_update } = NextAuth({
           image: profile.image as string || profile.picture as string || profile.avatar_url as string,
           email: profile.email as string,
         }
-        await unstable_update({user:{id: User.id, name: User.name, image: User.image, email: User.email}})
+        const dbUser = await getUserByEmail(User.email);
+        if (dbUser){
+            await updateUser(dbUser.id, User.email, User.name, User.image);
+        } else {
+            await insertUser(User.email, User.name, User.image);
+        }
+        await unstable_update({user:{id: User.id, name: User.name, image: User.image, email: User.email}});
         return User;
       },
       authorization: {

@@ -32,7 +32,8 @@ export default function Page() {
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
             <strong>Your Sign Down Request is successful !</strong>{' '}
             But you need to complete your Sign Down Request.{' '}
-            By check your email to verify your this request.{' '}
+            By check your email box to find your sign down link email.{' '}
+            For verify your this Sign Down Request.{' '}
             If you do not see the email, check your spam or promotions folder.{' '}
           </p>
           <SideLink />
