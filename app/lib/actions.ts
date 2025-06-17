@@ -391,57 +391,6 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
   }
 }
 
-export async function updateInvoice(
-  id: string,
-  prevState: InvoiceState,
-  formData: FormData,
-) {
-  const validatedFields = UpdateInvoice.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
-
-  if (validatedFields.success) {
-    const { customerId, amount, status } = validatedFields.data;
-    const amountInCents = amount * 100;
-    const date = new Date().toISOString().split('T')[0];
-    const userID = await getSessionID();
-    if (userID !== ''){
-      const { error } = await supabase
-        .from('invoices')
-        .update({
-          customer_id: customerId,
-          amount: amountInCents,
-          status: status,
-          date: date,
-          user_id: userID,
-        })
-        .eq('id', id);
-
-      if (error) {
-        return { 
-          message: 'Database Error: Failed to Update Invoice. Reason: ' + error.message 
-        };
-      } else {
-        revalidatePath('/dashboard/invoices');
-        redirect('/dashboard/invoices');
-      }
-
-    } else {
-      return {
-        message: 'Missing User ID. Failed to Update Invoice.',
-      };
-    }
-
-  } else {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Invoice.',
-    };
-  }
-}
-
 export async function createUserRequest(prevState: CreateUserRequestState, formData: FormData){
   // Validate form using Zod
   const validatedFields = CreateUserRequest.safeParse({
@@ -491,7 +440,7 @@ export async function createUserRequest(prevState: CreateUserRequestState, formD
 
     } else {
       return {
-        message: 'This email compare with a email of user in Database. Failed to Create User Request.',
+        message: 'This email compare with an email of user in Database. Failed to Create User Request.',
       };
     }
 
@@ -559,6 +508,57 @@ export async function createUserHandle(email: string, prevState: CreateUserHandl
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create User Handle.',
+    };
+  }
+}
+
+export async function updateInvoice(
+  id: string,
+  prevState: InvoiceState,
+  formData: FormData,
+) {
+  const validatedFields = UpdateInvoice.safeParse({
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  });
+
+  if (validatedFields.success) {
+    const { customerId, amount, status } = validatedFields.data;
+    const amountInCents = amount * 100;
+    const date = new Date().toISOString().split('T')[0];
+    const userID = await getSessionID();
+    if (userID !== ''){
+      const { error } = await supabase
+        .from('invoices')
+        .update({
+          customer_id: customerId,
+          amount: amountInCents,
+          status: status,
+          date: date,
+          user_id: userID,
+        })
+        .eq('id', id);
+
+      if (error) {
+        return { 
+          message: 'Database Error: Failed to Update Invoice. Reason: ' + error.message 
+        };
+      } else {
+        revalidatePath('/dashboard/invoices');
+        redirect('/dashboard/invoices');
+      }
+
+    } else {
+      return {
+        message: 'Missing User ID. Failed to Update Invoice.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
     };
   }
 }
@@ -635,23 +635,58 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
       if (userID !== undefined){
 
-        const { error } = await supabase
-          .from('users')
-          .update({
-            email: email,
-            name: name,
-            image: image,
-          })
-          .eq('id', userID.id);
-        
-        if (error) {
-          return {
-            message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
-          };
+        if (email !== userID.email){
+
+          const user = await getUserByEmail(email);
+
+          if (user === undefined){
+
+            const { error } = await supabase
+              .from('users')
+              .update({
+                email: email,
+                name: name,
+                image: image,
+              })
+              .eq('id', userID.id);
+            
+            if (error) {
+              return {
+                message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+              };
+            } else {
+              await resetSession(email, name, image);
+              revalidatePath('/dashboard');
+              redirect('/dashboard');
+            }
+
+          } else {
+            return {
+              message: 'This email compare with an email of user in Database. Failed to Change Infor.',
+            };
+          }
+
         } else {
-          await resetSession(email, name, image);
-          revalidatePath('/dashboard');
-          redirect('/dashboard');
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              email: email,
+              name: name,
+              image: image,
+            })
+            .eq('id', userID.id);
+          
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+            };
+          } else {
+            await resetSession(email, name, image);
+            revalidatePath('/dashboard');
+            redirect('/dashboard');
+          }
+
         }
 
       } else {
@@ -1083,6 +1118,14 @@ export async function authenticate(
       throw error;
     }
   }
+}
+
+export async function GoogleSignIn(){
+  await signIn('google');
+}
+
+export async function GithubSignIn(){
+  await signIn('github');
 }
 
 async function changeUserStatusLogout() {
