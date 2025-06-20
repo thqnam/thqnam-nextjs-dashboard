@@ -1,5 +1,5 @@
 'use client';
- 
+
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image'; 
 import {
@@ -20,38 +20,69 @@ import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
 import { deleteUserHandle, DeleteUserHandleState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
 import Link from 'next/link';
+import zxcvbn from 'zxcvbn';
 
 type FormProps = {
   email: string;
   name: string;
   image: string;
 };
- 
-export default function Form( {email, name, image} : FormProps) {
+
+export default function Form({ email, name, image }: FormProps) {
   const [passwordInputType, setPasswordInputType] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordScore, setPasswordScore] = useState(0);
+  const [passwordFeedback, setPasswordFeedback] = useState('');
+  const [formError, setFormError] = useState('');
+  const [showError, setShowError] = useState(true);
+
   const changePasswordInputStatus = () => {
-    if (passwordInputType === 'password'){
+    if (passwordInputType === 'password') {
       setPasswordInputType('text');
     } else {
       setPasswordInputType('password');
     }
-  }
+  };
+
   useEffect(() => {
     setPasswordInputType('password');
   }, []);
 
+  useEffect(() => {
+    if (password) {
+      const result = zxcvbn(password);
+      setPasswordScore(result.score);
+      setPasswordFeedback(result.feedback.warning || result.feedback.suggestions.join(' '));
+    } else {
+      setPasswordScore(0);
+      setPasswordFeedback('');
+    }
+  }, [password]);
+
   const initialState: DeleteUserHandleState = { message: null, errors: {} };
   const deleteUserHandleWithEmail = deleteUserHandle.bind(null, email);
   const [state, formAction, isPending] = useActionState(deleteUserHandleWithEmail, initialState);
-  const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
- 
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setShowError(true);
+    setFormError('');
+    if (password && passwordScore < 3) {
+      e.preventDefault();
+      setFormError('Password is not strong enough. Please choose a more complex password.');
+    }
+  };
+
   return (
     <form
       action={formAction}
       className="space-y-3"
-      onReset={() => setShowError(false)} // Ẩn lỗi khi reset
-      onSubmit={() => setShowError(true)} // Hiện lại lỗi khi submit
-      onChange={() => setShowError(false)} // Ẩn lỗi khi sửa dữ liệu đã nhập
+      onReset={() => setShowError(false)}
+      onSubmit={handleSubmit}
+      onChange={() => setShowError(false)}
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
@@ -65,11 +96,11 @@ export default function Form( {email, name, image} : FormProps) {
             >
               Name{' '}
               <Image
-                  src={image}
-                  className="rounded-full"
-                  alt={`${name}'s profile image`}
-                  width={28}
-                  height={28}
+                src={image}
+                className="rounded-full"
+                alt={`${name}'s profile image`}
+                width={28}
+                height={28}
               />
             </label>
             <div className="relative">
@@ -119,13 +150,27 @@ export default function Form( {email, name, image} : FormProps) {
                 id="password"
                 type={passwordInputType}
                 name="password"
-                placeholder="Enter your new password"
+                placeholder="Enter your password"
                 aria-describedby='newpassword-error'
                 required
                 minLength={10}
+                value={password}
+                onChange={handlePasswordChange}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
+            {password && (
+              <div className="mt-2 text-sm">
+                <span>
+                  Password strength: {['Very weak', 'Weak', 'Fair', 'Good', 'Strong'][passwordScore]}
+                </span>
+                {passwordScore < 3 && (
+                  <div style={{ color: 'red' }}>
+                    {passwordFeedback || 'Password is not strong enough. Please choose a more complex password.'}
+                  </div>
+                )}
+              </div>
+            )}
             <div id="newpassword-error" aria-live="polite" aria-atomic="true">
               {showError && state.errors?.password &&
                 state.errors.password.map((error: string) => (
@@ -134,6 +179,12 @@ export default function Form( {email, name, image} : FormProps) {
                   </p>
               ))}
             </div>
+            {formError && (
+              <div className="mt-2 text-sm text-red-500 flex items-center gap-2">
+                <ExclamationCircleIcon className="h-5 w-5" />
+                <span>{formError}</span>
+              </div>
+            )}
           </div>
         </div>
         <div
