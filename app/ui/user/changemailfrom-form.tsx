@@ -11,16 +11,15 @@ import {
   ArrowUpIcon,
   ArrowTurnDownRightIcon,
   ArrowDownIcon,
-  ArrowTurnDownLeftIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
-import { resetPassRequest, ResetPassRequestState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
+import { changeMailFromRequest, ChangeMailFromRequestState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
 import Link from 'next/link';
  
 export default function Form() {
-  const initialState: ResetPassRequestState = { message: null, errors: {} };
-  const [state, formAction, isPending] = useActionState(resetPassRequest, initialState);
+  const initialState: ChangeMailFromRequestState = { message: null, errors: {} };
+  const [state, formAction, isPending] = useActionState(changeMailFromRequest, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
  
   return (
@@ -33,7 +32,7 @@ export default function Form() {
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Input for Reset Pass Request
+          Input for Change Mail From Request
         </h1>
         <div className="w-full">
           <div>
@@ -41,7 +40,7 @@ export default function Form() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="email"
             >
-              Email
+              Mail From
             </label>
             <div className="relative">
               <input
@@ -50,11 +49,12 @@ export default function Form() {
                 type="email"
                 name="email"
                 placeholder="Enter your email address"
+                aria-describedby='oldemail-error'
                 required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            <div id="email-error" aria-live="polite" aria-atomic="true">
+            <div id="oldemail-error" aria-live="polite" aria-atomic="true">
               {showError && state.errors?.email &&
                 state.errors.email.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
@@ -77,10 +77,10 @@ export default function Form() {
           )}
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
-          Reset Pass Request <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Change Email From Request <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
-          Reset Form Request <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Reset Change Form Request <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await GoogleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
@@ -101,13 +101,6 @@ export default function Form() {
           aria-disabled={isPending}
         >
           Sign Up Request <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Link>
-        <Link 
-          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-          href="/changemailfromrequest"
-          aria-disabled={isPending}
-        >
-          Change Mail From Request <ArrowTurnDownLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Link>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 

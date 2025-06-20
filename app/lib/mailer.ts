@@ -14,7 +14,7 @@ function startMailer(){
 
 export async function sendSignUpEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const verifyUrl = `https://qned.vercel.app/${token}/signuphandle`;
+  const Url = `https://qned.vercel.app/${token}/signuphandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -24,7 +24,7 @@ export async function sendSignUpEmail(email: string, name: string, token: string
       <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
       <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
       <p>If you sign up an new account in my <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App<p>
-      <p>Please press to <a href="${verifyUrl}">This</a> for verify your ${process.env.APP_NAME} App account email.</p>
+      <p>Please press to <a href="${Url}">This</a> for sign up your that ${process.env.APP_NAME} App account.</p>
       <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
       <p>Please ignore this email, sorry for bothering you<p>
     `,
@@ -34,7 +34,7 @@ export async function sendSignUpEmail(email: string, name: string, token: string
 
 export async function sendResetPasswordEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const resetUrl = `https://qned.vercel.app/${token}/resetpasshandle`;
+  const Url = `https://qned.vercel.app/${token}/resetpasshandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -44,7 +44,7 @@ export async function sendResetPasswordEmail(email: string, name: string, token:
       <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
       <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
       <p>If you reset password of your account in my <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App<p>
-      <p>Please press to <a href="${resetUrl}">this</a> for reset your ${process.env.APP_NAME} App account password.</p>
+      <p>Please press to <a href="${Url}">this</a> for reset your that ${process.env.APP_NAME} App account password.</p>
       <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
       <p>Please ignore this email, sorry for bothering you<p>
     `,
@@ -72,9 +72,49 @@ export async function sendChangeInforEmail(email: string, name: string, token: s
   transporter.close();
 }
 
+export async function sendChangeMailFromEmail(email: string, name: string, token: string) {
+  const transporter = startMailer();
+  const Url = `https://qned.vercel.app/${token}/changemailtorequest`;
+  await transporter.sendMail({
+    from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: `Complete your ${process.env.APP_NAME} App Change Mail From Request`,
+    html: `
+      <p>Hi ${name},</p>
+      <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
+      <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
+      <p>If you change email of your account in my <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App, out of this email address.<p>
+      <p>Please press to <a href="${Url}">this</a> for change your that ${process.env.APP_NAME} App account email, out of this email address.</p>
+      <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
+      <p>Please ignore this email, sorry for bothering you<p>
+    `,
+  });
+  transporter.close();
+}
+
+export async function sendChangeMailToEmail(email: string, name: string, token: string) {
+  const transporter = startMailer();
+  const Url = `https://qned.vercel.app/${token}/changemailhandle`;
+  await transporter.sendMail({
+    from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: `Complete your ${process.env.APP_NAME} App Change Mail To Request`,
+    html: `
+      <p>Hi ${name},</p>
+      <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
+      <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
+      <p>If you change email of your account in my <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App, in to this email address.<p>
+      <p>Please press to <a href="${Url}">this</a> for change your that ${process.env.APP_NAME} App account email, in to this email address.</p>
+      <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
+      <p>Please ignore this email, sorry for bothering you<p>
+    `,
+  });
+  transporter.close();
+}
+
 export async function sendSignDownEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const signDownUrl = `https://qned.vercel.app/${token}/signdownhandle`;
+  const Url = `https://qned.vercel.app/${token}/signdownhandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -84,7 +124,7 @@ export async function sendSignDownEmail(email: string, name: string, token: stri
       <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
       <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
       <p>If you sign down of your account in my <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App<p>
-      <p>Please press to <a href="${signDownUrl}">this</a> for sign down your ${process.env.APP_NAME} App account password.</p>
+      <p>Please press to <a href="${Url}">this</a> for sign down your that ${process.env.APP_NAME} App account.</p>
       <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
       <p>Please ignore this email, sorry for bothering you<p>
     `,

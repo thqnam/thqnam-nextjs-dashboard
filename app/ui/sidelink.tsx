@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRightIcon, ArrowUpIcon, ArrowDownIcon ,ArrowTurnDownRightIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, ArrowUpIcon, ArrowDownIcon ,ArrowTurnDownRightIcon, ArrowTurnDownLeftIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 export default function SideLink() {
@@ -24,6 +24,12 @@ export default function SideLink() {
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
         >
             <span>Sign Up Request</span> <ArrowUpIcon className="w-5 md:w-6" />
+        </Link>
+        <Link
+            href="/changemailfromrequest"
+            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+        >
+            <span>Change Mail From Request</span> <ArrowTurnDownLeftIcon className="w-5 md:w-6" />
         </Link>
         <Link
             href="/signdownrequest"

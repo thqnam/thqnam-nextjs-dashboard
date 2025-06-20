@@ -11,7 +11,14 @@ import { PostgrestError } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { randomUUID } from 'crypto';
-import { sendResetPasswordEmail, sendSignUpEmail, sendSignDownEmail, sendChangeInforEmail } from '@/app/lib/mailer';
+import { 
+  sendResetPasswordEmail, 
+  sendSignUpEmail, 
+  sendSignDownEmail, 
+  sendChangeInforEmail,
+  sendChangeMailToEmail,
+  sendChangeMailFromEmail,
+} from '@/app/lib/mailer';
 
 const CreateUserRequestFormSchema = z.object({
   name: z.string({
@@ -74,13 +81,34 @@ const ResetPassRequestFormSchema = z.object({
   }),
 });
 
-const ChangeInforFormSchema = z.object({
+const ChangeMailFromRequestFormSchema = z.object({
   email: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the email of this user',
   }).email({
     message: 'The string data must be look like email format'
   }),
+});
+
+const ChangeMailToRequestFormSchema = z.object({
+  oldemail: z.string(),
+  newemail: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
+  }),
+});
+
+const ChangeMailHandleFormSchema = z.object({
+  newemail: z.string(),
+  password: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the password of this user',
+  }),
+});
+
+const ChangeInforFormSchema = z.object({
   name: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the name of this user',
@@ -170,6 +198,9 @@ const ChangePass = ChangePassFormSchema.omit({});
 const ResetPassRequest = ResetPassRequestFormSchema.omit({});
 const ResetPassHandle = ResetPassHandleFormSchema.omit({ email: true});
 const ChangeInfor = ChangeInforFormSchema.omit({});
+const ChangeMailFromRequest = ChangeMailFromRequestFormSchema.omit({});
+const ChangeMailToRequest = ChangeMailToRequestFormSchema.omit({ oldemail: true });
+const ChangeMailHandle = ChangeMailHandleFormSchema.omit({ newemail: true });
 
 export type InvoiceState = {
   errors?: {
@@ -229,9 +260,29 @@ export type ResetPassRequestState = {
   message?: string | null;
 };
 
-export type ChangeInforState = {
+export type ChangeMailFromRequestState = {
   errors?: {
     email?: string[];
+  };
+  message?: string | null;
+};
+
+export type ChangeMailToRequestState = {
+  errors?: {
+    newemail?: string[];
+  };
+  message?: string | null;
+};
+
+export type ChangeMailHandleState = {
+  errors?: {
+    password?: string[];
+  };
+  message?: string | null;
+};
+
+export type ChangeInforState = {
+  errors?: {
     name?: string[];
     image?: string[];
   };
@@ -440,7 +491,7 @@ export async function createUserRequest(prevState: CreateUserRequestState, formD
 
     } else {
       return {
-        message: 'This email compare with an email of user in Database. Failed to Create User Request.',
+        message: 'This email compare with email of an user in Database. Failed to Create User Request.',
       };
     }
 
@@ -500,7 +551,7 @@ export async function createUserHandle(email: string, prevState: CreateUserHandl
 
     } else {
       return {
-        message: 'This email compare with a email of user in Database. Failed to Create User Handle.',
+        message: 'This email compare with email of an user in Database. Failed to Create User Handle.',
       };
     }
 
@@ -614,7 +665,6 @@ export async function updateCustomer(
 export async function changeUserInfor(prevState: ChangeInforState, formData: FormData){
   
   const validatedFields = ChangeInfor.safeParse({
-    email: formData.get('email'),
     name: formData.get('name'),
     image: formData.get('image'),
   });
@@ -622,7 +672,6 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
   if (validatedFields.success) {
     
     const { 
-      email,
       name, 
       image,
     } = validatedFields.data;
@@ -635,62 +684,22 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
 
       if (userID !== undefined){
 
-        if (email !== userID.email){
-
-          const user = await getUserByEmail(email);
-
-          if (user === undefined){
-
-            const token = crypto.randomUUID();
-            const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
-            const { error } = await supabase
-              .from('users')
-              .update({
-                new_email: email,
-                email_verified: false,
-                token: token,
-                expires: expiresAt.toISOString(),
-              }).eq('id', userID.id);
-            
-            if (error) {
-              return {
-                message: 'Database Error: Failed to Change Infor Request. Reason: ' + error.message,
-              };
-            } else {
-              await resetSession(userID.email, name, image);
-              await sendChangeInforEmail(email, name, token);
-              return {
-                message: 'Your Change Email Request need to complete by you must find verify link email in ' + email,
-              };
-            }
-
-          } else {
-            return {
-              message: 'This email compare with an email of user in Database. Failed to Change Infor Request.',
-            };
-          }
-
+        const { error } = await supabase
+          .from('users')
+          .update({
+            name: name,
+            image: image,
+          })
+          .eq('id', userID.id);
+        
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
+          };
         } else {
-
-          const { error } = await supabase
-            .from('users')
-            .update({
-              email: email,
-              name: name,
-              image: image,
-            })
-            .eq('id', userID.id);
-          
-          if (error) {
-            return {
-              message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
-            };
-          } else {
-            await resetSession(email, name, image);
-            revalidatePath('/dashboard');
-            redirect('/dashboard');
-          }
-
+          await resetSession(userID.email, name, image);
+          revalidatePath('/dashboard');
+          redirect('/dashboard');
         }
 
       } else {
@@ -710,23 +719,6 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Change Infor.',
     };
-  }
-}
-
-export async function changeEmailComplete(email: string, id: string){
-  const { error } = await supabase
-    .from('users')
-    .update({
-      status: 'logout',
-      new_email: null,
-      email_verified: true,
-      email: email,
-    }).eq('new_email', email);
-  
-  if (error){
-    throw error;
-  } else {
-    await deleteDatabaseToken(id);
   }
 }
 
@@ -803,6 +795,174 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Change Password.',
+    };
+  }
+}
+
+export async function changeMailFromRequest(prevState: ChangeMailFromRequestState, formData: FormData){
+  
+  const validatedFields = ChangeMailFromRequest.safeParse({
+    email: formData.get('email'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { email } = validatedFields.data;
+    const user = await getUserByEmail(email);
+
+    if (user !== undefined){
+
+      const token = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
+      const { error } = await supabase
+        .from('users')
+        .update({
+          token: token,
+          expires: expiresAt.toISOString(),
+        }).eq('email', email);
+      
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Change Mail From Request. Reason: ' + error.message,
+        };
+      } else {
+        await sendChangeMailFromEmail(email, user.name, token);
+        redirect('/changemailfromreponse');
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Change Mail From Request.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Change Mail From Request.',
+    };
+  }
+}
+
+export async function changeMailToRequest(oldemail: string, prevState: ChangeMailToRequestState, formData: FormData){
+  
+  const validatedFields = ChangeMailToRequest.safeParse({
+    newemail: formData.get('newemail'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { newemail } = validatedFields.data;
+
+    if (newemail !== oldemail){
+
+      const newUser = await getUserByEmail(newemail);
+
+      if (newUser === undefined){
+
+        const oldUser = await getUserByEmail(oldemail);
+
+        if (oldUser !== undefined){
+
+          const token = crypto.randomUUID();
+          const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
+          const { error } = await supabase
+            .from('users')
+            .update({
+              status: 'logout',
+              new_email: newemail,
+              email_verified: false,
+              token: token,
+              expires: expiresAt.toISOString(),
+            }).eq('email', oldemail);
+          
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Change Mail To Request. Reason: ' + error.message,
+            };
+          } else {
+            await sendChangeMailToEmail(newemail, oldUser.name, token);
+            redirect('/changemailtoreponse');
+          }
+
+        } else {
+          return {
+            message: 'User of this old email do not see in Database. Failed to Change Mail To Request.',
+          };
+        }
+        
+      } else {
+        return {
+          message: 'This new email compare with email of an user in Database. Failed to Change Mail To Request.',
+        };
+      }
+
+    } else {
+      return {
+        message: 'New email must be not compare with old email. Failed to Change Mail To Request.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Change Mail To Request.',
+    };
+  }
+}
+
+export async function changeMailHandle(newemail: string, prevState: ChangeMailHandleState, formData: FormData){
+
+  const validatedFields = ChangeMailHandle.safeParse({
+    password: formData.get('password'),
+  });
+  
+  if (validatedFields.success) {
+    
+    const { password } = validatedFields.data;
+
+    const user = await getUserByEmail(newemail);
+      
+    if (user !== undefined){
+
+      const oldPassword = user.password;
+
+      if (password === oldPassword){
+
+        const { error } = await supabase
+          .from('users')
+          .update({
+            status: 'logout',
+            new_email: null,
+            email_verified: true,
+            email: newemail,
+          }).eq('new_email', newemail);
+          
+        if (error) {
+          return {
+            message: 'Database Error: Failed to Change Mail Handle. Reason: ' + error.message,
+          };
+        } else {
+          await deleteDatabaseToken(user.id);
+          redirect('/changemailcomplete');
+        }
+
+      } else {
+        return {
+          message: 'Input Wrong Password of this account. Failed to Change Mail Handle.',
+        };
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Change Mail Handle.',
+      };
+    }
+    
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Change Mail Handle.',
     };
   }
 }
