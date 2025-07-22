@@ -29,6 +29,7 @@ export default function NavLinks() {
         const LinkIcon = link.icon;
         return (
             <button
+              type="button"
               key={link.name}
               onClick={() => resetTarget(link.href)}
               className={clsx(
