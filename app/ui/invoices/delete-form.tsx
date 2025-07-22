@@ -89,6 +89,7 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
                 type="text"
                 name="name"
                 disabled
+                placeholder="Customer name"
               />
               <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
             </div>
@@ -348,27 +349,29 @@ export default function DeleteInvoiceForm({ id }: { id: string }) {
         </div>
         <div className="mt-6 flex justify-evenly gap-4">
           <button
+            type='button'
             onClick={() => resetTarget('/dashboard/invoices')}
-            aria-disabled={isPending}
+            disabled={isPending}
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >
             Cancel Delete
           </button>
           <button
+            type='button'
             onClick={() => resetTarget(`/dashboard/invoices/${id}/edit`)}
-            aria-disabled={isPending}
+            disabled={isPending}
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >
             Edit Invoice
           </button>
           <button
             type='reset'
-            aria-disabled={isPending}
+            disabled={isPending}
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >
             Reset Invoice
           </button>
-          <Button type="submit" aria-disabled={isPending}>Delete Invoice</Button>
+          <Button type="submit" disabled={isPending}>Delete Invoice</Button>
         </div>
       </form>
     );

@@ -115,6 +115,7 @@ function PaginationNumber({
     <div className={className}>{page}</div>
   ) : (
     <button
+      type='button'
       onClick={() => resetTarget(href)}
       className={className}
     >
@@ -153,6 +154,7 @@ function PaginationArrow({
     <div className={className}>{icon}</div>
   ) : (
     <button
+      type='button'
       onClick={() => resetTarget(href)}
       className={className}
     >

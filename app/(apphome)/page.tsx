@@ -31,11 +31,11 @@ export default function Page() {
           />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
             <strong>Welcome to QNED.</strong> This is the first app of Mr. {' '}
-            <a href="https://thqnam-myself.vercel.app/" className="text-blue-500" target='_blank'>
+            <a href="https://thqnam-myself.vercel.app/" className="text-blue-500" target='_blank' rel="noopener">
               Thiều Huỳnh Quang Nam
             </a>
             , supporting by {' '}
-            <a href="https://vercel.com/home" className="text-blue-500" target='_blank'>
+            <a href="https://vercel.com/home" className="text-blue-500" target='_blank' rel="noopener">
               Vercel
             </a>
             {' '} firm.

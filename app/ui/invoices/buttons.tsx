@@ -6,8 +6,11 @@ import { resetTarget } from '@/app/lib/actions';
 export function CreateInvoice() {
   return (
     <button
+      type='button'
       onClick={() => resetTarget('/dashboard/invoices/create')}
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      title="Create Invoice"
+      aria-label="Create Invoice"
     >
       <span className="hidden md:block">Create Invoice</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
@@ -18,8 +21,11 @@ export function CreateInvoice() {
 export function UpdateInvoice({ id }: { id: string }) {
   return (
     <button
+      type='button'
       onClick={() => resetTarget(`/dashboard/invoices/${id}/edit`)}
       className="rounded-md border p-2 hover:bg-gray-100"
+      title="Edit Invoice"
+      aria-label="Edit Invoice"
     >
       <PencilIcon className="w-5" />
     </button>
@@ -29,8 +35,11 @@ export function UpdateInvoice({ id }: { id: string }) {
 export function DeleteInvoice({ id }: { id: string }) {
   return (
     <button
+      type='button'
       onClick={() => resetTarget(`/dashboard/invoices/${id}/delete`)}
       className="rounded-md border p-2 hover:bg-gray-100"
+      title="Delete Invoice"
+      aria-label="Delete Invoice"
     >
       <TrashIcon className="w-5" />
     </button>
