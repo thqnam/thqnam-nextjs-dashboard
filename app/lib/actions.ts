@@ -13,12 +13,21 @@ import { supabase } from '@/app/lib/supabaseClient';
 import { randomUUID } from 'crypto';
 import { 
   sendResetPasswordEmail, 
+  sendSignInEmail,
   sendSignUpEmail, 
-  sendSignDownEmail, 
-  sendChangeInforEmail,
+  sendSignDownEmail,
   sendChangeMailToEmail,
   sendChangeMailFromEmail,
 } from '@/app/lib/mailer';
+
+const VerifyUserRequestFormSchema = z.object({
+  email: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
+  }),
+});
 
 const CreateUserRequestFormSchema = z.object({
   name: z.string({
@@ -183,7 +192,7 @@ const DeleteUserHandleFormSchema = z.object({
     required_error: 'Please input the password of this user',
   }),
 });
- 
+
 const CreateInvoice = InvoiceFormSchema.omit({ id: true, date: true, user_id: true});
 const UpdateInvoice = InvoiceFormSchema.omit({ id: true, date: true, user_id: true });
 const CreateCustomer = CustomerFormSchema.omit({ id: true, user_id: true });
@@ -192,6 +201,7 @@ const DeleteCustomer = DeleteCustomerSchema.omit({ id: true});
 const DeleteInvoice = DeleteInvoiceSchema.omit({ id: true });
 const DeleteUserRequest = DeleteUserRequestFormSchema.omit({});
 const DeleteUserHandle = DeleteUserHandleFormSchema.omit({ email: true});
+const VerifyUserRequest = VerifyUserRequestFormSchema.omit({});
 const CreateUserRequest = CreateUserRequestFormSchema.omit({});
 const CreateUserHandle = CreateUserHandleFormSchema.omit({ email: true});
 const ChangePass = ChangePassFormSchema.omit({});
@@ -216,6 +226,13 @@ export type CustomerState = {
     name?: string[];
     email?: string[];
     image_url?: string[];
+  };
+  message?: string | null;
+};
+
+export type VerifyUserRequestState = {
+  errors?: {
+    email?: string[];
   };
   message?: string | null;
 };
@@ -1266,6 +1283,51 @@ export async function deleteCustomer(
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Delete Customer.',
+    };
+  }
+}
+
+export async function verifyUserRequest(prevState: VerifyUserRequestState, formData: FormData){
+  
+  const validatedFields = VerifyUserRequest.safeParse({
+    email: formData.get('email'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { email } = validatedFields.data;
+    const user = await getUserByEmail(email);
+
+    if (user !== undefined){
+
+      const token = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
+      const { error } = await supabase
+        .from('users')
+        .update({
+          token: token,
+          expires: expiresAt.toISOString(),
+        }).eq('email', email);
+      
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Verify User Request. Reason: ' + error.message,
+        };
+      } else {
+        await sendSignInEmail(email, user.name, token);
+        redirect('/signinreponse');
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Verify User Request.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Verify User Request.',
     };
   }
 }
