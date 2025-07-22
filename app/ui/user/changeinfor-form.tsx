@@ -7,7 +7,6 @@ import {
 import Image from 'next/image'; 
 import { lusitana } from '@/app/ui/fonts';
 import {
-  AtSymbolIcon,
   ExclamationCircleIcon,
   IdentificationIcon,
   InformationCircleIcon,
@@ -137,7 +136,8 @@ export default function Form() {
           <Button className="mt-4 w-full" disabled>
             Reset Change <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
-          <button 
+          <button
+            type='button'
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             onClick={() => resetTarget('/dashboard')}
           >
@@ -256,7 +256,8 @@ export default function Form() {
           <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
             Reset Change <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
-          <button 
+          <button
+            type='button'
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             onClick={() => resetTarget('/dashboard')}
             disabled={isPending}
