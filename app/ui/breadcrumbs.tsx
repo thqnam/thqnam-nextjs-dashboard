@@ -26,7 +26,7 @@ export default function Breadcrumbs({
               breadcrumb.active ? 'text-gray-900' : 'text-gray-500',
             )}
           >
-            <button onClick={() => resetTarget(breadcrumb.href)}>{breadcrumb.label}</button>
+            <button type='button' onClick={() => resetTarget(breadcrumb.href)}>{breadcrumb.label}</button>
             {index < breadcrumbs.length - 1 ? (
               <span className="mx-3 inline-block">/</span>
             ) : null}
