@@ -16,10 +16,13 @@ import {
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
 import { verifyUserRequest, VerifyUserRequestState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
  
 export default function Form() {
   const initialState: VerifyUserRequestState = { message: null, errors: {} };
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '';
   const [state, formAction, isPending] = useActionState(verifyUserRequest, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
  
@@ -64,6 +67,7 @@ export default function Form() {
             </div>
           </div>
         </div>
+        <input type="hidden" name="redirectTo" value={callbackUrl} />
         <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"

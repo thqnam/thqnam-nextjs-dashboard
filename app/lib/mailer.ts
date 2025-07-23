@@ -12,9 +12,9 @@ function startMailer(){
   return transporter;
 }
 
-export async function sendSignInEmail(email: string, name: string, token: string) {
+export async function sendSignInEmail(email: string, name: string, token: string, redirectTarget: string) {
   const transporter = startMailer();
-  const Url = `https://qned.vercel.app/${token}/signinhandle`;
+  const Url = `https://qned.vercel.app/${token}/signinhandle?callbackUrl=${redirectTarget}`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,

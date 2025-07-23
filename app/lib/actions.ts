@@ -1296,6 +1296,7 @@ export async function verifyUserRequest(prevState: VerifyUserRequestState, formD
   if (validatedFields.success) {
     
     const { email } = validatedFields.data;
+    const redirectTarget = formData.get('redirectTo') as string || '';
     const user = await getUserByEmail(email);
 
     if (user !== undefined){
@@ -1314,7 +1315,7 @@ export async function verifyUserRequest(prevState: VerifyUserRequestState, formD
           message: 'Database Error: Failed to Verify User Request. Reason: ' + error.message,
         };
       } else {
-        await sendSignInEmail(email, user.name, token);
+        await sendSignInEmail(email, user.name, token, redirectTarget);
         redirect('/signinreponse');
       }
       

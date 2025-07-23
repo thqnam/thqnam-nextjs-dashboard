@@ -13,7 +13,7 @@ import type { NextAuthConfig } from 'next-auth';
 export const authConfig = {
   pages: {
     signIn: '/dashboard',
-    signOut: '/signin',
+    signOut: '/signinrequest',
   },
   session: {
     strategy: 'jwt', // hoặc 'jwt' 'database'
@@ -29,7 +29,7 @@ export const authConfig = {
         if (isLoggedIn) {
           return true;
         } else {
-          return Response.redirect(new URL('/signin?callbackUrl=' + nextUrl, nextUrl));
+          return Response.redirect(new URL('/signinrequest?callbackUrl=' + nextUrl, nextUrl));
         }
       } else if (isLoggedIn) {
         return Response.redirect(new URL('/dashboard', nextUrl));
