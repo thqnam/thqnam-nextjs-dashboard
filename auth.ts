@@ -77,7 +77,9 @@ export const { auth, signIn, signOut, unstable_update } = NextAuth({
         const { error } = await supabase
           .from('users')
           .update({
-            status: "login"
+            status: "login",
+            token: null, 
+            expires: null,
           })
           .eq('email', email)
           .eq('status', 'logout');
