@@ -15,7 +15,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
-import { verifyUserRequest, VerifyUserRequestState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
+import { verifyUserRequest, VerifyUserRequestState } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
  
@@ -85,12 +85,6 @@ export default function Form() {
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Sign Request <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await GoogleSignIn()}>
-          Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
-        <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await GithubSignIn()}>
-          Github Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
