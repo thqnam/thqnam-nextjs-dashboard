@@ -373,10 +373,12 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
     const userID = await getSessionID();
     if (userID !== ''){
       // Insert data into the database
+      const id = randomUUID();
       const { error } = await supabase
         .from('invoices')
         .insert([
           {
+            id: id,
             customer_id: customerId,
             amount: amountInCents,
             status: status,
@@ -424,10 +426,12 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
     const userID = await getSessionID();
     if (userID !== ''){
       // Insert data into the database
+      const id = randomUUID();
       const { error } = await supabase
         .from('customers')
         .insert([
           {
+            id: id,
             name: name,
             email: email,
             image_url: image_url,
@@ -479,6 +483,7 @@ export async function createUserRequest(prevState: CreateUserRequestState, formD
 
     if (user === undefined){
 
+      const id = randomUUID();
       const token = randomUUID();
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
       // Insert data into the database
@@ -486,6 +491,7 @@ export async function createUserRequest(prevState: CreateUserRequestState, formD
         .from('users')
         .insert([
           {
+            id: id,
             name: name,
             email: email,
             image: image,
@@ -502,7 +508,7 @@ export async function createUserRequest(prevState: CreateUserRequestState, formD
           message: 'Database Error: Failed to Create User Request. Reason: ' + error.message,
         };
       } else {
-        await sendSignUpEmail(email, name, token);
+        await sendSignUpEmail(email, name, token, id);
         redirect('/signupreponse');
       }
 
