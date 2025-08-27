@@ -32,6 +32,12 @@ export default function SideLink() {
             <span>Change Mail From Request</span> <ArrowTurnDownLeftIcon className="w-5 md:w-6" />
         </Link>
         <Link
+            href="/resetemailrequest"
+            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+        >
+            <span>Reset Email Request</span> <ArrowTurnDownLeftIcon className="w-5 md:w-6" />
+        </Link>
+        <Link
             href="/signdownrequest"
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
         >

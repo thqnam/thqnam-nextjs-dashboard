@@ -82,27 +82,6 @@ export default function Form() {
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Change Form Request <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <Link
-          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full"
-          href="/signinrequest"
-          aria-disabled={isPending}
-        >
-          Sign In Request<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Link>
-        <Link 
-          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-          href="/signuprequest"
-          aria-disabled={isPending}
-        >
-          Sign Up Request <ArrowUpIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Link>
-        <Link 
-          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-          href="/signdownrequest"
-          aria-disabled={isPending}
-        >
-          Sign Down Request <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Link>
         <Link 
           className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
           href="/"
