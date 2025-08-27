@@ -21,7 +21,6 @@ import { useActionState, useEffect, useState } from 'react';
 import { authenticate, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import zxcvbn from 'zxcvbn';
 
 type FormProps = {
   email: string;
@@ -32,8 +31,6 @@ type FormProps = {
 export default function Form({ email, name, image }: FormProps) {
   const [passwordInputType, setPasswordInputType] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordScore, setPasswordScore] = useState(0);
-  const [passwordFeedback, setPasswordFeedback] = useState('');
   const [showError, setShowError] = useState(true);
 
   const changePasswordInputStatus = () => {
@@ -47,17 +44,6 @@ export default function Form({ email, name, image }: FormProps) {
   useEffect(() => {
     setPasswordInputType('password');
   }, []);
-
-  useEffect(() => {
-    if (password) {
-      const result = zxcvbn(password);
-      setPasswordScore(result.score);
-      setPasswordFeedback(result.feedback.warning || result.feedback.suggestions.join(' '));
-    } else {
-      setPasswordScore(0);
-      setPasswordFeedback('');
-    }
-  }, [password]);
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '';
@@ -146,24 +132,11 @@ export default function Form({ email, name, image }: FormProps) {
                 name="password"
                 placeholder="Enter your password"
                 required
-                minLength={10}
                 value={password}
                 onChange={handlePasswordChange}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            {password && (
-              <div className="mt-2 text-sm">
-                <span>
-                  Password strength: {['Very weak', 'Weak', 'Fair', 'Good', 'Strong'][passwordScore]}
-                </span>
-                {passwordScore < 3 && (
-                  <div style={{ color: 'red' }}>
-                    {passwordFeedback || 'Password is not strong enough. Please choose a more complex password.'}
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
         <input type="hidden" name="redirectTo" value={callbackUrl} />

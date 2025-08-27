@@ -112,7 +112,6 @@ export default function Form() {
                 placeholder="Enter your new password"
                 aria-describedby='newpassword-error'
                 required
-                minLength={10}
                 value={password}
                 onChange={handlePasswordChange}
               />
@@ -158,7 +157,6 @@ export default function Form() {
                 placeholder="Re-Enter your new password"
                 aria-describedby='renewpassword-error'
                 required
-                minLength={10}
                 value={repassword}
                 onChange={handleRepasswordChange}
               />

@@ -173,7 +173,6 @@ export default function Form({ email, name, image }: FormProps) {
                 placeholder="Enter your new password"
                 aria-describedby="newpassword-error"
                 required
-                minLength={10}
                 value={password}
                 onChange={handlePasswordChange}
               />
@@ -219,7 +218,6 @@ export default function Form({ email, name, image }: FormProps) {
                 placeholder="Re-Enter your new password"
                 aria-describedby="renewpassword-error"
                 required
-                minLength={10}
                 value={repassword}
                 onChange={handleRepasswordChange}
               />

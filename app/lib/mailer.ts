@@ -81,6 +81,28 @@ export async function sendResetPasswordEmail(email: string, name: string, token:
   transporter.close();
 }
 
+export async function sendResetEmailAddressEmail(email: string, name: string, token: string) {
+  const transporter = startMailer();
+  const Url = `https://qned.vercel.app/${token}/resetemailhandle`;
+  await transporter.sendMail({
+    from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: `Complete your ${process.env.APP_NAME} App Reset Email Address Request`,
+    html: `
+      <p>Hi ${name},</p>
+      <p>I'm <a href="${process.env.OWNER_INFOR}">${process.env.APP_OWNER}</a>.</p>
+      <p>Owner of <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App.</p>
+      <p>If you reset email address of your account in my <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App<p>
+      <p>Please press to <a href="${Url}">This</a> for reset your that ${process.env.APP_NAME} App account email address.</p>
+      <p>Or you can copy this link: <code>${Url}</code></p>
+      <p>And paste it into your browser, if you do not like click it.</p>
+      <p>If you do not have an account in <a href="${process.env.APP_HOMEPAGE}">${process.env.APP_NAME}</a> App,</p>
+      <p>Please ignore this email, sorry for bothering you<p>
+    `,
+  });
+  transporter.close();
+}
+
 export async function sendChangeMailFromEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
   const Url = `https://qned.vercel.app/${token}/changemailtorequest`;

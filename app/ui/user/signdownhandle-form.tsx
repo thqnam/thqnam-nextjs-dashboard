@@ -20,7 +20,6 @@ import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
 import { deleteUserHandle, DeleteUserHandleState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
 import Link from 'next/link';
-import zxcvbn from 'zxcvbn';
 
 type FormProps = {
   email: string;
@@ -31,8 +30,6 @@ type FormProps = {
 export default function Form({ email, name, image }: FormProps) {
   const [passwordInputType, setPasswordInputType] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordScore, setPasswordScore] = useState(0);
-  const [passwordFeedback, setPasswordFeedback] = useState('');
   const [formError, setFormError] = useState('');
   const [showError, setShowError] = useState(true);
 
@@ -48,40 +45,15 @@ export default function Form({ email, name, image }: FormProps) {
     setPasswordInputType('password');
   }, []);
 
-  useEffect(() => {
-    if (password) {
-      const result = zxcvbn(password);
-      setPasswordScore(result.score);
-      setPasswordFeedback(result.feedback.warning || result.feedback.suggestions.join(' '));
-    } else {
-      setPasswordScore(0);
-      setPasswordFeedback('');
-    }
-  }, [password]);
-
   const initialState: DeleteUserHandleState = { message: null, errors: {} };
   const deleteUserHandleWithEmail = deleteUserHandle.bind(null, email);
   const [state, formAction, isPending] = useActionState(deleteUserHandleWithEmail, initialState);
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    setShowError(true);
-    setFormError('');
-    if (password && passwordScore < 3) {
-      e.preventDefault();
-      setFormError('Password is not strong enough. Please choose a more complex password.');
-    }
-  };
 
   return (
     <form
       action={formAction}
       className="space-y-3"
       onReset={() => setShowError(false)}
-      onSubmit={handleSubmit}
       onChange={() => setShowError(false)}
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
@@ -153,24 +125,10 @@ export default function Form({ email, name, image }: FormProps) {
                 placeholder="Enter your password"
                 aria-describedby='newpassword-error'
                 required
-                minLength={10}
                 value={password}
-                onChange={handlePasswordChange}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            {password && (
-              <div className="mt-2 text-sm">
-                <span>
-                  Password strength: {['Very weak', 'Weak', 'Fair', 'Good', 'Strong'][passwordScore]}
-                </span>
-                {passwordScore < 3 && (
-                  <div style={{ color: 'red' }}>
-                    {passwordFeedback || 'Password is not strong enough. Please choose a more complex password.'}
-                  </div>
-                )}
-              </div>
-            )}
             <div id="newpassword-error" aria-live="polite" aria-atomic="true">
               {showError && state.errors?.password &&
                 state.errors.password.map((error: string) => (

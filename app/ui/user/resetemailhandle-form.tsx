@@ -7,6 +7,7 @@ import {
   AtSymbolIcon,
   ExclamationCircleIcon,
   InformationCircleIcon,
+  IdentificationIcon,
 } from '@heroicons/react/24/outline';
 import { 
   ArrowLeftIcon,
@@ -18,7 +19,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { changeMailHandle, ChangeMailHandleState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
+import { resetEmailHandle, ResetEmailHandleState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
 import Link from 'next/link';
 
 type FormProps = {
@@ -41,9 +42,9 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
     setPasswordInputType('password');
   }, []);
 
-  const initialState: ChangeMailHandleState = { message: null, errors: {} };
-  const changeMailHandleWithEmail = changeMailHandle.bind(null, oldemail);
-  const [state, formAction, isPending] = useActionState(changeMailHandleWithEmail, initialState);
+  const initialState: ResetEmailHandleState = { message: null, errors: {} };
+  const resetEmailHandleWithEmail = resetEmailHandle.bind(null, oldemail);
+  const [state, formAction, isPending] = useActionState(resetEmailHandleWithEmail, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
  
   return (
@@ -56,7 +57,7 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
     >
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Input for Change Mail Handle
+          Input for Reset Email Handle
         </h1>
         <div className="w-full">
           <div>
@@ -142,7 +143,6 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
                 placeholder="Enter your password"
                 aria-describedby='newpassword-error'
                 required
-                minLength={10}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -156,6 +156,35 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
             </div>
           </div>
         </div>
+        <div>
+            <label
+              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              htmlFor="recoverycode"
+            >
+              Recovery Code
+            </label>
+            <div className="relative">
+              <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="recoverycode"
+                type="text"
+                name="recoverycode"
+                placeholder='Re input recovery code to confirm deletion'
+                aria-describedby="recoverycode-error"
+                required
+                autoFocus
+              />
+              <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+            <div id="recoverycode-error" aria-live="polite" aria-atomic="true">
+              {showError && state.errors?.recoverycode &&
+                state.errors.recoverycode.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+              ))}
+            </div>
+          </div>
         <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"
@@ -169,10 +198,10 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
           )}
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
-          Change Mail Right Now <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Reset Email Address <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
-          Reset Change Right Now <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Reset Form Now <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='button' onClick={async () => await GoogleSignIn()}>
           Google Sign In<ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />

@@ -12,13 +12,15 @@ import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { randomUUID } from 'crypto';
 import { 
-  sendResetPasswordEmail, 
+  sendResetPasswordEmail,
+  sendResetEmailAddressEmail,
   sendSignInEmail,
   sendSignUpEmail, 
   sendSignDownEmail,
   sendChangeMailToEmail,
   sendChangeMailFromEmail,
 } from '@/app/lib/mailer';
+import { use } from 'react';
 
 const VerifyUserRequestFormSchema = z.object({
   email: z.string({
@@ -90,10 +92,39 @@ const ResetPassRequestFormSchema = z.object({
   }),
 });
 
+const ResetEmailHandleFormSchema = z.object({
+  oldemail: z.string(),
+  recoverycode: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the recovery code of this user',
+  }).uuid({
+    message: 'The string data must be look like UUID format'
+  }),
+  password: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the password of this user',
+  }),
+});
+
+const ResetEmailRequestFormSchema = z.object({
+  oldemail: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the old email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
+  }),
+  newemail: z.string({
+    invalid_type_error: 'Please just input a string data',
+    required_error: 'Please input the new email of this user',
+  }).email({
+    message: 'The string data must be look like email format'
+  }),
+});
+
 const ChangeMailFromRequestFormSchema = z.object({
   email: z.string({
     invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this user',
+    required_error: 'Please input the old email of this user',
   }).email({
     message: 'The string data must be look like email format'
   }),
@@ -103,14 +134,14 @@ const ChangeMailToRequestFormSchema = z.object({
   oldemail: z.string(),
   newemail: z.string({
     invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this user',
+    required_error: 'Please input the new email of this user',
   }).email({
     message: 'The string data must be look like email format'
   }),
 });
 
 const ChangeMailHandleFormSchema = z.object({
-  newemail: z.string(),
+  oldemail: z.string(),
   password: z.string({
     invalid_type_error: 'Please just input a string data',
     required_error: 'Please input the password of this user',
@@ -207,10 +238,12 @@ const CreateUserHandle = CreateUserHandleFormSchema.omit({ email: true});
 const ChangePass = ChangePassFormSchema.omit({});
 const ResetPassRequest = ResetPassRequestFormSchema.omit({});
 const ResetPassHandle = ResetPassHandleFormSchema.omit({ email: true});
+const ResetEmailRequest = ResetEmailRequestFormSchema.omit({});
+const ResetEmailHandle = ResetEmailHandleFormSchema.omit({ oldemail: true });
 const ChangeInfor = ChangeInforFormSchema.omit({});
 const ChangeMailFromRequest = ChangeMailFromRequestFormSchema.omit({});
 const ChangeMailToRequest = ChangeMailToRequestFormSchema.omit({ oldemail: true });
-const ChangeMailHandle = ChangeMailHandleFormSchema.omit({ newemail: true });
+const ChangeMailHandle = ChangeMailHandleFormSchema.omit({ oldemail: true });
 
 export type InvoiceState = {
   errors?: {
@@ -273,6 +306,22 @@ export type ResetPassHandleState = {
 export type ResetPassRequestState = {
   errors?: {
     email?: string[];
+  };
+  message?: string | null;
+};
+
+export type ResetEmailHandleState = {
+  errors?: {
+    recoverycode?: string[];
+    password?: string[];
+  };
+  message?: string | null;
+};
+
+export type ResetEmailRequestState = {
+  errors?: {
+    oldemail?: string[];
+    newemail?: string[];
   };
   message?: string | null;
 };
@@ -766,11 +815,11 @@ export async function changeUserPass(prevState: ChangePassState, formData: FormD
 
         if (user !== undefined){
 
-          const hashedPassword = bcrypt.hashSync(newpassword, 12);
+          const passwordsMatch = bcrypt.compareSync(newpassword, user.password);
 
-          const oldPassword = user.password;
+          if (!passwordsMatch){
 
-          if (hashedPassword !== oldPassword){
+            const hashedPassword = bcrypt.hashSync(newpassword, 12);
 
             const { error } = await supabase
               .from('users')
@@ -892,9 +941,7 @@ export async function changeMailToRequest(oldemail: string, prevState: ChangeMai
           const { error } = await supabase
             .from('users')
             .update({
-              status: 'logout',
               new_email: newemail,
-              email_verified: false,
               token: token,
               expires: expiresAt.toISOString(),
             }).eq('email', oldemail);
@@ -934,7 +981,7 @@ export async function changeMailToRequest(oldemail: string, prevState: ChangeMai
   }
 }
 
-export async function changeMailHandle(newemail: string, prevState: ChangeMailHandleState, formData: FormData){
+export async function changeMailHandle(oldemail: string, prevState: ChangeMailHandleState, formData: FormData){
 
   const validatedFields = ChangeMailHandle.safeParse({
     password: formData.get('password'),
@@ -944,22 +991,20 @@ export async function changeMailHandle(newemail: string, prevState: ChangeMailHa
     
     const { password } = validatedFields.data;
 
-    const user = await getUserByEmail(newemail);
+    const user = await getUserByEmail(oldemail);
       
     if (user !== undefined){
 
-      const oldPassword = user.password;
+      const passwordsMatch = bcrypt.compareSync(password, user.password);
 
-      if (password === oldPassword){
+      if (passwordsMatch){
 
         const { error } = await supabase
           .from('users')
           .update({
-            status: 'logout',
             new_email: null,
-            email_verified: true,
-            email: newemail,
-          }).eq('new_email', newemail);
+            email: user.new_email,
+          }).eq('new_email', user.new_email);
           
         if (error) {
           return {
@@ -1051,12 +1096,12 @@ export async function resetPassHandle(email: string, prevState: ResetPassHandleS
       const user = await getUserByEmail(email);
       
       if (user !== undefined){
-        
-        const hashedPassword = bcrypt.hashSync(newpassword, 12);
 
-        const oldPassword = user.password;
+        const passwordsMatch = bcrypt.compareSync(newpassword, user.password);
 
-        if (hashedPassword !== oldPassword){
+        if (!passwordsMatch){
+
+          const hashedPassword = bcrypt.hashSync(newpassword, 12);
 
           const { error } = await supabase
             .from('users')
@@ -1097,6 +1142,116 @@ export async function resetPassHandle(email: string, prevState: ResetPassHandleS
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Reset Password Handle.',
+    };
+  }
+}
+
+export async function resetEmailRequest(prevState: ResetEmailRequestState, formData: FormData){
+
+  const validatedFields = ResetEmailRequest.safeParse({
+    oldemail: formData.get('oldemail'),
+    newemail: formData.get('newemail'),
+  });
+
+  if (validatedFields.success) {
+    
+    const { newemail, oldemail } = validatedFields.data;
+    const user = await getUserByEmail(oldemail)
+
+    if (user !== undefined){
+
+      const token = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
+      const { error } = await supabase
+        .from('users')
+        .update({
+          new_email: newemail,
+          token: token,
+          expires: expiresAt.toISOString(),
+        }).eq('email', user.email);
+      
+      if (error) {
+        return {
+          message: 'Database Error: Failed to Reset Email Address Request. Reason: ' + error.message,
+        };
+      } else {
+        await sendResetEmailAddressEmail(newemail, user.name, token);
+        redirect('/resetemailreponse');
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Email Address Request.',
+      };
+    }
+
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Reset Email Address Request.',
+    };
+  }
+}
+
+export async function resetEmailHandle(oldemail: string, prevState: ResetEmailHandleState, formData: FormData){
+
+  const validatedFields = ResetEmailHandle.safeParse({
+    recoverycode: formData.get('recoverycode'),
+    password: formData.get('password'),
+  });
+  
+  if (validatedFields.success) {
+    
+    const { password, recoverycode } = validatedFields.data;
+
+    const user = await getUserByEmail(oldemail);
+      
+    if (user !== undefined){
+
+      if (user.id === recoverycode){
+
+        const passwordsMatch = bcrypt.compareSync(password, user.password);
+
+        if (passwordsMatch){
+
+          const { error } = await supabase
+            .from('users')
+            .update({
+              new_email: null,
+              email: user.new_email,
+            }).eq('new_email', user.new_email);
+            
+          if (error) {
+            return {
+              message: 'Database Error: Failed to Reset Email Handle. Reason: ' + error.message,
+            };
+          } else {
+            await deleteDatabaseToken(user.id);
+            redirect('/resetemailcomplete');
+          }
+
+        } else {
+          return {
+            message: 'Input Wrong Password of this account. Failed to Reset Email Handle.',
+          };
+        }
+
+      } else {
+        return {
+          message: 'Input Wrong Recovery Code of this account. Failed to Reset Email Handle.',
+        };
+      }
+      
+    } else {
+      return {
+        message: 'User of this email do not see in Database. Failed to Reset Email Handle.',
+      };
+    }
+    
+  } else {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Reset Email Handle.',
     };
   }
 }
@@ -1159,10 +1314,9 @@ export async function deleteUserHandle(email: string, prevState: DeleteUserHandl
     const user = await getUserByEmail(email);
       
     if (user !== undefined){
+      const passwordsMatch = bcrypt.compareSync(password, user.password);
 
-      const oldPassword = user.password;
-
-      if (password === oldPassword){
+      if (passwordsMatch){
 
         const { error } = await supabase
           .from('users')
