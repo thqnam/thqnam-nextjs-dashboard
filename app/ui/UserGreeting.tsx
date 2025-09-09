@@ -7,13 +7,16 @@ import { resetSession } from '@/app/lib/actions';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import Image from 'next/image';
+import { useSessionInforContext } from '@/app/lib/sessionInforContext';
 
 export default function UserGreeting({ id }: { id: string }) {
+  const { setSessionId, setSessionName, setSessionEmail, setSessionImage, setSessionRole } = useSessionInforContext();
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const loadSession = async () => {
+    setSessionId(id);
     const userSession = await getUserSessionByID(id);
     if (userSession !== undefined){
       const userEmail = userSession.email;
@@ -27,14 +30,22 @@ export default function UserGreeting({ id }: { id: string }) {
       const sessionRole = `${sessionUser.role}`;
       if (userEmail === sessionEmail && userName === sessionName && userImage === sessionImage && userRole === sessionRole){
         setEmail(sessionEmail);
+        setSessionEmail(sessionEmail);
         setName(sessionName);
+        setSessionName(sessionName);
         setImage(sessionImage);
+        setSessionImage(sessionImage);
         setRole(sessionRole);
+        setSessionRole(sessionRole);
       } else {
         setEmail(userEmail);
+        setSessionEmail(userEmail);
         setName(userName);
+        setSessionName(userName);
         setImage(userImage);
+        setSessionImage(userImage);
         setRole(userRole);
+        setSessionRole(userRole);
         await resetSession(userEmail, userName, userImage, userRole);
       }
     }
@@ -57,9 +68,13 @@ export default function UserGreeting({ id }: { id: string }) {
                 payload.new.status !== 'logout'
           ){
             setEmail(payload.new.email);
+            setSessionEmail(payload.new.email);
             setName(payload.new.name);
+            setSessionName(payload.new.name);
             setImage(payload.new.image);
+            setSessionImage(payload.new.image);
             setRole(payload.new.role);
+            setSessionRole(payload.new.role);
             await resetSession(payload.new.email, payload.new.name, payload.new.image, payload.new.role);
           }
         }

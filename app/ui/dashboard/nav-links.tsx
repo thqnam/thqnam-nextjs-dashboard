@@ -8,8 +8,8 @@ import {
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { resetTarget } from '@/app/lib/actions';
-import { getSessionRole } from '@/app/lib/data';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSessionInforContext } from '@/app/lib/sessionInforContext';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
@@ -42,17 +42,16 @@ type Link = {
 export default function NavLinks() {
   const pathname = usePathname();
   const [links, setLinks] = useState<Link[]>([]);
+  const { sessionRole } = useSessionInforContext();
+
   useEffect(() => {
-    const checkRole = async () => {
-      const userRole = await getSessionRole();
-      if (userRole === 'admin') {
-        setLinks(adminLinks);
-      } else {
-        setLinks(userLinks);
-      }
-    };
-    checkRole();
-  }, []);
+    if (sessionRole === 'admin') {
+      setLinks(adminLinks);
+    } else {
+      setLinks(userLinks);
+    }
+  }, [sessionRole]);
+  
   return (
     <>
       {links.map((link) => {
@@ -77,3 +76,4 @@ export default function NavLinks() {
     </>
   );
 }
+

@@ -10,11 +10,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { 
   ArrowLeftIcon,
-  ArrowUpIcon,
   ArrowRightIcon,
-  ArrowTurnDownRightIcon,
   ArrowDownIcon,
-  ArrowTurnDownLeftIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';

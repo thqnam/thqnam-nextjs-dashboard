@@ -10,12 +10,8 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { 
-  ArrowRightIcon,
   ArrowLeftIcon,
   ArrowUpIcon,
-  ArrowTurnDownRightIcon,
-  ArrowDownIcon,
-  ArrowTurnDownLeftIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { fetchImages } from '@/app/lib/data';
@@ -129,30 +125,6 @@ export default function Form() {
           <Button className="mt-4 w-full" disabled>
             Reset Sign Request <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
-          <Link 
-            className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-            href="/signin"
-          >
-            Sign in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-          </Link>
-          <Link 
-            className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-            href="/resetpassrequest"
-          >
-            Reset Pass Request <ArrowTurnDownRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-          </Link>
-          <Link 
-            className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-            href="/changemailfromrequest"
-          >
-            Change Mail Request <ArrowTurnDownLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
-          </Link>
-          <Link 
-            className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
-            href="/signdownrequest"
-          >
-            Sign Down Request <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
-          </Link>
           <Link 
             className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 mt-4 w-full" 
             href="/"

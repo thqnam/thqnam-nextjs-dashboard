@@ -12,9 +12,6 @@ import {
   ArrowLeftIcon,
   ArrowUpIcon,
   ArrowRightIcon,
-  ArrowTurnDownRightIcon,
-  ArrowDownIcon,
-  ArrowTurnDownLeftIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
