@@ -35,6 +35,7 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
       setPasswordInputType('password');
     }
   }
+
   useEffect(() => {
     setPasswordInputType('password');
   }, []);
@@ -166,7 +167,7 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
                 id="recoverycode"
                 type="text"
                 name="recoverycode"
-                placeholder='Re input recovery code to confirm deletion'
+                placeholder='Re input recovery code to confirm reset mail request'
                 aria-describedby="recoverycode-error"
                 required
                 autoFocus

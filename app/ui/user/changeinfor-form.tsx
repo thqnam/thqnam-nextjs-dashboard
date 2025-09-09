@@ -28,20 +28,17 @@ import {
 } from '@/app/lib/data';
 import { getUserByEmail } from '../../lib/utils';
 import { supabase } from '@/app/lib/supabaseClient';
+import { useSessionInforContext } from '@/app/lib/sessionInforContext';
  
 export default function Form() {
-  const [id, setID] = useState('');
+  const { sessionEmail } = useSessionInforContext();
   const [user, setUser] = useState({} as User);
   const [images, setImages] = useState([] as ImageField[]);
   const [selectedImage, setSelectedImage] = useState(user.image);
   const loadUser = async () => {
-    const idTerm = await getSessionEmail();
-    if (idTerm !== ''){
-      setID(idTerm);
-      const data = await getUserByEmail(idTerm);
-      if (data !== undefined){
-        setUser(data);
-      }
+    const data = await getUserByEmail(sessionEmail);
+    if (data !== undefined){
+      setUser(data);
     }
   };
   const loadImages = async () => {
@@ -81,7 +78,7 @@ export default function Form() {
   const [state, formAction, isPending] = useActionState(changeUserInfor, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
-  if (!user || id === ''){
+  if (!user){
     return (
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
