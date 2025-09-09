@@ -192,6 +192,7 @@ export async function insertUser(email: string, name: string, image: string): Pr
         image: image,
         status: 'login',
         email_verified: true,
+        role: 'user',
       },
     ]);
 

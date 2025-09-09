@@ -1,6 +1,12 @@
 import type { NextAuthConfig } from 'next-auth';
 // import { supabase } from '@/app/lib/supabaseClient';
 
+declare module "next-auth" {
+  interface User {
+    role?: string;
+  }
+}
+
 // async function checkLocal() {
 //   const {data, error} = await supabase.auth.getUser();
 //   if (error || data === null){
@@ -25,9 +31,15 @@ export const authConfig = {
       //const isCheckLocal = await checkLocal();
       const isLoggedIn = !!auth?.user; //|| isCheckLocal;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      const isOnCustomer = nextUrl.pathname.startsWith('/dashboard/customers');
+      const isAdmin = auth?.user?.role === 'admin';
       if (isOnDashboard) {
         if (isLoggedIn) {
-          return true;
+          if (isOnCustomer && !isAdmin){
+            return Response.redirect(new URL('/dashboard', nextUrl));
+          } else {
+            return true;
+          }
         } else {
           return Response.redirect(new URL('/signinrequest?callbackUrl=' + nextUrl, nextUrl));
         }
@@ -43,22 +55,26 @@ export const authConfig = {
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
+        token.role = user.role;
       }
       if (trigger === 'update'){
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
+        token.role = user.role;
       }
       if (trigger === 'signIn' && profile){
         token.id = profile.id;
         token.email = profile.email;
         token.name = profile.name;
         token.picture = profile.picture;
+        token.role = user.role;
       }
       if (trigger === 'update' && profile){
         token.email = profile.email;
         token.name = profile.name;
         token.picture = profile.picture;
+        token.role = user.role;
       }
       return token;
     },
@@ -66,10 +82,16 @@ export const authConfig = {
       if (session.user && typeof token.id === 'string') {
         (session.user as { id: string }).id = token.id;
       }
+      if (session.user && typeof token.role === 'string') {
+        session.user.role = token.role;
+      }
       if (trigger === 'update' && token.email !== null && token.email !== undefined){
         session.user.email = token.email;
         session.user.name = token.name;
         session.user.image = token.picture;
+        if (typeof token.role === 'string'){
+          session.user.role = token.role;
+        }
       }
       return session;
     }

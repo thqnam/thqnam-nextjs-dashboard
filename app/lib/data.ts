@@ -56,6 +56,20 @@ export async function getSessionEmail() {
   }
 }
 
+export async function getSessionRole() {
+  const sessionUser = await getSessionInfor();
+  if (sessionUser){
+    const sessionRole = sessionUser.role;
+    if (sessionRole !== '' && sessionRole !== null && sessionRole !== undefined){
+      return sessionRole;
+    } else {
+      return '';
+    }
+  } else {
+    return '';
+  }
+}
+
 export async function fetchRevenue() {
   try {
     const { data, error } = await supabase

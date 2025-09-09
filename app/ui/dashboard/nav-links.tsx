@@ -8,10 +8,22 @@ import {
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { resetTarget } from '@/app/lib/actions';
+import { getSessionRole } from '@/app/lib/data';
+import { useEffect, useState } from 'react';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
-const links = [
+
+const userLinks = [
+  { name: 'Home', href: '/dashboard', icon: HomeIcon },
+  {
+    name: 'Invoices',
+    href: '/dashboard/invoices',
+    icon: DocumentDuplicateIcon,
+  },
+];
+
+const adminLinks = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
   {
     name: 'Invoices',
@@ -21,8 +33,26 @@ const links = [
   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
 ];
 
+type Link = {
+  name: string;
+  href: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+};
+
 export default function NavLinks() {
   const pathname = usePathname();
+  const [links, setLinks] = useState<Link[]>([]);
+  useEffect(() => {
+    const checkRole = async () => {
+      const userRole = await getSessionRole();
+      if (userRole === 'admin') {
+        setLinks(adminLinks);
+      } else {
+        setLinks(userLinks);
+      }
+    };
+    checkRole();
+  }, []);
   return (
     <>
       {links.map((link) => {

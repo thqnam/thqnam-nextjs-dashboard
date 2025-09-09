@@ -15,12 +15,14 @@ export type User = {
   new_email: string;
   failed_attempts: number;
   email_verified: boolean;
+  role: 'admin' | 'user' ;
 };
 
 export type UserSession = {
   email: string;
   name: string;
   image: string;
+  role: 'admin' | 'user' ;
 };
 
 export type Customer = {

@@ -20,7 +20,6 @@ import {
   sendChangeMailToEmail,
   sendChangeMailFromEmail,
 } from '@/app/lib/mailer';
-import { use } from 'react';
 
 const VerifyUserRequestFormSchema = z.object({
   email: z.string({
@@ -388,8 +387,8 @@ export async function resetTarget(target : string) {
   redirect(target);
 }
 
-export async function resetSession(email: string, name : string, image : string) {
-  await unstable_update({ user: { email: email, name: name, image: image } })
+export async function resetSession(email: string, name : string, image : string, role : string) {
+  await unstable_update({ user: { email: email, name: name, image: image, role: role } })
 }
 
 export async function deleteDatabaseToken(id : string) {
@@ -548,6 +547,7 @@ export async function createUserRequest(prevState: CreateUserRequestState, formD
             email_verified: false,
             token: token,
             expires: expiresAt.toISOString(),
+            role: 'user',
           },
         ]);
         
@@ -769,7 +769,7 @@ export async function changeUserInfor(prevState: ChangeInforState, formData: For
             message: 'Database Error: Failed to Change Infor. Reason: ' + error.message,
           };
         } else {
-          await resetSession(userID.email, name, image);
+          await resetSession(userID.email, name, image, userID.role);
           revalidatePath('/dashboard');
           redirect('/dashboard');
         }

@@ -12,25 +12,30 @@ export default function UserGreeting({ id }: { id: string }) {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
   const loadSession = async () => {
     const userSession = await getUserSessionByID(id);
     if (userSession !== undefined){
       const userEmail = userSession.email;
       const userName = userSession.name;
       const userImage = userSession.image;
+      const userRole = userSession.role;
       const sessionUser = await getSessionInfor();
       const sessionEmail = `${sessionUser.email}`;
       const sessionName = `${sessionUser.name}`;
       const sessionImage = `${sessionUser.image}`;
-      if (userEmail === sessionEmail && userName === sessionName && userImage === sessionImage){
+      const sessionRole = `${sessionUser.role}`;
+      if (userEmail === sessionEmail && userName === sessionName && userImage === sessionImage && userRole === sessionRole){
         setEmail(sessionEmail);
         setName(sessionName);
         setImage(sessionImage);
+        setRole(sessionRole);
       } else {
         setEmail(userEmail);
         setName(userName);
         setImage(userImage);
-        await resetSession(userEmail, userName, userImage);
+        setRole(userRole);
+        await resetSession(userEmail, userName, userImage, userRole);
       }
     }
   };
@@ -47,13 +52,15 @@ export default function UserGreeting({ id }: { id: string }) {
         async (payload) => {
           if (( payload.new.name !== name ||
                 payload.new.image !== image ||
-                payload.new.email !== email) &&
+                payload.new.email !== email ||
+                payload.new.role !== role) &&
                 payload.new.status !== 'logout'
           ){
             setEmail(payload.new.email);
             setName(payload.new.name);
             setImage(payload.new.image);
-            await resetSession(payload.new.email, payload.new.name, payload.new.image);
+            setRole(payload.new.role);
+            await resetSession(payload.new.email, payload.new.name, payload.new.image, payload.new.role);
           }
         }
       )
