@@ -77,7 +77,7 @@ export default function Form() {
   const [state, formAction, isPending] = useActionState(changeUserInfor, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
-  if (!user){
+  if (!user || Object.keys(user).length === 0){
     return (
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
@@ -219,7 +219,7 @@ export default function Form() {
                   name="name"
                   placeholder="Enter your nick name"
                   aria-describedby='name-error'
-                  defaultValue={user.name}
+                  value={user.name}
                   required
                 />
                 <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
