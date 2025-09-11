@@ -15,7 +15,7 @@ import { Suspense } from 'react';
 export default function SideNav() {
 
   const { setSessionId, setSessionName, setSessionEmail, setSessionImage, setSessionRole } = useSessionInforContext();
-  const { sessionEmail: email, sessionName: name, sessionImage: image, sessionRole: role } = useSessionInforContext();
+  const { sessionId: id, sessionEmail: email, sessionName: name, sessionImage: image, sessionRole: role } = useSessionInforContext();
   const loadSession = async () => {
     const sessionUser = await getSessionInfor();
     const sessionID = `${sessionUser.id}`;
@@ -53,7 +53,7 @@ export default function SideNav() {
       .channel('user-session')
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'users', filter: `email=eq.${email}` },
+        { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${id}` },
         async (payload) => {
           if (( payload.new.name !== name ||
                 payload.new.image !== image ||
