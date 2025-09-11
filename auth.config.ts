@@ -50,31 +50,31 @@ export const authConfig = {
       }
     },
     async jwt({ token, user, trigger, profile }) {
-      if (user && user.id) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.picture = user.image;
-        token.role = user.role;
+      if (user) {
+        if (user.id) token.id = user.id;
+        if (user.email) token.email = user.email;
+        if (user.name) token.name = user.name;
+        if (user.image) token.picture = user.image;
+        if (user.role) token.role = user.role;
       }
-      if (trigger === 'update'){
-        token.email = user.email;
-        token.name = user.name;
-        token.picture = user.image;
-        token.role = user.role;
+      if (user && trigger === 'update'){
+        if (user.email) token.email = user.email;
+        if (user.name) token.name = user.name;
+        if (user.image) token.picture = user.image;
+        if (user.role) token.role = user.role;
       }
       if (trigger === 'signIn' && profile){
         token.id = profile.id;
         token.email = profile.email;
         token.name = profile.name;
         token.picture = profile.picture;
-        token.role = user.role;
+        token.role = profile.role;
       }
       if (trigger === 'update' && profile){
         token.email = profile.email;
         token.name = profile.name;
         token.picture = profile.picture;
-        token.role = user.role;
+        token.role = profile.role;
       }
       return token;
     },
