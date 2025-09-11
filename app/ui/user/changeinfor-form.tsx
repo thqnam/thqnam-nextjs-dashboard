@@ -23,8 +23,7 @@ import {
     resetTarget 
 } from '@/app/lib/actions';
 import { 
-  fetchImages, 
-  getSessionEmail,
+  fetchImages,
 } from '@/app/lib/data';
 import { getUserByEmail } from '../../lib/utils';
 import { supabase } from '@/app/lib/supabaseClient';
