@@ -47,9 +47,7 @@ export default function SideNav() {
 
   useEffect(() => {
 
-    (async () => {
-      await loadSession();
-    })();
+    loadSession();
 
     const channel = supabase
       .channel('user-session')
