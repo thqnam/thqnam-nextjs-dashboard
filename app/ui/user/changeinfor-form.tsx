@@ -77,7 +77,7 @@ export default function Form() {
   const [state, formAction, isPending] = useActionState(changeUserInfor, initialState);
   const [showError, setShowError] = useState(true); // State phụ để điều khiển hiển thị lỗi
 
-  if (!user || Object.keys(user).length === 0){
+  if (!user){
     return (
       <form className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
