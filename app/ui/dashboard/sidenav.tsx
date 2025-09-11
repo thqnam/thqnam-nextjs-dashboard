@@ -63,6 +63,7 @@ export default function SideNav() {
                 payload.new.role !== role) &&
                 payload.new.status !== 'logout'
           ){
+            console.log('User session changed from realtime: ', payload.new);
             setSessionEmail(payload.new.email);
             setSessionName(payload.new.name);
             setSessionImage(payload.new.image);
