@@ -6,12 +6,12 @@ import { useSessionInforContext } from '@/app/lib/sessionInforContext';
 
 export default function UserGreeting() {
 
-  const { sessionEmail: email, sessionName: name, sessionImage: image, sessionRole: role } = useSessionInforContext();
+  const { sessionEmail: email, sessionName: name, sessionImage: image, } = useSessionInforContext();
 
   // const { data: { session } } = await supabase.auth.getSession();
   // const sessionOAuth = session;
-  
-  if (email === '' || name === '' || image === '' || role === ''){
+
+  if (email === '' || name === '' || image === '') {
 
     return (
       <div className="flex flex-col items-start gap-1 p-4 bg-white rounded-lg shadow-sm md:flex-row md:items-center md:justify-between">

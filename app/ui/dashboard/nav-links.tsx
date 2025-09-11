@@ -47,10 +47,8 @@ export default function NavLinks() {
   useEffect(() => {
     if (sessionRole === 'admin') {
       setLinks(adminLinks);
-    } else if (sessionRole === 'user'){
-      setLinks(userLinks);
     } else {
-      setLinks([]);
+      setLinks(userLinks);
     }
   }, [sessionRole]);
   
