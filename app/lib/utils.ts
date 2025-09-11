@@ -118,7 +118,7 @@ export async function getUserByToken(token: string): Promise<User | undefined> {
 export async function getUserSessionByID(id: string): Promise<UserSession | undefined> {
   const { data, error } = await supabase
     .from('users')
-    .select('email, name, image')
+    .select('email, name, image, role')
     .eq('id', id)
     .maybeSingle();
   if (error) {
@@ -183,10 +183,12 @@ export async function updateUser(id: string, email: string, name: string, image:
 
 export async function insertUser(email: string, name: string, image: string): Promise<void> {
   await checkImage(image);
+  const id = randomUUID();
   const { error } = await supabase
     .from('users')
     .insert([
       {
+        id: id,
         name: name,
         email: email,
         image: image,
@@ -246,10 +248,12 @@ async function updateImage(id: string, image: string): Promise<void> {
 
 async function insertImage(image: string): Promise<void> {
   const name = crypto.randomUUID();
+  const id = randomUUID();
   const { error } = await supabase
     .from('images')
     .insert([
       {
+        id: id,
         name: name,
         path: image,
       },
