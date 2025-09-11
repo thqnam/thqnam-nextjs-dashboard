@@ -10,6 +10,7 @@ import { getSessionInfor } from '@/app/lib/data';
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { getUserSessionByID } from '@/app/lib/utils';
+import { Suspense } from 'react';
 
 export default function SideNav() {
 
@@ -91,7 +92,9 @@ export default function SideNav() {
         </div>
       </button>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <NavLinks />
+        <Suspense>
+          <NavLinks />
+        </Suspense>
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form
           action={() => resetTarget('/dashboard/changeinfor')}

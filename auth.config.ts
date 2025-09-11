@@ -35,10 +35,10 @@ export const authConfig = {
       const isAdmin = auth?.user?.role === 'admin';
       if (isOnDashboard) {
         if (isLoggedIn) {
-          if (isOnCustomer && isAdmin) {
-            return true;
-          } else {
+          if (isOnCustomer && !isAdmin) {
             return Response.redirect(new URL('/dashboard', nextUrl));
+          } else {
+            return true;
           }
         } else {
           return Response.redirect(new URL('/signinrequest?callbackUrl=' + nextUrl, nextUrl));
