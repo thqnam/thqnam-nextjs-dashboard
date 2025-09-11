@@ -46,8 +46,8 @@ export default function Form() {
   };
 
   useEffect(() => {
-    setSelectedImage(user.image);
-  }, [user.image]);
+    setSelectedImage(sessionImage || '');
+  }, [sessionImage]);
 
   useEffect(() => {
     loadUser();
@@ -178,7 +178,7 @@ export default function Form() {
                   id="image"
                   name="image"
                   className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  defaultValue={sessionImage}
+                  value={selectedImage}
                   onChange={e => setSelectedImage(e.target.value)}
                   aria-describedby="image-error"
                   required
@@ -219,7 +219,7 @@ export default function Form() {
                   name="name"
                   placeholder="Enter your nick name"
                   aria-describedby='name-error'
-                  defaultValue={sessionName}
+                  value={sessionName}
                   required
                 />
                 <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
