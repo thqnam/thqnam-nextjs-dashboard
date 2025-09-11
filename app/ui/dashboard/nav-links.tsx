@@ -43,12 +43,14 @@ export default function NavLinks() {
   const pathname = usePathname();
   const [links, setLinks] = useState<Link[]>([]);
   const { sessionRole } = useSessionInforContext();
-  console.log(sessionRole);
+  
   useEffect(() => {
     if (sessionRole === 'admin') {
       setLinks(adminLinks);
-    } else {
+    } else if (sessionRole === 'user'){
       setLinks(userLinks);
+    } else {
+      setLinks([]);
     }
   }, [sessionRole]);
   
