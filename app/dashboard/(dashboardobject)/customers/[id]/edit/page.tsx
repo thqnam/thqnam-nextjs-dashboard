@@ -1,7 +1,6 @@
 import Form from '@/app/ui/customers/edit-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
-import { getSessionID } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
@@ -21,7 +20,7 @@ export const metadata: Metadata = {
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
-  const userID = await getSessionID();
+  
   return (
     <main>
       <Breadcrumbs
@@ -36,7 +35,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         ]}
       />
       <Suspense>
-        <UserGreeting id={userID}/>
+        <UserGreeting />
       </Suspense>
       <Suspense>
         <Form id={id} />

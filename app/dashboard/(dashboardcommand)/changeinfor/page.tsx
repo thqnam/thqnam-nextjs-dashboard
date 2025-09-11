@@ -2,7 +2,6 @@ import AcmeLogo from '@/app/ui/acme-logo';
 import Form from '@/app/ui/user/changeinfor-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
-import { getSessionID } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
 };
  
 export default async function Page() {
-  const id = await getSessionID();
+  
   return (
     <main >
       <Breadcrumbs
@@ -34,7 +33,7 @@ export default async function Page() {
         ]}
       />
       <Suspense>
-        <UserGreeting id={id}/>
+        <UserGreeting />
       </Suspense>
       <div className="flex items-center justify-center md:h-screen">
         <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">

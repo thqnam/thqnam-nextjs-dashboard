@@ -1,7 +1,6 @@
 import Form from '@/app/ui/customers/create-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import UserGreeting from '@/app/ui/UserGreeting';
-import { getSessionID } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
  
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
 };
  
 export default async function Page() {
-  const id = await getSessionID();
+
   return (
     <main>
       <Breadcrumbs
@@ -34,7 +33,7 @@ export default async function Page() {
         ]}
       />
       <Suspense>
-        <UserGreeting id={id}/>
+        <UserGreeting />
       </Suspense>
       <Suspense>
         <Form />

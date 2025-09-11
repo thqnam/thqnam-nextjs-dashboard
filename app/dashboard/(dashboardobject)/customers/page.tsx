@@ -5,7 +5,6 @@ import { CreateCustomer } from '@/app/ui/customers/buttons';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import UserGreeting from '@/app/ui/UserGreeting';
-import { getSessionID } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
  
@@ -31,7 +30,7 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const id = await getSessionID();
+
   return (
     <main>
       <Breadcrumbs
@@ -45,7 +44,7 @@ export default async function Page(props: {
         ]}
       />
       <Suspense>
-        <UserGreeting id={id}/>
+        <UserGreeting />
       </Suspense>
       <div className="w-full">
         <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">

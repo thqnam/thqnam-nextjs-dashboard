@@ -4,8 +4,11 @@ import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { LogOut } from '@/app/lib/actions';
 import { getUserByID } from '@/app/lib/utils';
+import { useSessionInforContext } from '@/app/lib/sessionInforContext';
 
-export default function UserGreetingClient({ id }: { id: string }) {
+export default function UserGreetingClient() {
+  
+  const { sessionId: id } = useSessionInforContext();
 
   const checkUserStatus = async (id : string) => {
     const user = await getUserByID(id);
