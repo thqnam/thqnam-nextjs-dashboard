@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { getUserByID } from '@/app/lib/utils';
 // import { supabase } from '@/app/lib/supabaseClient';
 
 declare module "next-auth" {
@@ -30,11 +31,13 @@ export const authConfig = {
     async authorized({ auth, request: { nextUrl } }) {
       //const isCheckLocal = await checkLocal();
       const isLoggedIn = !!auth?.user; //|| isCheckLocal;
+      const userData = await getUserByID(auth?.user?.id as string);
+      const statusData = userData?.status;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       const isOnCustomer = nextUrl.pathname.startsWith('/dashboard/customers');
       const isAdmin = auth?.user?.role === 'admin';
       if (isOnDashboard) {
-        if (isLoggedIn) {
+        if (isLoggedIn && statusData === 'login') {
           if (isOnCustomer && !isAdmin) {
             return Response.redirect(new URL('/dashboard', nextUrl));
           } else {
@@ -43,7 +46,7 @@ export const authConfig = {
         } else {
           return Response.redirect(new URL('/signinrequest?callbackUrl=' + nextUrl, nextUrl));
         }
-      } else if (isLoggedIn) {
+      } else if (isLoggedIn && statusData === 'login') {
         return Response.redirect(new URL('/dashboard', nextUrl));
       } else {
         return true;
