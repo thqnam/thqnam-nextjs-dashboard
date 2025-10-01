@@ -28,7 +28,8 @@ export const authConfig = {
     updateAge: 60 * 60 * 24, // 1 ngày (tính bằng giây)
   },
   callbacks: {
-    async authorized({ auth, request: { nextUrl } }) {
+    async authorized({ auth, request }: { auth: any; request: { nextUrl: URL } }) {
+      const { nextUrl } = request;
       //const isCheckLocal = await checkLocal();
       const isLoggedIn = !!auth?.user; //|| isCheckLocal;
       const statusData = await getUserStatusByID(auth?.user?.id as string);
@@ -51,7 +52,7 @@ export const authConfig = {
         return true;
       }
     },
-    async jwt({ token, user, trigger, profile }) {
+    async jwt({ token, user, trigger, profile }: { token: any; user?: any; trigger?: string; profile?: any }) {
       if (user) {
         if (user.id) token.id = user.id;
         if (user.email) token.email = user.email;
@@ -80,7 +81,15 @@ export const authConfig = {
       }
       return token;
     },
-    async session({ session, token, trigger }) {
+    async session({
+      session,
+      token,
+      trigger,
+    }: {
+      session: any;
+      token: any;
+      trigger?: string;
+    }) {
       if (session.user && typeof token.id === 'string') {
         (session.user as { id: string }).id = token.id;
       }

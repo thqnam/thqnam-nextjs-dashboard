@@ -2,7 +2,7 @@ import { Revenue, User, UserSession, ImageField } from './definitions';
 import { supabase } from './supabaseClient';
 import { randomUUID } from 'crypto';
 import { PostgrestError } from '@supabase/supabase-js';
-import { sendSignUpEmail }  from '@/app/lib/mailer';
+//import { sendSignUpEmail }  from '@/app/lib/mailer';
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
@@ -185,7 +185,7 @@ export async function updateUser(id: string, email: string, name: string, image:
 export async function insertUser(email: string, name: string, image: string): Promise<void> {
   await checkImage(image);
   const id = randomUUID();
-  const token = randomUUID();
+  //const token = randomUUID();
   const { error } = await supabase
     .from('users')
     .insert([
@@ -207,7 +207,7 @@ export async function insertUser(email: string, name: string, image: string): Pr
     talada.message = 'Failed to OAuth Insert User. Reason: ' + error.message;
     throw talada;
   } else {
-    await sendSignUpEmail(email, name, token, id);
+    //await sendSignUpEmail(email, name, token, id);
   }
 }
 
