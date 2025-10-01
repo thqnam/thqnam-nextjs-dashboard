@@ -2,7 +2,7 @@
 
 import UserGreetingClient from '@/app/lib/logSignListen';
 import Image from 'next/image';
-import { useSessionInforContext } from '@/app/lib/sessionInforContext';
+import { useSessionInforContext } from '@/app/ui/sessionInforContext';
 
 export default function UserGreeting() {
 

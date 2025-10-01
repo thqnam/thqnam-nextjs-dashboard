@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { resetTarget } from '@/app/lib/actions';
 import { useState, useEffect } from 'react';
-import { useSessionInforContext } from '@/app/lib/sessionInforContext';
+import { useSessionInforContext } from '@/app/ui/sessionInforContext';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.

@@ -27,7 +27,7 @@ import {
 } from '@/app/lib/data';
 import { getUserByEmail } from '../../lib/utils';
 import { supabase } from '@/app/lib/supabaseClient';
-import { useSessionInforContext } from '@/app/lib/sessionInforContext';
+import { useSessionInforContext } from '@/app/ui/sessionInforContext';
  
 export default function Form() {
   const { sessionEmail, sessionName, sessionImage } = useSessionInforContext();

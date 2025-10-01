@@ -1,5 +1,5 @@
 import SideNav from '@/app/ui/dashboard/sidenav';
-import { SessionInforProvider } from '@/app/lib/sessionInforContext';
+import { SessionInforProvider } from '@/app/ui/sessionInforContext';
 import { Suspense } from 'react';
 
 export const experimental_ppr = true;

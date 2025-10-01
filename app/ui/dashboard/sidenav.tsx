@@ -5,7 +5,7 @@ import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon, ArrowTurnRightUpIcon, ArrowTurnLeftUpIcon } from '@heroicons/react/24/outline';
 // import { OAuthGlobalSignOut, OAuthLocalSignOut } from '@/app/lib/supabaseAuth';
 import { resetTarget, logOut, resetSession } from '@/app/lib/actions';
-import { useSessionInforContext } from '@/app/lib/sessionInforContext';
+import { useSessionInforContext } from '@/app/ui/sessionInforContext';
 import { getSessionInfor } from '@/app/lib/data';
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';

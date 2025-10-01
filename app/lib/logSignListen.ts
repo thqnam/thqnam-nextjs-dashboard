@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { LogOut } from '@/app/lib/actions';
 import { getUserByID } from '@/app/lib/utils';
-import { useSessionInforContext } from '@/app/lib/sessionInforContext';
+import { useSessionInforContext } from '@/app/ui/sessionInforContext';
 
 export default function UserGreetingClient() {
   
