@@ -558,7 +558,7 @@ export async function createUserRequest(prevState: CreateUserRequestState, formD
         };
       } else {
         await sendSignUpEmail(email, name, token, id);
-        redirect('/signupreponse');
+        redirect('/users/signupreponse');
       }
 
     } else {
@@ -612,7 +612,7 @@ export async function createUserHandle(email: string, prevState: CreateUserHandl
           };
         } else {
           await deleteDatabaseToken(user.id);
-          redirect('/signupcomplete');
+          redirect('users/signupcomplete');
         }
 
       } else {
@@ -899,7 +899,7 @@ export async function changeMailFromRequest(prevState: ChangeMailFromRequestStat
         };
       } else {
         await sendChangeMailFromEmail(email, user.name, token);
-        redirect('/changemailfromreponse');
+        redirect('/users/changemailfromreponse');
       }
       
     } else {
@@ -952,7 +952,7 @@ export async function changeMailToRequest(oldemail: string, prevState: ChangeMai
             };
           } else {
             await sendChangeMailToEmail(newemail, oldUser.name, token);
-            redirect('/changemailtoreponse');
+            redirect('/users/changemailtoreponse');
           }
 
         } else {
@@ -1012,7 +1012,7 @@ export async function changeMailHandle(oldemail: string, prevState: ChangeMailHa
           };
         } else {
           await deleteDatabaseToken(user.id);
-          redirect('/changemailcomplete');
+          redirect('/users/changemailcomplete');
         }
 
       } else {
@@ -1063,7 +1063,7 @@ export async function resetPassRequest(prevState: ResetPassRequestState, formDat
         };
       } else {
         await sendResetPasswordEmail(email, user.name, token);
-        redirect('/resetpassreponse');
+        redirect('/users/resetpassreponse');
       }
       
     } else {
@@ -1117,7 +1117,7 @@ export async function resetPassHandle(email: string, prevState: ResetPassHandleS
             };
           } else {
             await deleteDatabaseToken(user.id);
-            redirect('/resetpasscomplete');
+            redirect('/users/resetpasscomplete');
           }
 
         } else {
@@ -1176,7 +1176,7 @@ export async function resetEmailRequest(prevState: ResetEmailRequestState, formD
         };
       } else {
         await sendResetEmailAddressEmail(newemail, user.name, token);
-        redirect('/resetemailreponse');
+        redirect('/users/resetemailreponse');
       }
       
     } else {
@@ -1227,7 +1227,7 @@ export async function resetEmailHandle(oldemail: string, prevState: ResetEmailHa
             };
           } else {
             await deleteDatabaseToken(user.id);
-            redirect('/resetemailcomplete');
+            redirect('/users/resetemailcomplete');
           }
 
         } else {
@@ -1284,7 +1284,7 @@ export async function deleteUserRequest(prevState: DeleteUserRequestState, formD
         };
       } else {
         await sendSignDownEmail(user.email, user.name, token);
-        redirect('/signdownreponse');
+        redirect('/users/signdownreponse');
       }
       
     } else {
@@ -1329,7 +1329,7 @@ export async function deleteUserHandle(email: string, prevState: DeleteUserHandl
           };
         } else {
           await deleteDatabaseToken(user.id);
-          redirect('/signdowncomplete');
+          redirect('/users/signdowncomplete');
         }
 
       } else {
@@ -1476,7 +1476,7 @@ export async function verifyUserRequest(prevState: VerifyUserRequestState, formD
         };
       } else {
         await sendSignInEmail(email, user.name, token, redirectTarget);
-        redirect('/signinreponse');
+        redirect('/users/signinreponse');
       }
       
     } else {
