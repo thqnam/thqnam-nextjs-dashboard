@@ -1,7 +1,8 @@
 'use client'
 
 import { supabase } from '@/app/lib/supabaseClient';
-import { getUserByEmail, insertUser, updateUser } from '@/app/lib/utils';
+import { insertUser, updateUser } from './OAuth';
+import { getUserByEmail } from './data';
 import { resetTarget } from '@/app/lib/actions';
 
 export async function OAuthPasswordSignIn(email: string, password: string, phone: string) {

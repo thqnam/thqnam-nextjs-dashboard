@@ -6,10 +6,9 @@ import { PowerIcon, ArrowTurnRightUpIcon, ArrowTurnLeftUpIcon } from '@heroicons
 // import { OAuthGlobalSignOut, OAuthLocalSignOut } from '@/app/lib/supabaseAuth';
 import { resetTarget, logOut, resetSession } from '@/app/lib/actions';
 import { useSessionInforContext } from '@/app/ui/sessionInforContext';
-import { getSessionInfor } from '@/app/lib/data';
+import { getSessionInfor, getUserSessionByID } from '@/app/lib/data';
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { getUserSessionByID } from '@/app/lib/utils';
 import { Suspense } from 'react';
 
 export default function SideNav() {

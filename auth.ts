@@ -7,7 +7,8 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/app/lib/supabaseClient';
 import { AuthError } from 'next-auth';
-import { getUserByEmail, insertUser, updateUser } from '@/app/lib/utils';
+import { insertUser, updateUser } from '@/app/lib/OAuth';
+import { getUserByEmail } from '@/app/lib/data';
  
 export const { auth, signIn, signOut, unstable_update } = NextAuth({
   ...authConfig,

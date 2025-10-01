@@ -24,8 +24,8 @@ import {
 } from '@/app/lib/actions';
 import { 
   fetchImages,
+  getUserByEmail,
 } from '@/app/lib/data';
-import { getUserByEmail } from '../../lib/utils';
 import { supabase } from '@/app/lib/supabaseClient';
 import { useSessionInforContext } from '@/app/ui/sessionInforContext';
  
