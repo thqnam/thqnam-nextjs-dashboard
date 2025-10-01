@@ -20,7 +20,7 @@ declare module "next-auth" {
 export const authConfig = {
   pages: {
     signIn: '/dashboard',
-    signOut: '/signinrequest',
+    signOut: '/users/signinrequest',
   },
   session: {
     strategy: 'jwt', // hoặc 'jwt' 'database'
@@ -43,7 +43,7 @@ export const authConfig = {
             return true;
           }
         } else {
-          return Response.redirect(new URL('/signinrequest?callbackUrl=' + nextUrl, nextUrl));
+          return Response.redirect(new URL('/users/signinrequest?callbackUrl=' + nextUrl, nextUrl));
         }
       } else if (isLoggedIn && statusData === true) {
         return Response.redirect(new URL('/dashboard', nextUrl));
