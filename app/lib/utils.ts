@@ -168,7 +168,6 @@ export async function updateUser(id: string, email: string, name: string, image:
       email: email,
       image: image,
       status: 'login',
-      email_verified: true,
     })
     .eq('id', id);
     
@@ -193,7 +192,7 @@ export async function insertUser(email: string, name: string, image: string): Pr
         email: email,
         image: image,
         status: 'login',
-        email_verified: true,
+        email_verified: false,
         role: 'user',
       },
     ]);
