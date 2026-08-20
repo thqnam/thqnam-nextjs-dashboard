@@ -23,157 +23,302 @@ import {
 } from '@/app/lib/mailer';
 
 const VerifyUserRequestFormSchema = z.object({
-  email: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
+  email: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the email of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
 });
 
 const CreateUserRequestFormSchema = z.object({
   name: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the name of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the name of this user.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
-  email: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
+  email: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the email of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
   image: z.string({
-    invalid_type_error: 'Please select a image.',
-    required_error: 'Must be select a image',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Must be select a image for it.';
+      }
+
+      return 'Please just select a image.';
+    },
   }),
 });
 
 const CreateUserHandleFormSchema = z.object({
   email: z.string(),
   password: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the password of this user.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
   repassword: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the re-password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the re-password of this user.';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
 });
 
 const ChangePassFormSchema = z.object({
   newpassword: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the new password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the new password of this user.';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
   renewpassword: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the re-new password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the re-new password of this user.';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
 });
 
 const ResetPassHandleFormSchema = z.object({
   email: z.string(),
   newpassword: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the new password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the new password of this user.';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
   renewpassword: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the re-new password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the re-new password of this user.';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
 });
 
 const ResetPassRequestFormSchema = z.object({
-  email: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
+  email: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the email of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
 });
 
 const ResetEmailHandleFormSchema = z.object({
   oldemail: z.string(),
-  recoverycode: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the recovery code of this user',
-  }).uuid({
-    message: 'The string data must be look like UUID format'
+  recoverycode: z.uuid({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the recovery code of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like UUID format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
   password: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the password of this user.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
 });
 
 const ResetEmailRequestFormSchema = z.object({
-  oldemail: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the old email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
+  oldemail: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the old email of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
-  newemail: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the new email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
+  newemail: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the new email of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
 });
 
 const ChangeMailFromRequestFormSchema = z.object({
-  email: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the old email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
+  email: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the email of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
 });
 
 const ChangeMailToRequestFormSchema = z.object({
   oldemail: z.string(),
-  newemail: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the new email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
+  newemail: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the new email of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
 });
 
 const ChangeMailHandleFormSchema = z.object({
-  oldemail: z.string(),
+  oldemail: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the old email of this user.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
+  }),
   password: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the password of this user.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
 });
 
 const ChangeInforFormSchema = z.object({
   name: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the name of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the name of this user.';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
   image: z.string({
-    invalid_type_error: 'Please select a image.',
-    required_error: 'Must be select a image',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Must be select a image for it.';
+      }
+
+      return 'Please just select a image.';
+    },
   }),
 });
 
 const CustomerFormSchema = z.object({
   id: z.string(),
   name: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the name of this customer',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the name of this customer.';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
-  email: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this customer',
-  }).email({
-    message: 'The string data must be look like email format'
+  email: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the email of this customer.';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format.';
+      }
+
+      return 'Please just input a string data.';
+    },
   }),
   image_url: z.string({
-    invalid_type_error: 'Please select a image.',
-    required_error: 'Must be select a image',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Must be select a image for it.';
+      }
+
+      return 'Please just select a image.';
+    },
   }),
   user_id: z.string(),
 });
@@ -181,13 +326,27 @@ const CustomerFormSchema = z.object({
 const InvoiceFormSchema = z.object({
   id: z.string(),
   customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please select a customer.';
+      }
+
+      return 'Please just select a customer.';
+    }
   }),
   amount: z.coerce
-    .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
+  .number()
+  .gt(0, {
+    error: 'Please enter an amount greater than $0.',
+  }),
   status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please select an invoice status.';
+      }
+
+      return 'Invoice status must be pending or paid.';
+    },
   }),
   date: z.string(),
   user_id: z.string(),
@@ -196,31 +355,55 @@ const InvoiceFormSchema = z.object({
 const DeleteCustomerSchema = z.object({
   id: z.string(),
   reid: z.string({
-    required_error: 'Please re input Customer ID',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please re input Customer ID';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
 });
 
 const DeleteInvoiceSchema = z.object({
   id: z.string(),
   reid: z.string({
-    required_error: 'Please re input Invoice ID',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please re input Invoice ID';
+      }
+
+      return 'Please just input a string data.';
+    }
   }),
 });
 
 const DeleteUserRequestFormSchema = z.object({
-  email: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the email of this user',
-  }).email({
-    message: 'The string data must be look like email format'
+  email: z.email({
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the email of this user';
+      }
+
+      if (issue.code === 'invalid_format') {
+        return 'The string data must look like email format';
+      }
+
+      return 'Please just input a string data';
+    },
   }),
 });
 
 const DeleteUserHandleFormSchema = z.object({
   email: z.string(),
   password: z.string({
-    invalid_type_error: 'Please just input a string data',
-    required_error: 'Please input the password of this user',
+    error: (issue) => {
+      if (issue.input === undefined) {
+        return 'Please input the password of this user';
+      }
+
+      return 'Please just input a string data';
+    }
   }),
 });
 
