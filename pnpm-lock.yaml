@@ -37,7 +37,7 @@ importers:
         version: 1.7.1(@better-fetch/fetch@1.3.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.9)(kysely@0.29.5)(nanostores@1.5.1)(next@16.3.1(@babel/core@7.29.7)(@types/node@22.10.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       autoprefixer:
         specifier: 10.4.20
-        version: 10.4.20(postcss@8.5.1)
+        version: 10.4.20(postcss@8.5.23)
       bcryptjs:
         specifier: ^3.0.2
         version: 3.0.2
@@ -59,9 +59,6 @@ importers:
       pnpm:
         specifier: ^11.22.0
         version: 11.22.0
-      postcss:
-        specifier: 8.5.1
-        version: 8.5.1
       postgres:
         specifier: ^3.4.5
         version: 3.4.5
@@ -4083,14 +4080,14 @@ snapshots:
       - vitest
       - vue
 
-  autoprefixer@10.4.20(postcss@8.5.1):
+  autoprefixer@10.4.20(postcss@8.5.23):
     dependencies:
       browserslist: 4.24.4
       caniuse-lite: 1.0.30001809
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.1
-      postcss: 8.5.1
+      postcss: 8.5.23
       postcss-value-parser: 4.2.0
 
   available-typed-arrays@1.0.7:
