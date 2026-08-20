@@ -17,7 +17,7 @@ import { fetchInvoiceById, fetchCustomerById } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { notFound } from 'next/navigation';
- 
+
 export default function DeleteInvoiceForm({ id }: { id: string }) {
   const [invoice, setInvoice] = useState({} as InvoiceForm);
   const [customer, setCustomer] = useState({} as CustomerForm);
