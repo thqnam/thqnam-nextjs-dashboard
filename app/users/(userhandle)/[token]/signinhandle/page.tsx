@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
  
 export const metadata: Metadata = {
   title: 'Sign In Handle',
+  icons: `${process.env.APP_ICON}`,
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
@@ -21,18 +22,13 @@ export const metadata: Metadata = {
  
 export default async function Page(props: { params: Promise<{ token: string }> }) {
   const params = await props.params;
-  console.log('Sign In Params: ', params); // Log the params to the console for debugging
   const token = params.token;
-  console.log('Sign In Token: ', token); // Log the token to the console for debugging
   if (!token) notFound();
   const result = await getUserByToken(token);
-  console.log('Sign In Result: ', result); // Log the result to the console for debugging
   if (result === undefined) notFound();
   const user = result;
-  console.log('Sign In User: ', user); // Log the user to the console for debugging
   if (user.expires && new Date(user.expires) < new Date()) {
     await deleteDatabaseToken(user.id);
-    console.log('Token expired and deleted for user: ', user.id); // Log the deletion for debugging
     notFound();
   }
 

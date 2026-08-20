@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     template: `${process.env.APP_NAME} App | %s`,
     default: `${process.env.APP_NAME} App`,
   },
+  icons: `${process.env.APP_ICON}`,
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
   authors: [{name: `${process.env.APP_OWNER}`, url: `${process.env.OWNER_INFOR}`}],
