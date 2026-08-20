@@ -48,8 +48,8 @@ importers:
         specifier: ^7.0.6
         version: 7.0.6
       pnpm:
-        specifier: ^10.12.1
-        version: 10.12.1
+        specifier: ^11.22.0
+        version: 11.22.0
       postcss:
         specifier: 8.5.1
         version: 8.5.1
@@ -1779,9 +1779,9 @@ packages:
     resolution: {integrity: sha512-ueGLflrrnvwB3xuo/uGob5pd5FN7l0MsLf0Z87o/UQmRtwjvfylfc9MurIxRAWywCYTgrvpXBcqjV4OfCYGCIQ==}
     engines: {node: '>=16.20.0'}
 
-  pnpm@10.12.1:
-    resolution: {integrity: sha512-8N2oWA8O6UgcXHmh2Se5Fk8sR46QmSrSaLuyRlpzaYQ5HWMz0sMnkTV4soBK8zR0ylVLopwEqLEwYKcXZ1rjrA==}
-    engines: {node: '>=18.12'}
+  pnpm@11.22.0:
+    resolution: {integrity: sha512-H/hwxMYTPf2I+yr8Rt0T1H8JyXlLQ4xv20fKmMrzvBY4HuC+k6CRuOOCTPAfiJ9G19niCRD7C+GrD7W6qA3WIQ==}
+    engines: {node: '>=22.13'}
     hasBin: true
 
   possible-typed-array-names@1.1.0:
@@ -4102,7 +4102,7 @@ snapshots:
 
   pkce-challenge@5.0.0: {}
 
-  pnpm@10.12.1: {}
+  pnpm@11.22.0: {}
 
   possible-typed-array-names@1.1.0: {}
 
