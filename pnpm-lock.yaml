@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@auth/supabase-adapter':
         specifier: ^1.9.1
-        version: 1.9.1(@supabase/supabase-js@2.49.8)(nodemailer@7.0.6)
+        version: 1.9.1(@supabase/supabase-js@2.49.8)(nodemailer@9.0.5)
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.0.0)
@@ -43,10 +43,10 @@ importers:
         version: 16.3.1(@types/node@22.10.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@16.3.1(@types/node@22.10.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(nodemailer@7.0.6)(react@19.0.0)
+        version: 5.0.0-beta.28(next@16.3.1(@types/node@22.10.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(nodemailer@9.0.5)(react@19.0.0)
       nodemailer:
-        specifier: ^7.0.6
-        version: 7.0.6
+        specifier: ^9.0.5
+        version: 9.0.5
       pnpm:
         specifier: ^11.22.0
         version: 11.22.0
@@ -1652,8 +1652,8 @@ packages:
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
 
-  nodemailer@7.0.6:
-    resolution: {integrity: sha512-F44uVzgwo49xboqbFgBGkRaiMgtoBrBEWCVincJPK9+S9Adkzt/wXCLKbf7dxucmxfTI5gHGB+bEmdyzN6QKjw==}
+  nodemailer@9.0.5:
+    resolution: {integrity: sha512-wvjiKvjczmsN7U/8006JOdXubgBk2XFAbioDMbT+sM7cPs0QrhJTa6KBRX7P5REGGkDcLUz/EarWidb8G8C1jQ==}
     engines: {node: '>=6.0.0'}
 
   normalize-path@3.0.0:
@@ -2296,7 +2296,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@auth/core@0.39.1(nodemailer@7.0.6)':
+  '@auth/core@0.39.1(nodemailer@9.0.5)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 6.0.11
@@ -2304,11 +2304,11 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
     optionalDependencies:
-      nodemailer: 7.0.6
+      nodemailer: 9.0.5
 
-  '@auth/supabase-adapter@1.9.1(@supabase/supabase-js@2.49.8)(nodemailer@7.0.6)':
+  '@auth/supabase-adapter@1.9.1(@supabase/supabase-js@2.49.8)(nodemailer@9.0.5)':
     dependencies:
-      '@auth/core': 0.39.1(nodemailer@7.0.6)
+      '@auth/core': 0.39.1(nodemailer@9.0.5)
       '@supabase/supabase-js': 2.49.8
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
@@ -3951,13 +3951,13 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  next-auth@5.0.0-beta.28(next@16.3.1(@types/node@22.10.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(nodemailer@7.0.6)(react@19.0.0):
+  next-auth@5.0.0-beta.28(next@16.3.1(@types/node@22.10.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(nodemailer@9.0.5)(react@19.0.0):
     dependencies:
-      '@auth/core': 0.39.1(nodemailer@7.0.6)
+      '@auth/core': 0.39.1(nodemailer@9.0.5)
       next: 16.3.1(@types/node@22.10.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
     optionalDependencies:
-      nodemailer: 7.0.6
+      nodemailer: 9.0.5
 
   next@16.3.1(@types/node@22.10.7)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -3986,7 +3986,7 @@ snapshots:
 
   node-releases@2.0.19: {}
 
-  nodemailer@7.0.6: {}
+  nodemailer@9.0.5: {}
 
   normalize-path@3.0.0: {}
 
