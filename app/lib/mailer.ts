@@ -14,7 +14,7 @@ function startMailer(){
 
 export async function sendSignInEmail(email: string, name: string, token: string, redirectTarget: string) {
   const transporter = startMailer();
-  const Url = redirectTarget !== '' ? `https://qned.vercel.app/${token}/signinhandle?callbackUrl=${redirectTarget}` : `https://qned.vercel.app/${token}/signinhandle`;
+  const Url = redirectTarget !== '' ? `https://qned.vercel.app/users/${token}/signinhandle?callbackUrl=${redirectTarget}` : `https://qned.vercel.app/users/${token}/signinhandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -36,7 +36,7 @@ export async function sendSignInEmail(email: string, name: string, token: string
 
 export async function sendSignUpEmail(email: string, name: string, token: string, id: string) {
   const transporter = startMailer();
-  const Url = `https://qned.vercel.app/${token}/signuphandle`;
+  const Url = `https://qned.vercel.app/users/${token}/signuphandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -61,7 +61,7 @@ export async function sendSignUpEmail(email: string, name: string, token: string
 
 export async function sendResetPasswordEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const Url = `https://qned.vercel.app/${token}/resetpasshandle`;
+  const Url = `https://qned.vercel.app/users/${token}/resetpasshandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -83,7 +83,7 @@ export async function sendResetPasswordEmail(email: string, name: string, token:
 
 export async function sendResetEmailAddressEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const Url = `https://qned.vercel.app/${token}/resetemailhandle`;
+  const Url = `https://qned.vercel.app/users/${token}/resetemailhandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -105,7 +105,7 @@ export async function sendResetEmailAddressEmail(email: string, name: string, to
 
 export async function sendChangeMailFromEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const Url = `https://qned.vercel.app/${token}/changemailtorequest`;
+  const Url = `https://qned.vercel.app/users/${token}/changemailtorequest`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -127,7 +127,7 @@ export async function sendChangeMailFromEmail(email: string, name: string, token
 
 export async function sendChangeMailToEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const Url = `https://qned.vercel.app/${token}/changemailhandle`;
+  const Url = `https://qned.vercel.app/users/${token}/changemailhandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -149,7 +149,7 @@ export async function sendChangeMailToEmail(email: string, name: string, token: 
 
 export async function sendSignDownEmail(email: string, name: string, token: string) {
   const transporter = startMailer();
-  const Url = `https://qned.vercel.app/${token}/signdownhandle`;
+  const Url = `https://qned.vercel.app/users/${token}/signdownhandle`;
   await transporter.sendMail({
     from: `"${process.env.APP_NAME} App's Owner" <${process.env.GMAIL_USER}>`,
     to: email,
