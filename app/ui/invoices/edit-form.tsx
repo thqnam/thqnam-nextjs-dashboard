@@ -22,6 +22,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
   const [customers, setCustomers] = useState([] as CustomerField[]);
   const [selectedCustomer, setSelectedCustomer] = useState(invoice.customer_id);
   const [selectedCustomerImage, setSelectedCustomerImage] = useState('');
+  const [selectedInvoiceStatus, setSelectedInvoiceStatus] = useState(invoice.status);
   // Hàm fetch lại dữ liệu
   const loadCustomers = async () => {
     const data = await fetchCustomers();
@@ -41,6 +42,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
       notFound();
     } else {
       setInvoice(InvoiceTerm);
+      setSelectedInvoiceStatus(InvoiceTerm.status);
       const CustomersTerm = await fetchCustomers();
       setCustomers(CustomersTerm);
     }
@@ -48,6 +50,9 @@ export default function EditInvoiceForm({ id }: { id: string }) {
   useEffect(() => {
     setSelectedCustomer(invoice.customer_id);
   }, [invoice.customer_id]);
+  useEffect(() => {
+    setSelectedInvoiceStatus(invoice.status);
+  }, [ invoice.status]);
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
     loadInvoiceAndCustomers();
@@ -289,7 +294,8 @@ export default function EditInvoiceForm({ id }: { id: string }) {
                     type="radio"
                     value="pending"
                     aria-describedby="status-error"
-                    checked={invoice.status === 'pending'}
+                    checked={selectedInvoiceStatus === 'pending'}
+                    onChange={e => setSelectedInvoiceStatus('pending')}
                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   />
                   <label
@@ -306,7 +312,8 @@ export default function EditInvoiceForm({ id }: { id: string }) {
                     type="radio"
                     value="paid"
                     aria-describedby="status-error"
-                    checked={invoice.status === 'paid'}
+                    checked={selectedInvoiceStatus === 'paid'}
+                    onChange={e => setSelectedInvoiceStatus('paid')}
                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   />
                   <label
