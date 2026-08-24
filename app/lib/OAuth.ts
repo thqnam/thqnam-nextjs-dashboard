@@ -1,4 +1,4 @@
-import { ImageField } from './definitions';
+import { ImageField } from './definitions/customers';
 import { supabase } from './supabaseClient';
 import { randomUUID } from 'crypto';
 import { PostgrestError } from '@supabase/supabase-js';

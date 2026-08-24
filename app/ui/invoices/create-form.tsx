@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomerField } from '@/app/lib/definitions';
+import { CustomerField } from '@/app/lib/definitions/invoices';
 import Image from 'next/image';
 import {
   CheckIcon,

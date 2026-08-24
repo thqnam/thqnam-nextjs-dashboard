@@ -1,4 +1,5 @@
-import { Revenue, User, ImageField } from './definitions';
+import { Revenue } from './definitions/dashboard';
+import { User } from './definitions/users';
 import { supabase } from './supabaseClient';
 import { PostgrestError } from '@supabase/supabase-js';
 

@@ -1,7 +1,7 @@
 'use client';
  
 import { lusitana } from '@/app/ui/fonts';
-import { ImageField } from '@/app/lib/definitions';
+import { ImageField } from '@/app/lib/definitions/customers';
 import Image from 'next/image';
 import {
   AtSymbolIcon,

@@ -5,7 +5,7 @@ import { UpdateCustomer, DeleteCustomer } from '@/app/ui/customers/buttons';
 import { fetchFilteredCustomers } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { CustomersTableType } from '@/app/lib/definitions';
+import { CustomersTableType } from '@/app/lib/definitions/customers';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 
 export default function CustomersTable({

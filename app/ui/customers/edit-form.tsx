@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomerForm, ImageField } from '@/app/lib/definitions';
+import { CustomerForm, ImageField } from '@/app/lib/definitions/customers';
 import Image from 'next/image';
 import {
   AtSymbolIcon,

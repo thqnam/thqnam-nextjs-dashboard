@@ -6,7 +6,7 @@ import { lusitana } from '@/app/ui/fonts';
 import { fetchRevenue } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { Revenue } from '@/app/lib/definitions';
+import { Revenue } from '@/app/lib/definitions/dashboard';
 
 // This component is representational only.
 // For data visualization UI, check out:

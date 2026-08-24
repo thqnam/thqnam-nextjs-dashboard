@@ -2,8 +2,10 @@
 
 import { 
   ImageField, 
+} from '@/app/lib/definitions/customers';
+import { 
   User 
-} from '@/app/lib/definitions';
+} from '@/app/lib/definitions/users';
 import Image from 'next/image'; 
 import { lusitana } from '@/app/ui/fonts';
 import {

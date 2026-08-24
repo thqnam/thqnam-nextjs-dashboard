@@ -7,7 +7,7 @@ import { lusitana } from '@/app/ui/fonts';
 import { fetchLatestInvoices } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { LatestInvoiceRaw } from '@/app/lib/definitions';
+import { LatestInvoiceRaw } from '@/app/lib/definitions/dashboard';
 
 export default function LatestInvoices() {
   const [lastestInvoices, setLastestInvoices] = useState([] as LatestInvoiceRaw[]);

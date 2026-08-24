@@ -1,17 +1,23 @@
 'use server';
 
 import {
+  User
+} from './definitions/users';
+import {
   CustomerField,
-  CustomerForm,
-  CustomersTableType,
-  InvoiceForm,
   InvoicesTable,
-  LatestInvoiceRaw,
-  Revenue,
+  InvoiceForm,
+} from './definitions/invoices';
+import {
+  CustomersTableType,
   ImageField,
+  CustomerForm,
+} from './definitions/customers';
+import {
+  Revenue,
   UserSession,
-  User,
-} from './definitions';
+  LatestInvoiceRaw,
+} from './definitions/dashboard';
 import { PostgrestError } from '@supabase/supabase-js';
 import { formatCurrency } from './utils';
 import { supabase } from '@/app/lib/supabaseClient';

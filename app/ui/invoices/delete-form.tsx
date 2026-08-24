@@ -1,6 +1,7 @@
 'use client';
 
-import { InvoiceForm, CustomerForm } from '@/app/lib/definitions';
+import { InvoiceForm } from '@/app/lib/definitions/invoices';
+import { CustomerForm } from '@/app/lib/definitions/customers';
 import Image from 'next/image';
 import {
   CheckIcon,

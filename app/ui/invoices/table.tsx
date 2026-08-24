@@ -7,7 +7,7 @@ import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredInvoices } from '@/app/lib/data';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { InvoicesTable } from '@/app/lib/definitions';
+import { InvoicesTable } from '@/app/lib/definitions/invoices';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 
 export default function InvoiceTable({
