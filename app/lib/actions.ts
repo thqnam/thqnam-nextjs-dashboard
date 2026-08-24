@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { signIn, signOut, unstable_update } from '@/auth';
 import { getSessionEmail, getSessionID } from '@/app/lib/data/dashboard';
 import { getUserByEmail } from '@/app/lib/data/users';
-import { getUserByID } from './utils';
+import { getUserByID } from '@/app/lib/utils';
 import { AuthError } from 'next-auth';
 import { PostgrestError } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
