@@ -11,7 +11,8 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
-import { verifyUserRequest, VerifyUserRequestState } from '@/app/lib/actions';
+import { verifyUserRequest } from '@/app/lib/actions/functions/users';
+import { VerifyUserRequestState } from '@/app/lib/actions/types/users';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
  

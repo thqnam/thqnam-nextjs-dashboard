@@ -9,7 +9,9 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { resetTarget, createCustomer, CustomerState } from '@/app/lib/actions';
+import { createCustomer } from '@/app/lib/actions/functions/customers';
+import { resetTarget } from '@/app/lib/actions/functions/dashboard';
+import { CustomerState } from '@/app/lib/actions/types/customers';
 import { fetchImages } from '@/app/lib/data/invoices';
 import { useActionState } from 'react';
 import { useEffect, useState } from 'react';

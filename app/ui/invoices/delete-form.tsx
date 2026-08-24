@@ -12,7 +12,9 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { resetTarget, deleteInvoice, DeleteInvoiceState } from '@/app/lib/actions';
+import { resetTarget } from '@/app/lib/actions/functions/dashboard';
+import { deleteInvoice } from '@/app/lib/actions/functions/invoices';
+import { DeleteInvoiceState } from '@/app/lib/actions/types/invoices';
 import { useActionState } from 'react';
 import { fetchInvoiceById } from '@/app/lib/data/invoices';
 import { fetchCustomerById } from '@/app/lib/data/customers';

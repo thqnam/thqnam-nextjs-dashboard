@@ -1,7 +1,7 @@
 'use client';
 
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { resetTarget } from '@/app/lib/actions';
+import { resetTarget } from '@/app/lib/actions/functions/dashboard';
 
 export function CreateCustomer() {
   return (

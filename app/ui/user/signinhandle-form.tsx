@@ -14,7 +14,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { authenticate, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
+import { authenticate, GoogleSignIn, GithubSignIn } from '@/app/lib/actions/functions/dashboard';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 

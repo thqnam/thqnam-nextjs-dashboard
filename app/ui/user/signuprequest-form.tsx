@@ -16,7 +16,8 @@ import {
 import { Button } from '@/app/ui/button';
 import { fetchImages } from '@/app/lib/data/invoices';
 import { useActionState } from 'react';
-import { createUserRequest, CreateUserRequestState } from '@/app/lib/actions';
+import { createUserRequest } from '@/app/lib/actions/functions/users';
+import { CreateUserRequestState } from '@/app/lib/actions/types/users';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import Link from 'next/link';

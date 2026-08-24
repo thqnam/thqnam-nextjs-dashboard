@@ -11,7 +11,8 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
-import { changeMailFromRequest, ChangeMailFromRequestState } from '@/app/lib/actions';
+import { changeMailFromRequest } from '@/app/lib/actions/functions/users';
+import { ChangeMailFromRequestState } from '@/app/lib/actions/types/users'
 import Link from 'next/link';
  
 export default function Form() {

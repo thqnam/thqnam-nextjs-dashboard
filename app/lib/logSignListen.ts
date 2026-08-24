@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { LogOut } from '@/app/lib/actions';
+import { LogOut } from '@/app/lib/actions/functions/dashboard';
 import { getUserByID } from '@/app/lib/utils';
 import { useSessionInforContext } from '@/app/ui/sessionInforContext';
 

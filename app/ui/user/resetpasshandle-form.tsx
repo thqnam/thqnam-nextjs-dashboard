@@ -15,7 +15,9 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { resetPassHandle, ResetPassHandleState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
+import { GoogleSignIn, GithubSignIn } from '@/app/lib/actions/functions/dashboard';
+import { resetPassHandle } from '@/app/lib/actions/functions/users';
+import { ResetPassHandleState } from '@/app/lib/actions/types/users';
 import Link from 'next/link';
 import zxcvbn from 'zxcvbn';
 

@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { resetTarget } from '@/app/lib/actions';
+import { resetTarget } from '@/app/lib/actions/functions/dashboard';
 import { useState, useEffect } from 'react';
 import { useSessionInforContext } from '@/app/ui/sessionInforContext';
 

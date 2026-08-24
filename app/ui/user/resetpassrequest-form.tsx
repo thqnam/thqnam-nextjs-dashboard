@@ -11,7 +11,8 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useState } from 'react';
-import { resetPassRequest, ResetPassRequestState } from '@/app/lib/actions';
+import { resetPassRequest } from '@/app/lib/actions/functions/users';
+import { ResetPassRequestState } from '@/app/lib/actions/types/users';
 import Link from 'next/link';
  
 export default function Form() {

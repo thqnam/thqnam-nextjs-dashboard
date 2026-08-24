@@ -1,5 +1,3 @@
-'use server';
-
 export type InvoiceState = {
   errors?: {
     customerId?: string[];

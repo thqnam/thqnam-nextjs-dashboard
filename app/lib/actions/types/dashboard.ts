@@ -1,5 +1,3 @@
-'use server';
-
 export type ChangePassState = {
   errors?: {
     newpassword?: string[];

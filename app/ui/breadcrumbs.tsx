@@ -2,7 +2,7 @@
 
 import { clsx } from 'clsx';
 import { lusitana } from '@/app/ui/fonts';
-import { resetTarget } from '@/app/lib/actions';
+import { resetTarget } from '@/app/lib/actions/functions/dashboard';
 
 interface Breadcrumb {
   label: string;

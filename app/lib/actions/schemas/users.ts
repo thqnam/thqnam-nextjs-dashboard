@@ -1,5 +1,3 @@
-'use server';
-
 import { z } from 'zod';
 
 const VerifyUserRequestFormSchema = z.object({

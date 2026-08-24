@@ -9,9 +9,10 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { deleteCustomer, DeleteCustomerState } from '@/app/lib/actions';
+import { deleteCustomer } from '@/app/lib/actions/functions/customers';
+import { DeleteCustomerState } from '@/app/lib/actions/types/customers';
 import { useActionState } from 'react';
-import { resetTarget } from '@/app/lib/actions';
+import { resetTarget } from '@/app/lib/actions/functions/dashboard';
 import { fetchImageByURL } from '@/app/lib/data/invoices';
 import { fetchCustomerById } from '@/app/lib/data/customers';
 import { notFound } from 'next/navigation';

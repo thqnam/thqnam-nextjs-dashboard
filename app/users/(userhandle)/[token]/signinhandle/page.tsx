@@ -3,7 +3,7 @@ import Form from '@/app/ui/user/signinhandle-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { getUserByToken } from '@/app/lib/utils';
-import { deleteDatabaseToken } from '@/app/lib/actions';
+import { deleteDatabaseToken } from '@/app/lib/actions/functions/users';
 import { notFound } from 'next/navigation';
  
 export const metadata: Metadata = {

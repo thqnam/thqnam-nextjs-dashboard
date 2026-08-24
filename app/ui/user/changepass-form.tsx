@@ -11,7 +11,8 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { changeUserPass, ChangePassState, resetTarget } from '@/app/lib/actions';
+import { changeUserPass, resetTarget } from '@/app/lib/actions/functions/dashboard';
+import { ChangePassState } from '@/app/lib/actions/types/dashboard'
 import zxcvbn from 'zxcvbn';
 
 export default function Form() {

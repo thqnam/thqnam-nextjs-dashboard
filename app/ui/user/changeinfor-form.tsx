@@ -21,9 +21,9 @@ import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
 import { 
     changeUserInfor, 
-    ChangeInforState,
     resetTarget 
-} from '@/app/lib/actions';
+} from '@/app/lib/actions/functions/dashboard';
+import { ChangeInforState } from '@/app/lib/actions/types/dashboard'
 import { 
   getUserByEmail,
 } from '@/app/lib/data/users';

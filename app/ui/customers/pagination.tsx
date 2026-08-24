@@ -4,7 +4,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { generatePagination } from '@/app/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { resetTarget } from '@/app/lib/actions';
+import { resetTarget } from '@/app/lib/actions/functions/dashboard';
 import { fetchCustomersPages } from '@/app/lib/data/customers';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';

@@ -15,7 +15,9 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { deleteUserHandle, DeleteUserHandleState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
+import { GoogleSignIn, GithubSignIn } from '@/app/lib/actions/functions/dashboard';
+import { deleteUserHandle } from '@/app/lib/actions/functions/users';
+import { DeleteUserHandleState } from '@/app/lib/actions/types/users';
 import Link from 'next/link';
 
 type FormProps = {

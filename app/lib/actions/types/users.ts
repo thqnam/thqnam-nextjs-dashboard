@@ -1,5 +1,3 @@
-'use server';
-
 export type VerifyUserRequestState = {
   errors?: {
     email?: string[];

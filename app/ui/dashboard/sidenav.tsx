@@ -4,7 +4,7 @@ import NavLinks from '@/app/ui/dashboard/nav-links';
 import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon, ArrowTurnRightUpIcon, ArrowTurnLeftUpIcon } from '@heroicons/react/24/outline';
 // import { OAuthGlobalSignOut, OAuthLocalSignOut } from '@/app/lib/supabaseAuth';
-import { resetTarget, logOut, resetSession } from '@/app/lib/actions';
+import { resetTarget, logOut, resetSession } from '@/app/lib/actions/functions/dashboard';
 import { useSessionInforContext } from '@/app/ui/sessionInforContext';
 import { getUserSessionByID } from '@/app/lib/data/users';
 import { getSessionInfor } from '@/app/lib/data/dashboard';

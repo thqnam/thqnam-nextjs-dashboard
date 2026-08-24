@@ -16,7 +16,9 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { resetEmailHandle, ResetEmailHandleState, GoogleSignIn, GithubSignIn } from '@/app/lib/actions';
+import { GoogleSignIn, GithubSignIn } from '@/app/lib/actions/functions/dashboard';
+import { resetEmailHandle } from '@/app/lib/actions/functions/users';
+import { ResetEmailHandleState } from '@/app/lib/actions/types/users';
 import Link from 'next/link';
 
 type FormProps = {

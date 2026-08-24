@@ -10,7 +10,9 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { resetTarget, createInvoice, InvoiceState } from '@/app/lib/actions';
+import { resetTarget } from '@/app/lib/actions/functions/dashboard';
+import { createInvoice } from '@/app/lib/actions/functions/invoices';
+import { InvoiceState } from '@/app/lib/actions/types/invoices';
 import { useActionState } from 'react';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';

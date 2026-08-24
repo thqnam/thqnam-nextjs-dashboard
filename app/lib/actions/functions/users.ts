@@ -70,7 +70,7 @@ export async function verifyUserRequest(prevState: VerifyUserRequestState, formD
 
     if (user !== undefined){
 
-      const token = crypto.randomUUID();
+      const token = randomUUID();
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
       const { error } = await supabase
         .from('users')
@@ -239,7 +239,7 @@ export async function changeMailFromRequest(prevState: ChangeMailFromRequestStat
 
     if (user !== undefined){
 
-      const token = crypto.randomUUID();
+      const token = randomUUID();
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
       const { error } = await supabase
         .from('users')
@@ -291,7 +291,7 @@ export async function changeMailToRequest(oldemail: string, prevState: ChangeMai
 
         if (oldUser !== undefined){
 
-          const token = crypto.randomUUID();
+          const token = randomUUID();
           const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
           const { error } = await supabase
             .from('users')
@@ -403,7 +403,7 @@ export async function resetPassRequest(prevState: ResetPassRequestState, formDat
 
     if (user !== undefined){
 
-      const token = crypto.randomUUID();
+      const token = randomUUID();
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
       const { error } = await supabase
         .from('users')
@@ -515,7 +515,7 @@ export async function resetEmailRequest(prevState: ResetEmailRequestState, formD
 
     if (user !== undefined){
 
-      const token = crypto.randomUUID();
+      const token = randomUUID();
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 h
       const { error } = await supabase
         .from('users')
@@ -624,7 +624,7 @@ export async function deleteUserRequest(prevState: DeleteUserRequestState, formD
 
     if (user !== undefined){
 
-      const token = crypto.randomUUID();
+      const token = randomUUID();
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
       const { error } = await supabase
         .from('users')
