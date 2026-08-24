@@ -1,8 +1,6 @@
 import { Revenue, User, ImageField } from './definitions';
 import { supabase } from './supabaseClient';
-import { randomUUID } from 'crypto';
 import { PostgrestError } from '@supabase/supabase-js';
-import { sendSignUpEmail }  from '@/app/lib/mailer';
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
