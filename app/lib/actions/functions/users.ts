@@ -27,7 +27,7 @@ import {
   DeleteUserRequestState,
   DeleteUserHandleState,
   VerifyUserRequestState,
-} from '@/app/lib/action/types/users';
+} from '@/app/lib/actions/types/users';
 import {
   CreateUserRequest,
   CreateUserHandle,
@@ -41,7 +41,7 @@ import {
   DeleteUserRequest,
   DeleteUserHandle,
   VerifyUserRequest,
-} from '@/app/lib/action/schemas/users';
+} from '@/app/lib/actions/schemas/users';
 
 export async function deleteDatabaseToken(id : string) {
   const { error } = await supabase

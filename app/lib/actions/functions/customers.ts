@@ -8,12 +8,12 @@ import { randomUUID } from 'crypto';
 import { 
   CustomerState,
   DeleteCustomerState,
-} from '@/app/lib/action/types/customers'
+} from '@/app/lib/actions/types/customers'
 import { 
   CreateCustomer, 
   UpdateCustomer,
   DeleteCustomer,
-} from '@/app/lib/action/schemas/customers';
+} from '@/app/lib/actions/schemas/customers';
 
 export async function createCustomer(prevState: CustomerState, formData: FormData) {
   // Validate form using Zod

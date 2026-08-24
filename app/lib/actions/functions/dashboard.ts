@@ -13,11 +13,11 @@ import { supabase } from '@/app/lib/supabaseClient';
 import {
   ChangeInforState,
   ChangePassState,
-} from '@/app/lib/action/types/dashboard';
+} from '@/app/lib/actions/types/dashboard';
 import {
   ChangeInfor,
   ChangePass,
-} from '@/app/lib/action/schemas/dashboard';
+} from '@/app/lib/actions/schemas/dashboard';
 
 export async function resetTarget(target : string) {
   revalidatePath(target);

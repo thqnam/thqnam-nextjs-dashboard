@@ -8,12 +8,12 @@ import { randomUUID } from 'crypto';
 import { 
   InvoiceState,
   DeleteInvoiceState,
-} from '@/app/lib/action/types/invoices'
+} from '@/app/lib/actions/types/invoices'
 import { 
   CreateInvoice, 
   UpdateInvoice, 
   DeleteInvoice,
-} from '@/app/lib/action/schemas/invoices';
+} from '@/app/lib/actions/schemas/invoices';
 
 export async function createInvoice(prevState: InvoiceState, formData: FormData) {
   // Validate form using Zod
