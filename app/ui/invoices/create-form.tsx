@@ -14,7 +14,7 @@ import { resetTarget, createInvoice, InvoiceState } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { fetchCustomers } from '@/app/lib/data';
+import { fetchCustomers } from '@/app/lib/data/customers';
 
 export default function Form() {
   const [customers, setCustomers] = useState([] as CustomerField[]);

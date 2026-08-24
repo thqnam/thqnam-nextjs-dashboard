@@ -9,7 +9,7 @@ import {
 import { lusitana } from '@/app/ui/fonts';
 import { supabase } from '@/app/lib/supabaseClient';
 import { useEffect, useState, memo } from 'react';
-import { fetchCardData } from '@/app/lib/data';
+import { fetchCardData } from '@/app/lib/data/dashboard';
 
 const iconMap = {
   collected: BanknotesIcon,

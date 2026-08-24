@@ -3,7 +3,7 @@
 import { generateYAxis } from '@/app/lib/utils';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchRevenue } from '@/app/lib/data';
+import { fetchRevenue } from '@/app/lib/data/dashboard';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { Revenue } from '@/app/lib/definitions/dashboard';

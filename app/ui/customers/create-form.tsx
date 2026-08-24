@@ -10,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { resetTarget, createCustomer, CustomerState } from '@/app/lib/actions';
-import { fetchImages } from '@/app/lib/data';
+import { fetchImages } from '@/app/lib/data/invoices';
 import { useActionState } from 'react';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';

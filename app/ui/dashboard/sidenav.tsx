@@ -6,7 +6,8 @@ import { PowerIcon, ArrowTurnRightUpIcon, ArrowTurnLeftUpIcon } from '@heroicons
 // import { OAuthGlobalSignOut, OAuthLocalSignOut } from '@/app/lib/supabaseAuth';
 import { resetTarget, logOut, resetSession } from '@/app/lib/actions';
 import { useSessionInforContext } from '@/app/ui/sessionInforContext';
-import { getSessionInfor, getUserSessionByID } from '@/app/lib/data';
+import { getUserSessionByID } from '@/app/lib/data/users';
+import { getSessionInfor } from '@/app/lib/data/dashboard';
 import { useEffect } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { Suspense } from 'react';

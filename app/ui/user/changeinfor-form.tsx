@@ -25,9 +25,11 @@ import {
     resetTarget 
 } from '@/app/lib/actions';
 import { 
-  fetchImages,
   getUserByEmail,
-} from '@/app/lib/data';
+} from '@/app/lib/data/users';
+import { 
+  fetchImages,
+} from '@/app/lib/data/invoices';
 import { supabase } from '@/app/lib/supabaseClient';
 import { useSessionInforContext } from '@/app/ui/sessionInforContext';
  

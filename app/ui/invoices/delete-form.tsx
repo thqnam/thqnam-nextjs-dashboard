@@ -14,7 +14,8 @@ import {
 import { Button } from '@/app/ui/button';
 import { resetTarget, deleteInvoice, DeleteInvoiceState } from '@/app/lib/actions';
 import { useActionState } from 'react';
-import { fetchInvoiceById, fetchCustomerById } from '@/app/lib/data';
+import { fetchInvoiceById } from '@/app/lib/data/invoices';
+import { fetchCustomerById } from '@/app/lib/data/customers';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { notFound } from 'next/navigation';

@@ -4,7 +4,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchLatestInvoices } from '@/app/lib/data';
+import { fetchLatestInvoices } from '@/app/lib/data/dashboard';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
 import { LatestInvoiceRaw } from '@/app/lib/definitions/dashboard';

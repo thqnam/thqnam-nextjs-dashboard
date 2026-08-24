@@ -2,7 +2,7 @@
 
 import { supabase } from '@/app/lib/supabaseClient';
 import { insertUser, updateUser } from './OAuth';
-import { getUserByEmail } from './data';
+import { getUserByEmail } from '@/app/lib/data/users';
 import { resetTarget } from '@/app/lib/actions';
 
 export async function OAuthPasswordSignIn(email: string, password: string, phone: string) {

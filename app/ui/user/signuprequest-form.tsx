@@ -14,7 +14,7 @@ import {
   ArrowUpIcon,
 } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { fetchImages } from '@/app/lib/data';
+import { fetchImages } from '@/app/lib/data/invoices';
 import { useActionState } from 'react';
 import { createUserRequest, CreateUserRequestState } from '@/app/lib/actions';
 import { useEffect, useState } from 'react';
