@@ -1,5 +1,5 @@
-# Next.js App Router Course - Starter
+# THQNAM-NEXTJS-DASHBOARD
 
-This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.
+This is my first realtime web app. Making by NextJS - the best framework of TypeScript language.
 
-For more information, see the [course curriculum](https://nextjs.org/learn) on the Next.js Website.
+For more information, see the [My Blog](https://thqnam-myself.vercel.app/) for all information about me.
