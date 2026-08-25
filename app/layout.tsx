@@ -24,13 +24,13 @@ export const metadata: Metadata = {
     title: `${process.env.APP_NAME} App`,
     description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
     siteName: `${process.env.APP_NAME}`,
-    images: [{ url: `${process.env.APP_ICON}`, alt: `${process.env.APP_NAME} picture` }]
+    images: [{ url: `${process.env.APP_ICON}`, alt: `${process.env.APP_NAME}'s picture` }]
   },
   twitter: {
     card: 'summary_large_image',
     site: `${process.env.APP_HOMEPAGE}`,
     creator: `${process.env.APP_OWNER}`,
-    images: [{ url: `${process.env.APP_ICON}`, alt: `${process.env.APP_NAME} picture` }],
+    images: [{ url: `${process.env.APP_ICON}`, alt: `${process.env.APP_NAME}'s picture` }],
     description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
     title: `${process.env.APP_NAME} App`
   }
