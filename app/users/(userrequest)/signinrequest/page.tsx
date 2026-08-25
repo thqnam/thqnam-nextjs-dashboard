@@ -21,13 +21,13 @@ export const metadata: Metadata = {
     title: `${process.env.APP_NAME} App`,
     description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
     siteName: `${process.env.APP_NAME}`,
-    images: [{ url: `${process.env.APP_ICON}` }]
+    images: [{ url: `${process.env.APP_ICON}`, alt: `${process.env.APP_NAME} picture` }]
   },
   twitter: {
     card: 'summary_large_image',
     site: `${process.env.APP_NAME}`,
     creator: `${process.env.APP_OWNER}`,
-    images: [{ url: `${process.env.APP_ICON}` }],
+    images: [{ url: `${process.env.APP_ICON}`, alt: `${process.env.APP_NAME} picture` }],
     description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
     title: `${process.env.APP_NAME} App`
   }
