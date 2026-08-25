@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Change Mail From Request',
+  title: 'Change Email From Request',
   icons: `${process.env.APP_ICON}`,
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,

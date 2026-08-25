@@ -89,7 +89,7 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="oldemail"
             >
-              Mail From
+              Email From
             </label>
             <div className="relative">
               <input
@@ -108,7 +108,7 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="newemail"
             >
-              Mail To
+              Email To
             </label>
             <div className="relative">
               <input
@@ -167,7 +167,7 @@ export default function Form( {newemail, oldemail, name, image} : FormProps) {
           )}
         </div>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='submit'>
-          Change Mail Right Now <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
+          Change Email Right Now <ArrowDownIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <Button className="mt-4 w-full" aria-disabled={isPending} type='reset'>
           Reset Change Right Now <ExclamationCircleIcon className="ml-auto h-5 w-5 text-gray-50" />

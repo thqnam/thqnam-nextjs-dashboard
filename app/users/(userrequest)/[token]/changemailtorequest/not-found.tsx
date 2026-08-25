@@ -3,7 +3,7 @@ import { FaceFrownIcon } from '@heroicons/react/24/outline';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Not-Found Token Change Mail From Request',
+  title: 'Not-Found Token Change Email From Request',
   icons: `${process.env.APP_ICON}`,
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,

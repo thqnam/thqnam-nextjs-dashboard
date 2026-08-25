@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Change Mail To Reponse',
+  title: 'Change Email To Reponse',
   icons: `${process.env.APP_ICON}`,
   applicationName: `${process.env.APP_NAME}`,
   description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
