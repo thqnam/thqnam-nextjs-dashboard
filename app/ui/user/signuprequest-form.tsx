@@ -155,7 +155,7 @@ export default function Form() {
           <div className="w-full">
             <div>
               <label
-                className="flex items gap-2 mb-3 mt-5 block text-xs font-medium text-gray-900"
+                className="flex items gap-2 mb-3 mt-5 text-xs font-medium text-gray-900"
                 htmlFor="image"
               >
                 Choose Image{' '}
