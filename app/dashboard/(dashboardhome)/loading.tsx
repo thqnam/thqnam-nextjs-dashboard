@@ -13,6 +13,22 @@ export const metadata: Metadata = {
   generator: `${process.env.APP_GENERATOR}`,
   keywords: `${process.env.APP_NAME}, ${process.env.APP_NAME} App, ${process.env.APP_OWNER}`,
   publisher: `${process.env.APP_PUBLISHER}`,
+  openGraph: {
+    type: 'website',
+    url: `${process.env.OWNER_INFOR}`,
+    title: `${process.env.APP_NAME} App`,
+    description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
+    siteName: `${process.env.APP_NAME}`,
+    images: [{ url: `${process.env.APP_ICON}` }]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: `${process.env.APP_NAME}`,
+    creator: `${process.env.APP_OWNER}`,
+    images: [{ url: `${process.env.APP_ICON}` }],
+    description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
+    title: `${process.env.APP_NAME} App`
+  }
 };
  
 export default function Loading() {
