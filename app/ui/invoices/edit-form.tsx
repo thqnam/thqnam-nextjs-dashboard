@@ -37,6 +37,8 @@ export default function EditInvoiceForm({ id }: { id: string }) {
       notFound();
     } else {
       setInvoice(data);
+      setSelectedInvoiceStatus(data.status);
+      setSelectedCustomer(data.customer_id);
     }
   };
   const loadInvoiceAndCustomers = async () => {
@@ -46,6 +48,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
     } else {
       setInvoice(InvoiceTerm);
       setSelectedInvoiceStatus(InvoiceTerm.status);
+      setSelectedCustomer(InvoiceTerm.customer_id);
       const CustomersTerm = await fetchCustomers();
       setCustomers(CustomersTerm);
     }

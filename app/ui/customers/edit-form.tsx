@@ -30,6 +30,7 @@ export default function EditCustomerForm({ id }: { id: string }) {
       notFound();
     } else {
       setCustomer(data);
+      setSelectedImage(data.image_url);
     }
   };
   const loadImages = async () => {
@@ -42,6 +43,7 @@ export default function EditCustomerForm({ id }: { id: string }) {
       notFound();
     } else {
       setCustomer(CustomerTerm);
+      setSelectedImage(CustomerTerm.image_url);
       const ImagesTerm = await fetchImages();
       setImages(ImagesTerm);
     }
