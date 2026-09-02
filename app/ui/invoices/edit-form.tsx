@@ -39,6 +39,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
       setInvoice(data);
       setSelectedInvoiceStatus(data.status);
       setSelectedCustomer(data.customer_id);
+      setSelectedCustomerImage(customers.find(c => c.id === data.customer_id)?.image_url || '');
     }
   };
   const loadInvoiceAndCustomers = async () => {
@@ -49,6 +50,7 @@ export default function EditInvoiceForm({ id }: { id: string }) {
       setInvoice(InvoiceTerm);
       setSelectedInvoiceStatus(InvoiceTerm.status);
       setSelectedCustomer(InvoiceTerm.customer_id);
+      setSelectedCustomerImage(customers.find(c => c.id === InvoiceTerm.customer_id)?.image_url || '');
       const CustomersTerm = await fetchCustomers();
       setCustomers(CustomersTerm);
     }
@@ -59,6 +61,9 @@ export default function EditInvoiceForm({ id }: { id: string }) {
   useEffect(() => {
     setSelectedInvoiceStatus(invoice.status);
   }, [ invoice.status]);
+  useEffect(() => {
+    setSelectedCustomerImage(customers.find(c => c.id === invoice.customer_id)?.image_url || '');
+  }, [ invoice.customer_id]);
   // Lần đầu load và khi có realtime event thì fetch lại dữ liệu
   useEffect(() => {
     loadInvoiceAndCustomers();
