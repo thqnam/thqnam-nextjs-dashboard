@@ -17,21 +17,43 @@ export const metadata: Metadata = {
   generator: `${process.env.APP_GENERATOR}`,
   keywords: `${process.env.APP_NAME}, ${process.env.APP_NAME} App, ${process.env.APP_OWNER}`,
   publisher: `${process.env.APP_PUBLISHER}`,
+  classification: "Business",
+  category: "Technology",
   openGraph: {
     type: 'website',
     url: `${process.env.APP_HOMEPAGE}`,
     title: `${process.env.APP_NAME} App`,
     description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
     siteName: `${process.env.APP_NAME}`,
-    images: [{ url: `${process.env.APP_ICON}`, alt: `${process.env.APP_NAME}'s picture` }]
+    locale: "vi_VN",
+    alternateLocale: ["en_US"],
+    emails: ["thieuhuynhquangnam1996@gmail.com"],
+    countryName: "Vietnam",
+    phoneNumbers: ["+84937821788"],
+    images: [
+      { 
+        url: `${process.env.APP_ICON}`, 
+        alt: `${process.env.APP_NAME}'s picture`,
+        type: "image/png",
+        secureUrl: `${process.env.APP_ICON}`,
+      }
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     site: `${process.env.APP_HOMEPAGE}`,
     creator: `${process.env.APP_OWNER}`,
-    images: [{ url: `${process.env.APP_ICON}`, alt: `${process.env.APP_NAME}'s picture` }],
     description: `The official Web Page of ${process.env.APP_NAME} App, built by Mr. ${process.env.APP_OWNER}.`,
-    title: `${process.env.APP_NAME} App`
+    title: `${process.env.APP_NAME} App`,
+    creatorId: "@NamThieu1996",
+    images: [
+      { 
+        url: `${process.env.APP_ICON}`, 
+        alt: `${process.env.APP_NAME}'s picture`,
+        type: "image/png",
+        secureUrl: `${process.env.APP_ICON}`,
+      }
+    ],
   }
 };
  
