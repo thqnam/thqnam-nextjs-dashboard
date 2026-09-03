@@ -13,7 +13,6 @@
     "@tailwindcss/forms": "^0.5.10",
     "@types/nodemailer": "^6.4.17",
     "@types/zxcvbn": "^4.4.5",
-    "@vercel/speed-insights": "^2.0.0",
     "auth": "^1.7.1",
     "autoprefixer": "10.4.20",
     "bcryptjs": "^3.0.2",
